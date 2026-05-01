@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1 Car-D: Stock Car Racing</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center}
+h1{font-size:1.6rem;letter-spacing:.15em;text-transform:uppercase;color:#fbbf24;margin:1rem 0 .25rem;text-shadow:0 0 20px #f59e0b80}
+h2{font-size:1rem;color:#94a3b8;margin-bottom:1rem}
+#setup{max-width:420px;width:100%;padding:1.5rem;background:#1e293b;border-radius:1rem;margin-top:1.5rem;text-align:center}
+#setup h3{font-size:1.1rem;color:#fbbf24;margin-bottom:1rem}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1.5rem}
+.diff-btn{padding:.75rem .5rem;border-radius:.5rem;border:2px solid #334155;background:#0f172a;color:#e2e8f0;cursor:pointer;font-size:.9rem;transition:all .2s}
+.diff-btn:hover{border-color:#fbbf24;color:#fbbf24}
+.diff-btn.selected{border-color:#fbbf24;background:#422006;color:#fbbf24}
+.start-btn{width:100%;padding:.75rem;border:none;border-radius:.5rem;background:#f59e0b;color:#0f172a;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:.05em}
+.start-btn:hover{background:#fbbf24}
+.rules-summary{text-align:left;background:#0f172a;border-radius:.5rem;padding:1rem;margin-top:1rem;font-size:.78rem;color:#94a3b8;line-height:1.6}
+.rules-summary b{color:#e2e8f0}
+#game{display:none;width:100%;max-width:920px;padding:.5rem 1rem 2rem;gap:.75rem;flex-direction:column}
+.game-header{display:flex;align-items:center;justify-content:space-between;background:#1e293b;border-radius:.75rem;padding:.6rem 1rem;gap:1rem;flex-wrap:wrap}
+.lap-box{display:flex;flex-direction:column;align-items:center}
+.lap-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b}
+.lap-val{font-size:1.3rem;font-weight:700;color:#fbbf24}
+.lap-track{display:flex;gap:3px;align-items:center;margin-top:.25rem;flex-wrap:wrap;max-width:300px}
+.lap-seg{width:13px;height:8px;border-radius:2px;background:#1e293b;border:1px solid #334155;transition:background .3s}
+.lap-seg.done{background:#fbbf24}
+.lap-seg.current{background:#f59e0b;border-color:#fbbf24;box-shadow:0 0 6px #f59e0b}
+.lap-seg.white-lap{background:#e2e8f0;border-color:#fff}
+.lap-seg.checkered{background:repeating-conic-gradient(#e2e8f0 0 25%,#1e293b 0 50%) 0/8px 8px}
+.speed-box{display:flex;flex-direction:column;align-items:center;gap:.25rem}
+.speed-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b}
+.speed-btns{display:flex;gap:.25rem;align-items:center}
+.speed-btn{width:28px;height:28px;border:none;border-radius:.25rem;background:#334155;color:#e2e8f0;font-size:1rem;cursor:pointer}
+.speed-btn:hover:not(:disabled){background:#475569}
+.speed-btn:disabled{opacity:.3;cursor:not-allowed}
+.speed-val{font-size:1.5rem;font-weight:700;color:#38bdf8;min-width:2rem;text-align:center}
+.gauge-header{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center}
+.gauge-item{display:flex;flex-direction:column;align-items:center;gap:.2rem}
+.gauge-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b}
+.gauge-pips{display:flex;gap:2px}
+.gauge-pip{width:10px;height:10px;border-radius:50%;background:#334155;border:1px solid #475569;transition:all .3s}
+.gauge-pip.on-t{background:#22c55e}
+.gauge-pip.on-f{background:#3b82f6}
+.gauge-pip.on-e{background:#ef4444}
+.gauge-pip.warn{border-color:currentColor;box-shadow:0 0 4px currentColor}
+.game-body{display:flex;gap:.75rem;align-items:flex-start;flex-wrap:wrap}
+.track-wrap{flex:1;min-width:220px}
+.track-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-bottom:.4rem;text-align:center}
+.track-outer{display:flex;gap:.25rem;align-items:flex-start;justify-content:center}
+.track-side{display:flex;flex-direction:column;align-items:center}
+.track-side-label{font-size:.55rem;color:#94a3b8;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px}
+.track-side-strip{display:flex;flex-direction:column;gap:2px}
+.side-cell{width:22px;height:40px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.45rem;font-weight:700;writing-mode:initial}
+.side-apron{background:#1a3a1a;color:#4ade80;border:1px solid #166534}
+.side-wall{background:#3a1a1a;color:#f87171;border:1px solid #991b1b}
+.track-grid{display:flex;flex-direction:column;gap:2px}
+.track-row{display:flex;gap:2px}
+.track-row.stagger{margin-left:23px}
+.track-cell{width:44px;height:40px;border-radius:4px;background:#1a2e1a;border:1px solid #1e3a1e;display:flex;align-items:center;justify-content:center;position:relative}
+.track-cell.arr-right::after,.track-cell.arr-left::after{content:'';position:absolute;bottom:2px;right:3px;font-size:.6rem;color:#fbbf24;opacity:.8}
+.track-cell.arr-right::after{content:'→'}
+.track-cell.arr-left::after{content:'←'}
+.track-cell.arr-dim::after{opacity:.2}
+.car-token{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.52rem;line-height:1}
+.car-token.is-player{box-shadow:0 0 0 2px #fff,0 0 10px #fff6}
+.side-panel{width:220px;min-width:180px;display:flex;flex-direction:column;gap:.6rem}
+.panel-box{background:#1e293b;border-radius:.75rem;padding:.75rem}
+.panel-box h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-bottom:.5rem}
+.dice-row{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}
+.die{width:36px;height:36px;border-radius:.4rem;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;border:2px solid transparent}
+.die.used{opacity:.3;border-style:dashed!important}
+.die.eq{border-color:#fbbf24!important}
+.log-box{max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:.15rem}
+.log-entry{font-size:.7rem;color:#94a3b8;line-height:1.4;padding:.1rem 0;border-bottom:1px solid #0f172a}
+.log-entry.imp{color:#fbbf24}
+.log-entry.dan{color:#f87171}
+.log-entry.good{color:#4ade80}
+.actions-box{background:#1e293b;border-radius:.75rem;padding:.75rem}
+.actions-box h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-bottom:.5rem}
+.phase-lbl{font-size:.8rem;color:#fbbf24;font-weight:600;margin-bottom:.35rem}
+.phase-desc{font-size:.73rem;color:#94a3b8;margin-bottom:.55rem;line-height:1.45}
+.btn-row{display:flex;gap:.35rem;flex-wrap:wrap}
+.btn{padding:.38rem .7rem;border:none;border-radius:.4rem;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-p{background:#f59e0b;color:#0f172a}
+.btn-p:hover:not(:disabled){background:#fbbf24}
+.btn-s{background:#334155;color:#e2e8f0}
+.btn-s:hover:not(:disabled){background:#475569}
+.btn-g{background:#14532d;color:#86efac}
+.btn-g:hover:not(:disabled){background:#166534}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.pos-list{display:flex;flex-direction:column;gap:.2rem}
+.pos-row{display:flex;align-items:center;gap:.4rem;font-size:.72rem}
+.pos-num{width:18px;color:#64748b;font-weight:700;font-size:.65rem}
+.pos-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:700}
+.overlay{position:fixed;inset:0;background:#0f172acc;display:flex;align-items:center;justify-content:center;z-index:100}
+.modal{background:#1e293b;border-radius:1rem;padding:1.75rem;max-width:340px;width:90%;text-align:center;border:2px solid #334155}
+.modal h2{font-size:1.3rem;margin-bottom:.6rem}
+.modal p{color:#94a3b8;margin-bottom:1.1rem;font-size:.88rem;line-height:1.5}
+.modal .btn-row{justify-content:center;flex-direction:column;gap:.45rem}
+.modal.win h2{color:#fbbf24}
+.modal.lose h2{color:#f87171}
+.modal.choose h2{color:#38bdf8}
+.flag-banner{text-align:center;padding:.35rem;font-weight:700;font-size:.78rem;border-radius:.35rem;margin-bottom:.4rem}
+.flag-yellow{background:#fbbf24;color:#0f172a}
+.flag-white{background:#e2e8f0;color:#0f172a}
+@media(max-width:600px){
+  .game-body{flex-direction:column}
+  .side-panel{width:100%}
+  .track-cell{width:36px;height:34px}
+  .car-token{width:26px;height:26px}
+}
+</style>
+</head>
+<body>
+<h1>🏁 1 Car-D</h1>
+<h2>Stock Car Racing</h2>
+
+<div id="setup">
+  <h3>Choose Starting Position</h3>
+  <p style="font-size:.8rem;color:#94a3b8;margin-bottom:.75rem">1 = Hardest (back) &nbsp;·&nbsp; 6 = Easiest (pole)</p>
+  <div class="diff-grid">
+    <button class="diff-btn" onclick="selectDiff(1)">1<br><small>Last</small></button>
+    <button class="diff-btn" onclick="selectDiff(2)">2</button>
+    <button class="diff-btn" onclick="selectDiff(3)">3</button>
+    <button class="diff-btn" onclick="selectDiff(4)">4</button>
+    <button class="diff-btn" onclick="selectDiff(5)">5</button>
+    <button class="diff-btn selected" onclick="selectDiff(6)">6<br><small>Pole</small></button>
+  </div>
+  <button class="start-btn" onclick="startGame()">START RACE</button>
+  <div class="rules-summary" style="margin-top:1rem">
+    <b>Each turn:</b> ① Pits? ② Set speed (±2) ③ Change lane? ④ Roll dice → rivals move → advance lap<br>
+    <b>Tires:</b> -1 per lane change, -1 if pushed to side &nbsp; <b>Fuel:</b> -1 at speed 4–5<br>
+    <b>Engine:</b> +1 at speed 1, -1 at speed 5, -1 vs right wall &nbsp; <b>Lose:</b> any gauge → 0<br>
+    <b>Yellow flag:</b> 4–5 equal dice → reset positions &amp; gauges &nbsp; <b>Drafting:</b> speed 1–2: rivals moving up drag/push you forward
+  </div>
+</div>
+
+<div id="game">
+  <div class="game-header">
+    <div class="lap-box">
+      <div class="lap-label">Laps</div>
+      <div class="lap-val" id="lap-val">10</div>
+      <div class="lap-track" id="lap-track"></div>
+    </div>
+    <div class="gauge-header" id="gauges"></div>
+    <div class="speed-box">
+      <div class="speed-label">Speed</div>
+      <div class="speed-btns">
+        <button class="speed-btn" id="sp-dn" onclick="changeSpeed(-1)">−</button>
+        <div class="speed-val" id="speed-val">3</div>
+        <button class="speed-btn" id="sp-up" onclick="changeSpeed(1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-body">
+    <div class="track-wrap">
+      <div class="track-title">Track — row 0 = front</div>
+      <div class="track-outer">
+        <div class="track-side">
+          <div class="track-side-label">Apron</div>
+          <div class="track-side-strip" id="strip-apron"></div>
+        </div>
+        <div class="track-grid" id="track-grid"></div>
+        <div class="track-side">
+          <div class="track-side-label">Wall</div>
+          <div class="track-side-strip" id="strip-wall"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-panel">
+      <div class="actions-box" id="actions-panel">
+        <h4>Actions</h4>
+        <div id="phase-content"></div>
+      </div>
+      <div class="panel-box">
+        <h4>Dice (rival speeds)</h4>
+        <div class="dice-row" id="dice-display"></div>
+      </div>
+      <div class="panel-box">
+        <h4>Standings</h4>
+        <div class="pos-list" id="standings"></div>
+      </div>
+      <div class="panel-box">
+        <h4>Race Log</h4>
+        <div class="log-box" id="log-box"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="overlay" class="overlay" style="display:none"></div>
+
+<script>
+// ── CONSTANTS ────────────────────────────────────────────
+const ROWS = 12, COLS = 4, APRON = 0, WALL = 3;
+const RIVALS = ['red','blue','green','yellow','cyan'];
+// index 0 = position 1 (hardest/back), index 5 = position 6 (easiest/front)
+const ALL_STARTS = [[8,1],[8,2],[7,1],[7,2],[6,1],[6,2]];
+// Arrows: [row, col, dCol, parity]  dCol: -1=left +1=right  parity 0=even lapStep 1=odd
+const ARROWS = [
+  [2,2, 1,0],[3,1,-1,0],[7,2, 1,0],
+  [1,2, 1,1],[5,1,-1,1],[9,2, 1,1]
+];
+const CAR_BG  = {player:'#e2e8f0',red:'#f87171',blue:'#60a5fa',green:'#4ade80',yellow:'#fde047',cyan:'#34d399'};
+const CAR_FG  = {player:'#0f172a',red:'#450a0a',blue:'#1e3a5f',green:'#14532d',yellow:'#713f12',cyan:'#064e3b'};
+const CAR_LBL = {player:'YOU',red:'RED',blue:'BLU',green:'GRN',yellow:'YLW',cyan:'CYN'};
+const DIE_BG  = {red:'#f87171',blue:'#60a5fa',green:'#4ade80',yellow:'#fde047',cyan:'#34d399'};
+const DIE_FG  = {red:'#450a0a',blue:'#1e3a5f',green:'#14532d',yellow:'#713f12',cyan:'#064e3b'};
+
+// ── STATE ────────────────────────────────────────────────
+let S = {};
+
+function newState(diff) {
+  const grid = Array.from({length:ROWS}, () => Array(COLS).fill(null));
+  const cars  = {};
+  const pi = diff - 1;
+  const [pr, pc] = ALL_STARTS[pi];
+  cars.player = {row:pr, col:pc};
+  grid[pr][pc] = 'player';
+  let ri = 0;
+  for (let i = 0; i < 6; i++) {
+    if (i === pi) continue;
+    const nm = RIVALS[ri++];
+    const [r,c] = ALL_STARTS[i];
+    cars[nm] = {row:r, col:c};
+    grid[r][c] = nm;
+  }
+  return {
+    grid, cars,
+    gauges: {tires:6, fuel:6, engine:6},
+    speed: 3, _baseSpeed: 3,
+    lapStep: 0,         // 0-19; displayed as (lapStep+1)*10
+    phase: 'start',     // start|speed|lateral|dice|rivals|lap|gameover
+    dice: [],           // [val_red, val_blue, val_green, val_yellow, val_cyan]
+    diceUsed: Array(5).fill(false),
+    rivalQueue: [], rivalIdx: 0,
+    pendingChoice: null,
+    log: ['Race started! Good luck!'],
+    gameOver:false, won:false, finalPos:null,
+    pitTurn: false, diff,
+  };
+}
+
+// ── GRID HELPERS ─────────────────────────────────────────
+const getCar = (r,c) => S.grid[r][c];
+
+function movePiece(id, r, c) {
+  const {row:or, col:oc} = S.cars[id];
+  S.grid[or][oc] = null;
+  S.cars[id] = {row:r, col:c};
+  S.grid[r][c] = id;
+}
+
+function allCars() { return ['player',...RIVALS]; }
+
+function sortedCars(ids) {
+  return [...ids].sort((a,b) => {
+    const pa = S.cars[a], pb = S.cars[b];
+    return pa.row !== pb.row ? pa.row - pb.row : pa.col - pb.col;
+  });
+}
+
+const standings = () => sortedCars(allCars().filter(id => S.cars[id]));
+
+function arrowAt(r,c)       { return ARROWS.find(a => a[0]===r && a[1]===c) || null; }
+function activeArrowAt(r,c) { const a=arrowAt(r,c); return a && a[3]===(S.lapStep%2) ? a : null; }
+const inBounds = (r,c) => r>=0 && r<ROWS && c>=0 && c<COLS;
+
+// ── MOVEMENT ─────────────────────────────────────────────
+
+// Push car DOWN 1 row. isPit=true swaps with car below; otherwise chain-pushes.
+function tryPushDown(id, isPit=false) {
+  const {row, col} = S.cars[id];
+  if (row + 1 >= ROWS) return false;
+  const nr  = row + 1;
+  const occ = getCar(nr, col);
+  if (!occ) { movePiece(id, nr, col); return true; }
+  if (isPit) { movePiece(occ, row, col); movePiece(id, nr, col); return true; }
+  // Build chain of consecutive cars below
+  const chain = [id];
+  let scan = nr;
+  while (scan < ROWS && getCar(scan, col)) { chain.push(getCar(scan, col)); scan++; }
+  if (scan >= ROWS) return false; // blocked at lower limit
+  // Move from bottom of chain upward (scan is the free row)
+  for (let i = chain.length - 1; i >= 0; i--) {
+    movePiece(chain[i], S.cars[chain[i]].row + 1, col);
+  }
+  return true;
+}
+
+// Apply side damage to player; push any car down after hitting a side column.
+function applyPushAgainstSide(id, sideCol) {
+  if (id === 'player') {
+    if (sideCol === APRON) {
+      S.gauges.tires = Math.max(0, S.gauges.tires - 1);
+      log('You hit the apron! Tires -1', 'dan');
+    } else {
+      S.gauges.tires  = Math.max(0, S.gauges.tires  - 1);
+      S.gauges.engine = Math.max(0, S.gauges.engine - 1);
+      log('You hit the wall! Tires -1, Engine -1', 'dan');
+    }
+    checkLose();
+  }
+  tryPushDown(id);
+}
+
+// Recursively push car laterally. Handles chain reactions including side damage.
+function pushLateral(id, row, col, dCol) {
+  const nc = col + dCol;
+  if (!inBounds(row, nc)) {
+    // Already at boundary: apply side damage and go down
+    applyPushAgainstSide(id, col);
+    return false;
+  }
+  const occ = getCar(row, nc);
+  if (occ) {
+    pushLateral(occ, row, nc, dCol); // push occupant further
+    if (getCar(row, nc)) return false; // still blocked (occupant couldn't move)
+  }
+  movePiece(id, row, nc);
+  if (nc === APRON || nc === WALL) applyPushAgainstSide(id, nc);
+  return true;
+}
+
+// ── ARROW PROCESSING ─────────────────────────────────────
+function resolveArrow(id) {
+  if (id === 'player') return;
+  const {row, col} = S.cars[id];
+  const a = activeArrowAt(row, col);
+  if (!a) return;
+  log(`${CAR_LBL[id]} hits arrow → ${a[2]>0?'right':'left'}`);
+  pushLateral(id, row, col, a[2]);
+}
+
+// ── RIVAL MOVEMENT ───────────────────────────────────────
+function buildRivalQueue() {
+  S.rivalQueue = sortedCars(RIVALS.filter(n => S.cars[n]));
+  S.rivalIdx = 0;
+}
+
+function processNextRival() {
+  while (S.rivalIdx < S.rivalQueue.length) {
+    const name  = S.rivalQueue[S.rivalIdx++];
+    const diIdx = RIVALS.indexOf(name);
+    if (S.diceUsed[diIdx]) { log(`${CAR_LBL[name]}: matches your speed — no move`); continue; }
+    const die = S.dice[diIdx];
+    const ps  = S.speed;
+    const {row, col} = S.cars[name];
+    const pr = S.cars.player.row;
+    const wasAhead  = row < pr;
+    const wasBehind = row > pr;
+
+    if (die < ps) {
+      // Move down (backward)
+      const ok = tryPushDown(name);
+      log(`${CAR_LBL[name]}: ${die}<${ps} → ${ok ? 'drops back' : 'blocked'}`);
+      resolveArrow(name);
+
+    } else if (die === 6) {
+      // Move up; swap with car above
+      if (row === 0) { log(`${CAR_LBL[name]}: rolls 6, already at front`); continue; }
+      const above = getCar(row - 1, col);
+      if (!above) {
+        movePiece(name, row - 1, col);
+        log(`${CAR_LBL[name]}: rolls 6 → moves up`);
+      } else {
+        movePiece(above, row, col);
+        movePiece(name, row - 1, col);
+        log(`${CAR_LBL[name]}: rolls 6 → swaps with ${CAR_LBL[above]}`);
+      }
+      resolveArrow(name);
+      // No drafting on a 6
+
+    } else {
+      // die > ps: move up; lateral if blocked
+      if (row === 0) { log(`${CAR_LBL[name]}: ${die}>${ps}, at front`); continue; }
+      const above = getCar(row - 1, col);
+      if (!above) {
+        movePiece(name, row - 1, col);
+        log(`${CAR_LBL[name]}: ${die}>${ps} → moves up`);
+        resolveArrow(name);
+        applyDrafting(name, wasAhead, wasBehind);
+      } else {
+        // Blocked going up → move lateral instead
+        const canL = inBounds(row, col-1) && !getCar(row, col-1);
+        const canR = inBounds(row, col+1) && !getCar(row, col+1);
+        if (canL && canR) {
+          // Player must choose direction
+          S.pendingChoice = {rivalName:name, opts:[{dir:-1,lbl:'Left'},{dir:1,lbl:'Right'}]};
+          S.rivalIdx--;  // will retry after choice
+          render();
+          showChoiceModal();
+          return; // pause; resume after player picks
+        } else if (canL) {
+          movePiece(name, row, col-1);
+          log(`${CAR_LBL[name]}: blocked up → moves left`);
+          if (col-1 === APRON) applyPushAgainstSide(name, APRON);
+          resolveArrow(name);
+        } else if (canR) {
+          movePiece(name, row, col+1);
+          log(`${CAR_LBL[name]}: blocked up → moves right`);
+          if (col+1 === WALL) applyPushAgainstSide(name, WALL);
+          resolveArrow(name);
+        } else {
+          log(`${CAR_LBL[name]}: ${die}>${ps} → fully blocked`);
+        }
+      }
+    }
+    if (S.gameOver) return;
+  }
+  // All rivals resolved
+  S.phase = 'lap';
+  render();
+}
+
+function applyDrafting(rivalName, wasAhead, wasBehind) {
+  if (S.speed > 2) return;
+  if (!wasAhead && !wasBehind) return;
+  const {row, col} = S.cars.player;
+  if (row === 0) return;
+  if (!getCar(row - 1, col)) {
+    movePiece('player', row - 1, col);
+    log(`Drafting! ${wasAhead ? 'dragged' : 'pushed'} up by ${CAR_LBL[rivalName]}`, 'good');
+  }
+}
+
+// ── YELLOW FLAG ──────────────────────────────────────────
+function isYellowFlag() {
+  if (S.lapStep >= 18) return false; // no yellow on last lap
+  const cnt = {};
+  for (const d of S.dice) cnt[d] = (cnt[d]||0) + 1;
+  return Object.values(cnt).some(v => v >= 4);
+}
+
+function processYellowFlag() {
+  log('🚨 YELLOW FLAG! Caution!', 'imp');
+  S.gauges = {tires:6, fuel:6, engine:6};
+  S.speed = 3; S._baseSpeed = 3;
+  const order = standings();
+  const positions = [...ALL_STARTS].reverse(); // front→back order
+  // Clear grid
+  for (const id of allCars()) if (S.cars[id]) S.grid[S.cars[id].row][S.cars[id].col] = null;
+  // Reassign: 1st place → front position, etc.
+  order.forEach((id, i) => { if (i < positions.length) S.cars[id] = {row:positions[i][0], col:positions[i][1]}; });
+  // Rebuild grid
+  for (const id of allCars()) if (S.cars[id]) S.grid[S.cars[id].row][S.cars[id].col] = id;
+  S.lapStep = Math.min(S.lapStep + 1, 19);
+  log(`Yellow: all gauges reset, lap → ${(S.lapStep+1)*10}`, 'imp');
+  S.diceUsed = Array(5).fill(false);
+  S.phase = 'start';
+}
+
+// ── TURN ACTIONS ─────────────────────────────────────────
+function doPits(restT, restF) {
+  let drops = 0;
+  if (restT) { S.gauges.tires = 6; drops++; log('Pits: tires → 6', 'good'); }
+  if (restF) { S.gauges.fuel  = 6; drops++; log('Pits: fuel → 6',  'good'); }
+  for (let i = 0; i < drops; i++) tryPushDown('player', true);
+  S.speed = 3; S._baseSpeed = 3;
+  S.lapStep = Math.min(S.lapStep + 1, 19);
+  log(`Pit done. Speed→3, lap→${(S.lapStep+1)*10}`);
+  S.pitTurn = true;
+  S.phase = 'speed';
+  render();
+}
+
+function applySpeedEffects(spd) {
+  S.speed = spd;
+  if (spd === 1) { S.gauges.engine = Math.min(6, S.gauges.engine+1); log('Speed 1: Engine +1', 'good'); }
+  if (spd >= 4)  { S.gauges.fuel   = Math.max(0, S.gauges.fuel-1);   log(`Speed ${spd}: Fuel -1`, 'dan');  }
+  if (spd === 5) { S.gauges.engine = Math.max(0, S.gauges.engine-1); log('Speed 5: Engine -1', 'dan'); }
+  checkLose();
+}
+
+function doLateral(dCol) {
+  const {row, col} = S.cars.player;
+  const steps = Math.abs(dCol), dir = Math.sign(dCol);
+  for (let s = 1; s <= steps; s++) {
+    const nc = col + dir * s;
+    if (!inBounds(row, nc))     { log("Can't move: out of track"); return; }
+    if (getCar(row, nc))        { log("Can't move: blocked");      return; }
+  }
+  movePiece('player', row, col + dCol);
+  S.gauges.tires = Math.max(0, S.gauges.tires - steps);
+  log(`Lane change ${steps} ${dCol>0?'right':'left'}: Tires -${steps}`);
+  checkLose();
+  S.phase = 'dice'; // auto-advance after lane change
+  render();
+}
+
+function doRoll() {
+  S.dice     = RIVALS.map(() => Math.ceil(Math.random() * 6));
+  S.diceUsed = S.dice.map(d => d === S.speed);
+  log(`Rolled: ${RIVALS.map((n,i) => CAR_LBL[n]+'='+S.dice[i]).join(' ')}`);
+  if (isYellowFlag()) { processYellowFlag(); render(); return; }
+  buildRivalQueue();
+  S.phase = 'rivals';
+  render();
+  processNextRival();
+}
+
+function advanceLap() {
+  if (!S.pitTurn) S.lapStep = Math.min(S.lapStep + 1, 19);
+  log(`Lap ${(S.lapStep+1)*10} complete`);
+  if (S.lapStep >= 19) { endGame(); return; }
+  S.phase = 'start';
+  S.pitTurn = false;
+  S._baseSpeed = S.speed;
+  render();
+}
+
+function checkLose() {
+  const {tires, fuel, engine} = S.gauges;
+  if (tires > 0 && fuel > 0 && engine > 0) return;
+  const which = tires<=0 ? 'Tires' : fuel<=0 ? 'Fuel' : 'Engine';
+  log(`💥 ${which} hit 0 — YOU LOSE!`, 'dan');
+  S.gameOver = true; S.won = false;
+  S.finalPos = standings().indexOf('player') + 1;
+  S.phase = 'gameover';
+  render();
+  showEndModal();
+}
+
+function endGame() {
+  S.gameOver = true;
+  const order = standings();
+  S.finalPos  = order.indexOf('player') + 1;
+  S.won = S.finalPos <= Math.ceil(order.length / 2);
+  log(`Race over! You finished P${S.finalPos}/${order.length}.`, S.won ? 'good' : 'imp');
+  S.phase = 'gameover';
+  render();
+  showEndModal();
+}
+
+// ── SPEED BAR ────────────────────────────────────────────
+function changeSpeed(delta) {
+  if (S.phase !== 'speed') return;
+  const ns = S.speed + delta;
+  if (ns < 1 || ns > 5 || Math.abs(ns - S._baseSpeed) > 2) return;
+  S.speed = ns;
+  document.getElementById('speed-val').textContent = ns;
+  updateSpeedBtns();
+  renderPhase();
+}
+
+function updateSpeedBtns() {
+  const inSpd = S.phase === 'speed';
+  const base  = S._baseSpeed;
+  document.getElementById('sp-dn').disabled = !inSpd || S.speed <= 1 || S.speed - base <= -2;
+  document.getElementById('sp-up').disabled = !inSpd || S.speed >= 5 || S.speed - base >= 2;
+}
+
+function confirmSpeed() {
+  applySpeedEffects(S.speed);
+  if (S.gameOver) return;
+  S.phase = 'lateral';
+  render();
+}
+
+// ── MODALS ───────────────────────────────────────────────
+function showChoiceModal() {
+  const {rivalName, opts} = S.pendingChoice;
+  const el = document.getElementById('overlay');
+  el.style.display = 'flex';
+  el.innerHTML = `<div class="modal choose">
+    <h2>Choose Direction</h2>
+    <p><b>${CAR_LBL[rivalName]}</b> is blocked going forward.<br>Which way should it go?</p>
+    <div class="btn-row" style="justify-content:center">
+      ${opts.map(o=>`<button class="btn btn-p" onclick="resolveChoice(${o.dir})">${o.lbl}</button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function resolveChoice(dir) {
+  document.getElementById('overlay').style.display = 'none';
+  const {rivalName} = S.pendingChoice;
+  S.pendingChoice = null;
+  const {row, col} = S.cars[rivalName];
+  const nc = col + dir;
+  movePiece(rivalName, row, nc);
+  log(`${CAR_LBL[rivalName]}: moves ${dir>0?'right':'left'} (your choice)`);
+  if (nc === APRON || nc === WALL) applyPushAgainstSide(rivalName, nc);
+  resolveArrow(rivalName);
+  S.rivalIdx++;
+  render();
+  processNextRival();
+}
+
+function showEndModal() {
+  const el  = document.getElementById('overlay');
+  el.style.display = 'flex';
+  const cls   = S.won ? 'win' : 'lose';
+  const title = S.won ? '🏆 You Win!' : '💥 Race Over';
+  const msg   = S.won
+    ? `You finished P${S.finalPos}! Great racing!`
+    : `You finished P${S.finalPos}. Better luck next time!`;
+  el.innerHTML = `<div class="modal ${cls}">
+    <h2>${title}</h2><p>${msg}</p>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-p" onclick="backToSetup()">Race Again</button>
+    </div>
+  </div>`;
+}
+
+function pitModal() {
+  const g = S.gauges;
+  if (g.tires >= 6 && g.fuel >= 6) { log('Gauges full — no pit needed'); return; }
+  const el = document.getElementById('overlay');
+  el.style.display = 'flex';
+  el.innerHTML = `<div class="modal choose">
+    <h2>Pit Stop</h2>
+    <p>Restore tires/fuel to 6.<br>Each costs 1 position drop + 1 lap advance.</p>
+    <div class="btn-row">
+      ${g.tires<6 ? `<button class="btn btn-g" onclick="closePit(true,false)">Tires (drop 1)</button>` : ''}
+      ${g.fuel<6  ? `<button class="btn btn-g" onclick="closePit(false,true)">Fuel (drop 1)</button>`  : ''}
+      ${g.tires<6 && g.fuel<6 ? `<button class="btn btn-g" onclick="closePit(true,true)">Both (drop 2)</button>` : ''}
+      <button class="btn btn-s" onclick="closePit(false,false)">Cancel</button>
+    </div>
+  </div>`;
+}
+
+function closePit(t, f) {
+  document.getElementById('overlay').style.display = 'none';
+  if (t || f) doPits(t, f);
+}
+
+function skipPits()    { S._baseSpeed = S.speed; S.phase = 'speed'; render(); }
+function skipLateral() { S.phase = 'dice'; render(); }
+
+// ── RENDERING ────────────────────────────────────────────
+function log(msg, cls='') { S.log.unshift({msg,cls}); if(S.log.length>60) S.log.pop(); }
+
+function render() {
+  renderTrack(); renderGauges(); renderLap(); renderDice(); renderStandings(); renderLog(); renderPhase();
+  updateSpeedBtns();
+  document.getElementById('speed-val').textContent = S.speed;
+  document.getElementById('lap-val').textContent   = (S.lapStep+1)*10;
+}
+
+function renderTrack() {
+  const grid = document.getElementById('track-grid');
+  const sa   = document.getElementById('strip-apron');
+  const sw   = document.getElementById('strip-wall');
+  grid.innerHTML = sa.innerHTML = sw.innerHTML = '';
+  for (let r = 0; r < ROWS; r++) {
+    sa.innerHTML += `<div class="side-cell side-apron" style="height:40px">${r===6?'T▼':r===7?'-1':''}</div>`;
+    sw.innerHTML += `<div class="side-cell side-wall"  style="height:40px">${r===6?'TE▼':r===7?'-1':''}</div>`;
+    const row = document.createElement('div');
+    row.className = 'track-row' + (r%2===1 ? ' stagger' : '');
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'track-cell';
+      const arr = arrowAt(r, c);
+      if (arr) {
+        cell.classList.add(arr[2]>0 ? 'arr-right' : 'arr-left');
+        if (!activeArrowAt(r,c)) cell.classList.add('arr-dim');
+      }
+      const id = S.grid[r][c];
+      if (id) {
+        const tok = document.createElement('div');
+        tok.className = 'car-token' + (id==='player' ? ' is-player' : '');
+        tok.style.background = CAR_BG[id];
+        tok.style.color      = CAR_FG[id];
+        tok.textContent      = CAR_LBL[id];
+        cell.appendChild(tok);
+      }
+      row.appendChild(cell);
+    }
+    grid.appendChild(row);
+  }
+}
+
+function renderGauges() {
+  const el = document.getElementById('gauges');
+  const g  = S.gauges;
+  el.innerHTML = [['tires','t','🛞'],['fuel','f','⛽'],['engine','e','⚙️']].map(([k,cls,ico]) => {
+    const v = g[k];
+    const pips = Array.from({length:6}, (_, i) => {
+      const on   = i < v;
+      const warn = on && v <= 2;
+      return `<div class="gauge-pip ${on?'on-'+cls:''} ${warn?'warn':''}"></div>`;
+    }).join('');
+    return `<div class="gauge-item"><div class="gauge-label">${ico} ${k}</div><div class="gauge-pips">${pips}</div></div>`;
+  }).join('');
+}
+
+function renderLap() {
+  const el = document.getElementById('lap-track');
+  el.innerHTML = '';
+  for (let i = 0; i < 20; i++) {
+    const d = document.createElement('div');
+    d.className = 'lap-seg';
+    if (i < S.lapStep)       d.classList.add('done');
+    else if (i===S.lapStep)  d.classList.add('current');
+    if (i===18) d.classList.add('white-lap');
+    if (i===19) d.classList.add('checkered');
+    el.appendChild(d);
+  }
+}
+
+function renderDice() {
+  const el = document.getElementById('dice-display');
+  if (!S.dice.length) { el.innerHTML = '<span style="font-size:.73rem;color:#475569">Not rolled yet</span>'; return; }
+  el.innerHTML = RIVALS.map((n,i) => {
+    const used = S.diceUsed[i], eq = S.dice[i]===S.speed;
+    return `<div class="die ${used?'used':''} ${eq?'eq':''}"
+      style="background:${DIE_BG[n]};color:${DIE_FG[n]};border-color:${used?'transparent':DIE_BG[n]}"
+      title="${CAR_LBL[n]}: ${S.dice[i]}">${S.dice[i]}</div>`;
+  }).join('');
+}
+
+function renderStandings() {
+  const el = document.getElementById('standings');
+  el.innerHTML = standings().map((id,i) => {
+    const isP = id==='player';
+    return `<div class="pos-row">
+      <div class="pos-num">P${i+1}</div>
+      <div class="pos-dot" style="background:${CAR_BG[id]};color:${CAR_FG[id]}">${CAR_LBL[id]}</div>
+      <div style="font-size:.68rem;color:${isP?'#fbbf24':'#64748b'}">${isP?'← You':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderLog() {
+  const el = document.getElementById('log-box');
+  el.innerHTML = S.log.slice(0,25).map(l => `<div class="log-entry ${l.cls}">${l.msg}</div>`).join('');
+}
+
+function renderPhase() {
+  const el   = document.getElementById('phase-content');
+  const last = S.lapStep >= 18;
+  let   html = last && S.phase!=='gameover' ? '<div class="flag-banner flag-white">🏳️ WHITE FLAG — Last Lap!</div>' : '';
+  const pc   = S.cars.player ? S.cars.player.col : 1;
+  const eff  = S.speed===1 ? ' ⚙️+1' : S.speed===4 ? ' ⛽-1' : S.speed===5 ? ' ⛽-1 ⚙️-1' : '';
+
+  switch (S.phase) {
+    case 'start':
+      html += `<div class="phase-lbl">Step 0 – Pits (Optional)</div>
+        <div class="phase-desc">Restore tires/fuel to 6. Each costs 1 position drop + 1 lap advance.</div>
+        <div class="btn-row">
+          <button class="btn btn-g" onclick="pitModal()">Go to Pits</button>
+          <button class="btn btn-p" onclick="skipPits()">Skip → Speed</button>
+        </div>`;
+      break;
+    case 'speed':
+      html += `<div class="phase-lbl">Step 1 – Set Speed</div>
+        <div class="phase-desc">Use ± above (±2 from last speed). Speed <b>${S.speed}</b>${eff}</div>
+        <div class="btn-row">
+          <button class="btn btn-p" onclick="confirmSpeed()">Confirm Speed ${S.speed}</button>
+        </div>`;
+      break;
+    case 'lateral':
+      html += `<div class="phase-lbl">Step 2 – Change Lane (Optional)</div>
+        <div class="phase-desc">Move 1–2 spaces left/right. Each space costs 1 tire.</div>
+        <div class="btn-row">
+          <button class="btn btn-s" onclick="doLateral(-2)" ${pc>=2?'':'disabled'}>← 2</button>
+          <button class="btn btn-s" onclick="doLateral(-1)" ${pc>=1?'':'disabled'}>← 1</button>
+          <button class="btn btn-p" onclick="skipLateral()">Skip → Roll</button>
+          <button class="btn btn-s" onclick="doLateral(1)"  ${pc<=2?'':'disabled'}>1 →</button>
+          <button class="btn btn-s" onclick="doLateral(2)"  ${pc<=1?'':'disabled'}>2 →</button>
+        </div>`;
+      break;
+    case 'dice':
+      html += `<div class="phase-lbl">Step 3 – Roll Dice</div>
+        <div class="phase-desc">Roll 5 colored dice for rival speeds. 4+ equal = 🚨 Yellow Flag!</div>
+        <div class="btn-row"><button class="btn btn-p" onclick="doRoll()">🎲 Roll!</button></div>`;
+      break;
+    case 'rivals':
+      html += `<div class="phase-lbl">Step 4 – Rivals Moving…</div>
+        <div class="phase-desc">Resolving rival activations in order…</div>`;
+      break;
+    case 'lap':
+      html += `<div class="phase-lbl">Step 5 – Advance Lap</div>
+        <div class="phase-desc">Lap <b>${(S.lapStep+1)*10}</b> → <b>${Math.min((S.lapStep+2)*10,200)}</b></div>
+        <div class="btn-row"><button class="btn btn-p" onclick="advanceLap()">Next Lap →</button></div>`;
+      break;
+    case 'gameover':
+      html += `<div class="phase-lbl">${S.won?'🏆 Race Complete!':'💥 Race Over'}</div>
+        <div class="phase-desc">You finished P${S.finalPos}.</div>
+        <div class="btn-row"><button class="btn btn-p" onclick="backToSetup()">Race Again</button></div>`;
+      break;
+  }
+  el.innerHTML = html;
+}
+
+// ── SETUP ────────────────────────────────────────────────
+let selDiff = 6;
+
+function selectDiff(d) {
+  selDiff = d;
+  document.querySelectorAll('.diff-btn').forEach((b,i) => b.classList.toggle('selected', i+1===d));
+}
+
+function startGame() {
+  S = newState(selDiff);
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('game').style.display  = 'flex';
+  render();
+}
+
+function backToSetup() {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('game').style.display    = 'none';
+  document.getElementById('setup').style.display   = 'block';
+}
+
+// ── INIT ─────────────────────────────────────────────────
+selectDiff(6);
+</script>
+</body>
+</html>
