@@ -60,24 +60,24 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .game-content{flex:1;display:flex;flex-direction:column;gap:.5rem;padding:.5rem}
 
 /* ─ TRACK ────────────────────────────────── */
-.track-outer{display:flex;gap:0;align-items:stretch;border-radius:.6rem;overflow:hidden;box-shadow:0 3px 14px #0004;margin:0 auto}
+.track-outer{display:flex;gap:0;align-items:stretch;border-radius:.6rem;overflow:hidden;box-shadow:0 3px 14px #0004;width:100%}
 .apron-strip{width:24px;background:#fbbf24;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;border-right:3px solid #f59e0b}
 .apron-arrow{font-size:.75rem;color:#92400e;opacity:.7}
 .wall-strip{width:24px;background:#d1d5db;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;border-left:3px dashed #fff}
-.tgrid{display:flex;flex-direction:column;gap:3px;background:#8a9099;padding:3px}
+.tgrid{display:flex;flex-direction:column;gap:3px;background:#8a9099;padding:3px;flex:1;min-width:0}
 .trow{display:flex;gap:3px}
-.tcell{width:72px;height:60px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
+.tcell{flex:1;min-width:0;height:70px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
 .tcell.hl{background:#bbf7d0}
-/* Arrows: subtle corner indicator */
+/* Arrows */
 .tcell .arr{
-  position:absolute;bottom:3px;right:4px;
-  font-size:.8rem;line-height:1;pointer-events:none;
+  position:absolute;bottom:5px;right:6px;
+  font-size:1.1rem;line-height:1;pointer-events:none;
   transition:opacity .3s,color .3s;
 }
-.tcell .arr.active-r{color:#0d9488;opacity:.9}
-.tcell .arr.active-l{color:#2563eb;opacity:.9}
-.tcell .arr.dim{opacity:.12;color:#94a3b8}
-.tcell .pos-num{position:absolute;top:2px;right:4px;font-size:.48rem;color:#94a3b8;font-weight:700;pointer-events:none}
+.tcell .arr.active-r{color:#0d9488;opacity:.95}
+.tcell .arr.active-l{color:#2563eb;opacity:.95}
+.tcell .arr.dim{opacity:.13;color:#94a3b8}
+.tcell .pos-num{position:absolute;top:3px;right:6px;font-size:.55rem;color:#94a3b8;font-weight:700;pointer-events:none}
 .car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s}
 .car.player-car{width:48px;height:48px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.35rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite;z-index:2}
 .car.rival-car{width:50px;height:46px;border-radius:9px;font-size:.6rem;color:#fff;text-transform:uppercase}
@@ -98,14 +98,15 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .pc{width:15px;height:15px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.4rem;font-weight:700;color:#fff}
 
 /* ─ GAUGES ───────────────────────────────── */
-.gauges-bar{background:#fff;border-radius:.5rem;padding:.45rem .6rem;box-shadow:0 1px 3px #0001}
-.gauges{display:flex;gap:1.4rem;justify-content:center}
-.gauge{display:flex;flex-direction:column;align-items:center;gap:.12rem}
-.glbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8}
-.gpips{display:flex;gap:2px}
-.pip{width:13px;height:13px;border-radius:50%;background:#e2e8f0;border:1px solid #d1d5db;transition:all .3s}
-.pip.t{background:#22c55e}.pip.f{background:#3b82f6}.pip.e{background:#ef4444}
-.pip.warn{animation:pulse-pip 1s infinite}
+.gauges-bar{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001}
+.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+.gauge{display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.5rem .3rem .45rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0}
+.gico{font-size:1.5rem;line-height:1}
+.gval{font-size:2rem;font-weight:900;color:#0f172a;line-height:1.1}
+.gval.gwarn{color:#dc2626;animation:pulse-pip 1s infinite}
+.glbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;font-weight:700}
+.gbar-wrap{width:90%;height:7px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.gbar{height:100%;border-radius:4px;transition:width .35s,background .35s}
 
 /* ─ JOURNAL ──────────────────────────────── */
 .journal-wrap{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001;flex:1;min-height:0}
@@ -190,8 +191,8 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 
 /* Desktop: slightly wider */
 @media(min-width:640px){
-  #game{max-width:520px}
-  .tcell{width:80px;height:66px}
+  #game{max-width:540px}
+  .tcell{height:76px}
   .car.player-car{width:54px;height:54px;font-size:1.5rem}
   .car.rival-car{width:56px;height:52px;font-size:.65rem}
 }
@@ -895,15 +896,19 @@ function renderTrack(){
 function renderGauges(){
   const el=document.getElementById('gauges');
   const g=S.gauges;
+  const LBLS={tires:'Pneus',fuel:'Carbu',engine:'Moteur'};
+  const CLRS={tires:'#22c55e',fuel:'#3b82f6',engine:'#ef4444'};
   el.innerHTML=['tires','fuel','engine'].map(k=>{
     const v=g[k];
-    const pips=Array.from({length:6},(_,i)=>{
-      const on=i<v;
-      const cls=on?(k==='tires'?' t':k==='fuel'?' f':' e'):'';
-      const wrn=on&&v<=2?' warn':'';
-      return`<div class="pip${cls}${wrn}"></div>`;
-    }).join('');
-    return`<div class="gauge" id="gauge-${k}"><div class="glbl">${GAUGE_ICONS[k]}</div><div class="gpips">${pips}</div></div>`;
+    const pct=Math.round(v/6*100);
+    const warn=v<=2;
+    const barClr=warn?'#f97316':CLRS[k];
+    return`<div class="gauge" id="gauge-${k}">
+      <div class="gico">${GAUGE_ICONS[k]}</div>
+      <div class="gval${warn?' gwarn':''}">${v}</div>
+      <div class="gbar-wrap"><div class="gbar" style="width:${pct}%;background:${barClr}"></div></div>
+      <div class="glbl">${LBLS[k]}</div>
+    </div>`;
   }).join('');
 }
 
