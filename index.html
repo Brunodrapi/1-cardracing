@@ -36,7 +36,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .rules b{color:#64748b}
 
 /* ─ GAME ─────────────────────────────────── */
-#game{display:none;width:100%;max-width:480px;flex-direction:column;padding-bottom:200px}
+#game{display:none;width:100%;max-width:480px;flex-direction:column;min-height:100dvh}
 
 /* ─ HEADER ───────────────────────────────── */
 .hdr{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.5rem;background:#fff;padding:.55rem .9rem;box-shadow:0 2px 8px #0002;position:sticky;top:0;z-index:50}
@@ -56,8 +56,8 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .lseg.wf{background:#fbbf24}
 .lseg.cf{background:repeating-conic-gradient(#0f172a 0 25%,#fff 0 50%) 0/6px 6px}
 
-/* ─ GAME CONTENT (scrollable) ────────────── */
-.game-content{display:flex;flex-direction:column;gap:.5rem;padding:.5rem}
+/* ─ GAME CONTENT (fills remaining height) ── */
+.game-content{flex:1;display:flex;flex-direction:column;gap:.5rem;padding:.5rem}
 
 /* ─ TRACK ────────────────────────────────── */
 .track-outer{display:flex;gap:0;align-items:stretch;border-radius:.6rem;overflow:hidden;box-shadow:0 3px 14px #0004;margin:0 auto}
@@ -68,15 +68,15 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .trow{display:flex;gap:3px}
 .tcell{width:72px;height:60px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
 .tcell.hl{background:#bbf7d0}
-/* Arrows: big and prominent */
+/* Arrows: subtle corner indicator */
 .tcell .arr{
-  position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
-  font-size:1.35rem;line-height:1;pointer-events:none;
+  position:absolute;bottom:3px;right:4px;
+  font-size:.8rem;line-height:1;pointer-events:none;
   transition:opacity .3s,color .3s;
 }
-.tcell .arr.active-r{color:#0d9488;opacity:1;text-shadow:0 0 6px #0d948844}
-.tcell .arr.active-l{color:#2563eb;opacity:1;text-shadow:0 0 6px #2563eb44}
-.tcell .arr.dim{opacity:.1;color:#94a3b8}
+.tcell .arr.active-r{color:#0d9488;opacity:.9}
+.tcell .arr.active-l{color:#2563eb;opacity:.9}
+.tcell .arr.dim{opacity:.12;color:#94a3b8}
 .tcell .pos-num{position:absolute;top:2px;right:4px;font-size:.48rem;color:#94a3b8;font-weight:700;pointer-events:none}
 .car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s}
 .car.player-car{width:48px;height:48px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.35rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite;z-index:2}
@@ -108,22 +108,20 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .pip.warn{animation:pulse-pip 1s infinite}
 
 /* ─ JOURNAL ──────────────────────────────── */
-.journal-wrap{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001}
-.log-box{max-height:90px;overflow-y:auto;display:flex;flex-direction:column;gap:.06rem}
+.journal-wrap{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001;flex:1;min-height:0}
+.log-box{max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:.06rem}
 .le{font-size:.62rem;color:#64748b;line-height:1.3;padding:.05rem 0;border-bottom:1px solid #f8fafc}
 .le.imp{color:#d97706}.le.dan{color:#dc2626}.le.good{color:#16a34a}
 
-/* ─ ACTION BAR (fixed bottom) ────────────── */
+/* ─ ACTION BAR (natural bottom of flex) ──── */
 .action-bar{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:min(100%,480px);
   background:#fff;
   border-radius:.85rem .85rem 0 0;
   border-top:2px solid #e2e8f0;
-  padding:.7rem .9rem .9rem;
+  padding:.7rem .9rem calc(.9rem + env(safe-area-inset-bottom));
   box-shadow:0 -4px 24px #0003;
-  z-index:100;
   display:flex;flex-direction:column;gap:.4rem;
+  position:sticky;bottom:0;
 }
 .phase-title{font-size:.82rem;color:#0d9488;font-weight:700;margin-bottom:.1rem}
 .phase-desc{font-size:.68rem;color:#64748b;margin-bottom:.3rem;line-height:1.4}
@@ -190,14 +188,12 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 @keyframes pulse-pip{0%,100%{opacity:1}50%{opacity:.3}}
 .fly-badge{position:fixed;pointer-events:none;z-index:600;font-weight:700;font-size:.85rem;padding:2px 8px;border-radius:5px;white-space:nowrap;transition:left .55s cubic-bezier(.25,.46,.45,.94),top .55s cubic-bezier(.25,.46,.45,.94),opacity .55s ease}
 
-/* Desktop: slightly wider, same vertical layout */
+/* Desktop: slightly wider */
 @media(min-width:640px){
   #game{max-width:520px}
   .tcell{width:80px;height:66px}
   .car.player-car{width:54px;height:54px;font-size:1.5rem}
   .car.rival-car{width:56px;height:52px;font-size:.65rem}
-  .action-bar{width:min(100%,520px)}
-  #game{padding-bottom:220px}
 }
 </style>
 </head>
@@ -868,7 +864,7 @@ function renderTrack(){
         const span=document.createElement('span');
         const dir=arr[2]>0?'r':'l';
         span.className='arr '+(active?`active-${dir}`:'dim');
-        span.textContent=arr[2]>0?'▶':'◀';
+        span.textContent=arr[2]>0?'▷':'◁';
         cell.appendChild(span);
       }
       // Starting position label
