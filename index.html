@@ -44,7 +44,9 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .lap-box{display:flex;align-items:center;gap:.55rem}
 .lap-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8}
 .lap-val{font-size:1.2rem;font-weight:700;color:#0f172a;min-width:2.8rem}
-.lap-bar{display:flex;gap:2px;flex-wrap:wrap;max-width:240px}
+.lap-bar{display:flex;gap:2px;flex-wrap:wrap;max-width:200px}
+.score-box{display:flex;flex-direction:column;align-items:flex-end;gap:.05rem}
+.score-val{font-size:1.1rem;font-weight:700;color:#0d9488;min-width:5rem;text-align:right}
 .lseg{width:10px;height:6px;border-radius:1px;background:#e2e8f0;transition:background .3s}
 .lseg.done{background:#94a3b8}
 .lseg.now{background:#0d9488}
@@ -147,15 +149,18 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .gchip{font-size:.68rem;padding:.12rem .3rem;border-radius:.2rem;font-weight:600}
 .gchip.pos{background:#dcfce7;color:#15803d}.gchip.neg{background:#fee2e2;color:#dc2626}
 
-/* ─ ARCADE ───────────────────────────────── */
-.arcade-wrap{display:flex;flex-direction:column;align-items:center;gap:.45rem}
-.arcade-hint{font-size:.68rem;color:#94a3b8}
-.arcade-slots{display:flex;gap:.3rem}
-.arc-slot{width:40px;height:50px;background:#0f172a;color:#0d9488;font-size:1.45rem;font-weight:700;font-family:monospace;border-radius:.3rem;display:flex;align-items:center;justify-content:center;border:2px solid #1e293b;transition:all .15s;text-shadow:0 0 8px #0d9488}
-.arc-slot.cur{border-color:#0d9488;box-shadow:0 0 0 2px #99f6e4;animation:player-pulse 1.2s ease-in-out infinite}
-.arc-ctrl{display:flex;gap:.35rem;align-items:center}
-.arc-btn{width:36px;height:36px;border:none;border-radius:.35rem;background:#e2e8f0;color:#475569;font-size:1rem;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center}
-.arc-btn:hover{background:#cbd5e1}
+/* ─ NAME ENTRY ───────────────────────────── */
+.name-entry{display:flex;flex-direction:column;gap:.4rem}
+.name-lbl{font-size:.68rem;color:#94a3b8;text-align:center}
+.name-input{
+  width:100%;padding:.55rem .7rem;
+  border:2px solid #e2e8f0;border-radius:.4rem;
+  font-size:1.3rem;font-weight:700;font-family:monospace;
+  letter-spacing:.25em;text-align:center;text-transform:uppercase;
+  color:#0f172a;background:#f8fafc;outline:none;
+  transition:border-color .15s;
+}
+.name-input:focus{border-color:#0d9488;background:#fff}
 
 /* ─ ANIMATIONS ───────────────────────────── */
 @keyframes player-pulse{0%,100%{box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488}50%{box-shadow:0 0 0 3px #fff,0 0 0 8px #0d9488,0 0 18px #0d948866}}
@@ -164,12 +169,23 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 @keyframes pulse-pip{0%,100%{opacity:1}50%{opacity:.3}}
 .fly-badge{position:fixed;pointer-events:none;z-index:600;font-weight:700;font-size:.85rem;padding:2px 8px;border-radius:5px;white-space:nowrap;transition:left .55s cubic-bezier(.25,.46,.45,.94),top .55s cubic-bezier(.25,.46,.45,.94),opacity .55s ease}
 
-@media(max-width:600px){
-  .body{flex-direction:column}.side-panel{width:100%}
-  .tcell{width:54px;height:48px}
-  .car.player-car{width:38px;height:38px;font-size:1.05rem}
-  .car.rival-car{width:38px;height:36px}
-  .spd-slot{width:40px;height:40px;font-size:1.1rem}
+@media(max-width:640px){
+  body{padding:.4rem 0 1.5rem}
+  #game{padding:.3rem .3rem}
+  .hdr{padding:.4rem .6rem;gap:.5rem}
+  .hdr-title{font-size:.65rem}
+  .lap-bar{max-width:140px}
+  .score-val{font-size:.95rem;min-width:3.5rem}
+  .body{flex-direction:column;gap:.4rem}
+  .side-panel{width:100%;min-width:unset}
+  .track-section{width:100%;align-items:center}
+  .speed-section,.gauges-section{max-width:calc(3*64px + 3*3px + 6px + 44px)}
+  .tcell{width:56px;height:50px}
+  .car.player-car{width:40px;height:40px;font-size:1.1rem}
+  .car.rival-car{width:40px;height:38px}
+  .spd-slot{width:42px;height:42px;font-size:1.1rem}
+  .gauges{gap:.8rem}
+  .pip{width:11px;height:11px}
 }
 </style>
 </head>
@@ -215,6 +231,10 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
       <div class="lap-label">Tour</div>
       <div class="lap-val" id="lap-num">10</div>
       <div class="lap-bar" id="lap-bar"></div>
+    </div>
+    <div class="score-box">
+      <div class="lap-label">Score</div>
+      <div class="score-val" id="score-val">0</div>
     </div>
   </div>
 
@@ -272,9 +292,12 @@ const ROWS=5, COLS=3;
 const RIVALS=['red','blue','green','yellow','cyan'];
 // Index 0 = pos 1 (pole/front/easiest) … index 5 = pos 6 (last/hardest)
 const ALL_STARTS=[[2,0],[2,1],[3,0],[3,1],[4,0],[4,1]];
+// [row, col, dir]  dir: 1=right ▷, -1=left ◁
+// 4 right arrows + 4 left arrows
+// Active: tours 10-50 & 110-150 → RIGHT; tours 60-100 & 160-200 → LEFT
 const ARROWS=[
-  [0,1, 1,0],[0,2,-1,0],
-  [1,1,-1,1],[1,2, 1,1],
+  [0,1, 1],[1,1, 1],[2,0, 1],[3,1, 1],
+  [0,2,-1],[1,2,-1],[2,2,-1],[3,2,-1],
 ];
 const CAR_BG ={player:'#0d9488',red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
 const CAR_FG ={player:'#fff',red:'#fff',blue:'#fff',green:'#fff',yellow:'#fff',cyan:'#fff'};
@@ -306,7 +329,8 @@ function renderLB(hi=-1){
 }
 
 function submitScore(){
-  const name=arcName.join('');
+  const raw=document.getElementById('name-input');
+  const name=(raw?raw.value.toUpperCase().replace(/[^A-Z]/g,'').padEnd(6,'A').slice(0,6):'AAAAA A');
   const score=Math.round(S.finalScore);
   const lb=loadLB();
   const ne={name,score,date:new Date().toLocaleDateString('fr-FR')};
@@ -318,21 +342,6 @@ function submitScore(){
   document.getElementById('game').style.display='none';
   document.getElementById('leaderboard').style.display='block';
   renderLB(rank<20?rank:-1);
-}
-
-// ── ARCADE NAME ────────────────────────────────────────────────
-let arcName=Array(6).fill('A');
-let arcCursor=0;
-function arcUp()   {const c=arcName[arcCursor].charCodeAt(0);arcName[arcCursor]=String.fromCharCode(c<90?c+1:65);renderArcade();}
-function arcDown() {const c=arcName[arcCursor].charCodeAt(0);arcName[arcCursor]=String.fromCharCode(c>65?c-1:90);renderArcade();}
-function arcLeft() {arcCursor=Math.max(0,arcCursor-1);renderArcade();}
-function arcRight(){arcCursor=Math.min(5,arcCursor+1);renderArcade();}
-function renderArcade(){
-  const el=document.getElementById('arc-slots');
-  if(!el)return;
-  el.innerHTML=arcName.map((ch,i)=>
-    `<div class="arc-slot${i===arcCursor?' cur':''}">${ch}</div>`
-  ).join('');
 }
 
 // ── STATE ──────────────────────────────────────────────────────
@@ -361,7 +370,7 @@ function newState(diff){
     dice:[],diceUsed:Array(5).fill(false),
     rivalQueue:[],rivalIdx:0,
     pendingChoice:null,stepLogs:[],movedCar:null,
-    log:['Course démarrée ! Bonne chance !'],
+    log:[{msg:'Course démarrée ! Bonne chance !',cls:'good'}],
     gameOver:false,won:false,finalPos:null,
     pitTurn:false,diff,
     turnScore:0,finalScore:0,
@@ -384,7 +393,13 @@ function sortedCars(ids){
 }
 const standings  =()=>sortedCars(allCars().filter(id=>S.cars[id]));
 const arrowAt    =(r,c)=>ARROWS.find(a=>a[0]===r&&a[1]===c)||null;
-const activeArrow=(r,c)=>{const a=arrowAt(r,c);return a&&a[3]===(S.lapStep%2)?a:null;};
+// Tours 10-50 (lapStep 0-4) and 110-150 (lapStep 10-14) → RIGHT arrows active
+// Tours 60-100 (lapStep 5-9) and 160-200 (lapStep 15-19) → LEFT arrows active
+const isRightPhase=()=>{ const s=S.lapStep; return s<5||(s>=10&&s<15); };
+const activeArrow=(r,c)=>{
+  const a=arrowAt(r,c);if(!a)return null;
+  return(isRightPhase()&&a[2]===1)||(!isRightPhase()&&a[2]===-1)?a:null;
+};
 
 // ── MOVEMENT ───────────────────────────────────────────────────
 function tryPushDown(id,isPit=false){
@@ -406,8 +421,15 @@ function applyPushAgainstSide(id,sideCol){
     if(sideCol===0){S.gauges.tires=Math.max(0,S.gauges.tires-1);stepLog('Vous touchez l\'apron ! Pneus -1','dan');}
     else{S.gauges.tires=Math.max(0,S.gauges.tires-1);S.gauges.engine=Math.max(0,S.gauges.engine-1);stepLog('Vous touchez le mur ! Pneus -1, Moteur -1','dan');}
     checkLose();
+    tryPushDown(id);
+  }else{
+    // Rivals: no damage, go directly to bottom row
+    const col=S.cars[id].col;
+    let target=ROWS-1;
+    while(target>S.cars[id].row&&getCar(target,col))target--;
+    if(target>S.cars[id].row)movePiece(id,target,col);
+    stepLog(`${CAR_LBL[id]} → ligne du bas`,'neu');
   }
-  tryPushDown(id);
 }
 
 function pushLateral(id,row,col,dCol){
@@ -633,6 +655,11 @@ function addTurnScore(){
   const pos   =standings().indexOf('player')+1;
   const lapVal=(S.lapStep+1)*10;
   S.turnScore+=S.diff*lapVal*(1/pos);
+  renderScore();
+}
+function renderScore(){
+  const el=document.getElementById('score-val');
+  if(el)el.textContent=Math.round(S.turnScore).toLocaleString('fr-FR');
 }
 
 function advanceLap(){
@@ -703,7 +730,6 @@ function showModal(html,cls=''){
 function closeModal(){document.getElementById('ov').style.display='none';}
 
 function showEndModal(){
-  arcName=[...Array(6)].map(()=>'A');arcCursor=0;
   const cls=S.won?'win':'lose';
   const ico=S.won?'🏆':'💥';
   const scoreStr=Math.round(S.finalScore).toLocaleString('fr-FR');
@@ -712,21 +738,17 @@ function showEndModal(){
     <div class="modal-body" style="text-align:center">
       Position : <b>P${S.finalPos}</b> &nbsp;·&nbsp; Score : <b>${scoreStr}</b>
     </div>
-    <div class="arcade-wrap">
-      <div class="arcade-hint">Entrez votre nom (6 lettres)</div>
-      <div class="arcade-slots" id="arc-slots"></div>
-      <div class="arc-ctrl">
-        <button class="arc-btn" onclick="arcLeft()">◀</button>
-        <button class="arc-btn" onclick="arcDown()">▼</button>
-        <button class="arc-btn" onclick="arcUp()">▲</button>
-        <button class="arc-btn" onclick="arcRight()">▶</button>
-      </div>
-      <button class="btn btn-p" onclick="submitScore()">Valider et sauvegarder ✓</button>
+    <div class="name-entry">
+      <label class="name-lbl">Votre nom (6 lettres)</label>
+      <input id="name-input" type="text" class="name-input" maxlength="6"
+        placeholder="AAAAAА" autocomplete="off" autocorrect="off" spellcheck="false"
+        oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6)">
+      <button class="btn btn-p" onclick="submitScore()" style="width:100%">Valider et sauvegarder ✓</button>
     </div>
     <div class="modal-btns">
       <button class="btn btn-s" onclick="backToSetup()">Rejouer sans sauver</button>
     </div>`,cls);
-  setTimeout(renderArcade,50);
+  setTimeout(()=>{const el=document.getElementById('name-input');if(el)el.focus();},80);
 }
 
 // ── ANIMATIONS ─────────────────────────────────────────────────
@@ -768,7 +790,7 @@ function glogAll()          {for(const l of S.stepLogs)glog(l.txt,l.cls);}
 // ── RENDER ─────────────────────────────────────────────────────
 function render(){
   renderTrack();renderGauges();renderLap();renderDice();
-  renderStandings();renderLog();renderPhase();renderSpeed();
+  renderStandings();renderLog();renderPhase();renderSpeed();renderScore();
 }
 
 function renderSpeed(){
