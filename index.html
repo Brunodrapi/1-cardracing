@@ -61,24 +61,33 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 
 /* ─ TRACK ────────────────────────────────── */
 .track-outer{display:flex;gap:0;align-items:stretch;border-radius:.6rem;overflow:hidden;box-shadow:0 3px 14px #0004;width:100%}
-.apron-strip{width:24px;background:#fbbf24;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;border-right:3px solid #f59e0b}
-.apron-arrow{font-size:.75rem;color:#92400e;opacity:.7}
-.wall-strip{width:24px;background:#d1d5db;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;border-left:3px dashed #fff}
+.apron-strip{width:60px;flex-shrink:0;background:#fbbf24;display:flex;flex-direction:column;align-items:center;padding:.4rem .2rem;gap:.16rem;border-right:3px solid #f59e0b;overflow:hidden}
+.wall-strip{width:60px;flex-shrink:0;background:#d1d5db;display:flex;flex-direction:column;align-items:center;padding:.4rem .2rem;gap:.14rem;border-left:3px dashed #fff;overflow:hidden}
+.strip-lbl{font-size:.42rem;text-transform:uppercase;letter-spacing:.07em;font-weight:800;opacity:.45;white-space:nowrap}
+.strip-pos{display:flex;align-items:center;gap:.14rem}
+.strip-pnum{width:11px;color:rgba(0,0,0,.38);font-size:.48rem;font-weight:700;text-align:right;flex-shrink:0}
+.strip-car{width:32px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:700;color:#fff;flex-shrink:0}
+.strip-spd{font-size:2rem;font-weight:900;color:#1e293b;line-height:1;text-align:center}
+.strip-sep{width:80%;height:1px;background:rgba(0,0,0,.1);margin:.1rem 0}
+.strip-dice{display:flex;flex-direction:column;gap:2px;align-items:center}
+.strip-die{width:26px;height:26px;border-radius:.28rem;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#fff}
 .tgrid{display:flex;flex-direction:column;gap:3px;background:#8a9099;padding:3px;flex:1;min-width:0}
 .trow{display:flex;gap:3px}
-.tcell{flex:1;min-width:0;height:96px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
+.tcell{flex:1;min-width:0;height:144px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
 .tcell.hl{background:#bbf7d0}
-/* Arrows */
+/* Arrows - centered in cell */
 .tcell .arr{
-  position:absolute;bottom:5px;right:6px;
-  font-size:1.1rem;line-height:1;pointer-events:none;
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:2.2rem;line-height:1;pointer-events:none;
   transition:opacity .3s,color .3s;
+  z-index:1;
 }
-.tcell .arr.active-r{color:#0d9488;opacity:.95}
-.tcell .arr.active-l{color:#2563eb;opacity:.95}
-.tcell .arr.dim{opacity:.13;color:#94a3b8}
-.tcell .pos-num{position:absolute;top:3px;right:6px;font-size:.55rem;color:#94a3b8;font-weight:700;pointer-events:none}
-.car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s}
+.tcell .arr.active-r{color:rgba(13,148,136,.85);opacity:1}
+.tcell .arr.active-l{color:rgba(37,99,235,.85);opacity:1}
+.tcell .arr.dim{opacity:.18;color:#b0b6bf}
+.tcell .pos-num{position:absolute;top:4px;right:5px;font-size:.58rem;color:#94a3b8;font-weight:700;pointer-events:none;z-index:2}
+.car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s;position:relative;z-index:3}
 .car.player-car{width:48px;height:48px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.35rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite;z-index:2}
 .car.rival-car{width:50px;height:46px;border-radius:9px;font-size:.6rem;color:#fff;text-transform:uppercase}
 .car.moved{animation:car-moved .4s ease-out}
@@ -257,27 +266,11 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
   <!-- Scrollable content -->
   <div class="game-content">
 
-    <!-- Track -->
+    <!-- Track with side panels -->
     <div class="track-outer">
-      <div class="apron-strip">
-        <div class="apron-arrow">↓</div>
-        <div class="apron-arrow">↓</div>
-        <div class="apron-arrow">↓</div>
-      </div>
+      <div class="apron-strip" id="apron-strip"></div>
       <div class="tgrid" id="tgrid"></div>
-      <div class="wall-strip"></div>
-    </div>
-
-    <!-- Standings + Dice inline -->
-    <div class="info-row">
-      <div class="info-box">
-        <div class="info-lbl">Classement</div>
-        <div class="pos-list" id="standings"></div>
-      </div>
-      <div class="info-box">
-        <div class="info-lbl">Dés rivaux</div>
-        <div class="dice-row" id="dice-ui"></div>
-      </div>
+      <div class="wall-strip" id="wall-strip"></div>
     </div>
 
     <!-- Gauges -->
@@ -814,8 +807,8 @@ function glogAll()          {for(const l of S.stepLogs)glog(l.txt,l.cls);}
 
 // ── RENDER ─────────────────────────────────────────────────────
 function render(){
-  renderTrack();renderGauges();renderLap();renderDice();
-  renderStandings();renderLog();renderPhase();renderSpeed();renderScore();renderArrowPhase();
+  renderTrack();renderGauges();renderLap();
+  renderStandings();renderSideWall();renderLog();renderPhase();renderSpeed();renderScore();renderArrowPhase();
 }
 
 function renderSpeed(){
@@ -938,15 +931,31 @@ function renderDice(){
 }
 
 function renderStandings(){
-  const el=document.getElementById('standings');
-  el.innerHTML=standings().map((id,i)=>{
-    const isP=id==='player';
-    return`<div class="pr">
-      <div class="pn">P${i+1}</div>
-      <div class="pc" style="background:${CAR_BG[id]}">${CAR_LBL[id]}</div>
-      ${isP?'<span style="font-size:.6rem;color:#0d9488;font-weight:700">← Vous</span>':''}
-    </div>`;
-  }).join('');
+  const el=document.getElementById('apron-strip');
+  if(!el)return;
+  el.innerHTML=`<div class="strip-lbl" style="color:#92400e">CLASS.</div>`+
+    standings().map((id,i)=>{
+      const isP=id==='player';
+      return`<div class="strip-pos">
+        <div class="strip-pnum">${i+1}</div>
+        <div class="strip-car" style="background:${CAR_BG[id]};${isP?'outline:2px solid #fff;outline-offset:-1px':''}">${CAR_LBL[id]}</div>
+      </div>`;
+    }).join('');
+}
+
+function renderSideWall(){
+  const el=document.getElementById('wall-strip');
+  if(!el)return;
+  const diceHtml=S.dice.length
+    ?RIVALS.map((n,i)=>
+        `<div class="strip-die" style="background:${DIE_BG[n]};opacity:${S.diceUsed[i]?.28:1}">${S.dice[i]}</div>`
+      ).join('')
+    :'<span style="font-size:.55rem;opacity:.35;color:#64748b">—</span>';
+  el.innerHTML=`<div class="strip-lbl">VIT.</div>
+    <div class="strip-spd">${S.speed||'—'}</div>
+    <div class="strip-sep"></div>
+    <div class="strip-lbl">DÉS</div>
+    <div class="strip-dice">${diceHtml}</div>`;
 }
 
 function renderLog(){
