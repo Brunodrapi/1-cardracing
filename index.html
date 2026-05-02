@@ -6,211 +6,238 @@
 <title>1 Car-D: Stock Car Racing</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-bottom:2rem}
-h1{font-size:1.5rem;letter-spacing:.15em;text-transform:uppercase;color:#fbbf24;margin:1rem 0 .2rem;text-shadow:0 0 20px #f59e0b80}
-h2{font-size:.9rem;color:#64748b;margin-bottom:.75rem}
+body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:1rem 0 2rem}
+
+/* ─ LEADERBOARD ──────────────────────────── */
+#leaderboard{max-width:380px;width:100%;background:#fff;border-radius:1rem;padding:1.2rem;text-align:center;box-shadow:0 2px 16px #0002}
+.lb-title{font-size:1.15rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#0f172a}
+.lb-sub{font-size:.7rem;color:#94a3b8;margin:.15rem 0 .8rem}
+.lb-table{width:100%;border-collapse:collapse;font-size:.75rem;margin-bottom:.8rem}
+.lb-table th{background:#f1f5f9;padding:.3rem .4rem;color:#64748b;font-weight:700;text-align:left;font-size:.68rem;text-transform:uppercase}
+.lb-table td{padding:.25rem .45rem;border-bottom:1px solid #f1f5f9;color:#334155}
+.lb-table .rank{color:#94a3b8;font-size:.68rem}
+.lb-table tr.hi td{background:#fef3c7;color:#92400e;font-weight:700}
+.play-btn{width:100%;padding:.7rem;border:none;border-radius:.5rem;background:#0d9488;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:.05em}
+.play-btn:hover{background:#0f766e}
 
 /* ─ SETUP ────────────────────────────────── */
-#setup{max-width:420px;width:100%;padding:1.5rem;background:#1e293b;border-radius:1rem;text-align:center}
-#setup h3{font-size:1rem;color:#fbbf24;margin-bottom:.75rem}
-.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:1.2rem}
-.diff-btn{padding:.7rem .4rem;border-radius:.5rem;border:2px solid #334155;background:#0f172a;color:#e2e8f0;cursor:pointer;font-size:.9rem;transition:all .15s}
-.diff-btn:hover{border-color:#fbbf24}
-.diff-btn.sel{border-color:#fbbf24;background:#422006;color:#fbbf24}
-.start-btn{width:100%;padding:.7rem;border:none;border-radius:.5rem;background:#f59e0b;color:#0f172a;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:.75rem}
-.start-btn:hover{background:#fbbf24}
-.rules{text-align:left;background:#0f172a;border-radius:.5rem;padding:.85rem;font-size:.73rem;color:#64748b;line-height:1.6}
-.rules b{color:#94a3b8}
+#setup{display:none;max-width:380px;width:100%;background:#fff;border-radius:1rem;padding:1.2rem;text-align:center;box-shadow:0 2px 16px #0002}
+#setup h3{font-size:.95rem;font-weight:700;color:#0f172a;margin-bottom:.25rem}
+#setup p{font-size:.72rem;color:#94a3b8;margin-bottom:.7rem}
+.diff-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.3rem;margin-bottom:1rem}
+.diff-btn{padding:.55rem .1rem;border-radius:.4rem;border:2px solid #e2e8f0;background:#f8fafc;color:#475569;cursor:pointer;font-size:.82rem;font-weight:700;transition:all .15s;line-height:1.3}
+.diff-btn small{display:block;font-size:.55rem;font-weight:400;color:#94a3b8}
+.diff-btn:hover{border-color:#0d9488}
+.diff-btn.sel{border-color:#0d9488;background:#ccfbf1;color:#0d9488}
+.diff-btn.sel small{color:#0d9488}
+.start-btn{width:100%;padding:.65rem;border:none;border-radius:.5rem;background:#0d9488;color:#fff;font-size:.95rem;font-weight:700;cursor:pointer;margin-bottom:.65rem;letter-spacing:.05em}
+.start-btn:hover{background:#0f766e}
+.rules{text-align:left;background:#f8fafc;border-radius:.4rem;padding:.7rem;font-size:.67rem;color:#94a3b8;line-height:1.6}
+.rules b{color:#64748b}
 
 /* ─ GAME ─────────────────────────────────── */
-#game{display:none;width:100%;max-width:940px;padding:.5rem .75rem;flex-direction:column;gap:.6rem}
+#game{display:none;width:100%;max-width:900px;padding:.4rem .5rem;flex-direction:column;gap:.5rem}
 
-/* ─ HEADER ───────────────────────────────── */
-.hdr{display:flex;align-items:center;justify-content:space-between;background:#1e293b;border-radius:.75rem;padding:.55rem 1rem;gap:1rem;flex-wrap:wrap}
-.lap-box{display:flex;flex-direction:column;align-items:center;gap:.15rem}
-.lap-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#475569}
-.lap-num{font-size:1.3rem;font-weight:700;color:#fbbf24;line-height:1}
-.lap-bar{display:flex;gap:2px;flex-wrap:wrap;max-width:280px}
-.lseg{width:12px;height:7px;border-radius:2px;background:#0f172a;border:1px solid #1e293b;transition:background .3s}
-.lseg.done{background:#475569}
-.lseg.now{background:#f59e0b;box-shadow:0 0 5px #f59e0b}
-.lseg.wf{background:#e2e8f0}
-.lseg.cf{background:repeating-conic-gradient(#e2e8f0 0 25%,#334155 0 50%) 0/7px 7px}
-
-.gauges{display:flex;gap:.6rem;flex-wrap:wrap}
-.gauge{display:flex;flex-direction:column;align-items:center;gap:.15rem}
-.glbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:#475569}
-.gpips{display:flex;gap:1px}
-.pip{width:11px;height:11px;border-radius:50%;background:#1e293b;border:1px solid #334155;transition:all .3s}
-.pip.t{background:#22c55e}.pip.f{background:#3b82f6}.pip.e{background:#ef4444}
-.pip.warn{animation:pulse-pip 1s infinite}
-
-.spd-box{display:flex;flex-direction:column;align-items:center;gap:.2rem}
-.spd-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#475569}
-.spd-row{display:flex;gap:.2rem;align-items:center}
-.spd-btn{width:26px;height:26px;border:none;border-radius:.25rem;background:#334155;color:#e2e8f0;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.spd-btn:hover:not(:disabled){background:#475569}
-.spd-btn:disabled{opacity:.3;cursor:not-allowed}
-.spd-num{font-size:1.4rem;font-weight:700;color:#38bdf8;min-width:1.8rem;text-align:center}
+/* ─ HEADER (laps only) ───────────────────── */
+.hdr{display:flex;align-items:center;gap:1rem;background:#fff;border-radius:.65rem;padding:.45rem 1rem;box-shadow:0 1px 4px #0001;flex-wrap:wrap}
+.hdr-title{font-size:.72rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#0d9488;flex:1}
+.lap-box{display:flex;align-items:center;gap:.55rem}
+.lap-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8}
+.lap-val{font-size:1.2rem;font-weight:700;color:#0f172a;min-width:2.8rem}
+.lap-bar{display:flex;gap:2px;flex-wrap:wrap;max-width:240px}
+.lseg{width:10px;height:6px;border-radius:1px;background:#e2e8f0;transition:background .3s}
+.lseg.done{background:#94a3b8}
+.lseg.now{background:#0d9488}
+.lseg.wf{background:#fbbf24}
+.lseg.cf{background:repeating-conic-gradient(#0f172a 0 25%,#fff 0 50%) 0/6px 6px}
 
 /* ─ BODY ─────────────────────────────────── */
 .body{display:flex;gap:.6rem;align-items:flex-start;flex-wrap:wrap}
 
-/* ─ TRACK ────────────────────────────────── */
-.track-wrap{flex:1;min-width:200px}
-.track-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#475569;text-align:center;margin-bottom:.3rem}
-.track-outer{display:flex;gap:.2rem;align-items:flex-start;justify-content:center}
-.track-side{display:flex;flex-direction:column;align-items:center}
-.side-lbl{font-size:.5rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.side-strip{display:flex;flex-direction:column;gap:2px}
-.scell{width:20px;height:40px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.42rem;font-weight:700;color:#fff}
-.sc-a{background:#14532d;border:1px solid #166534}
-.sc-w{background:#7f1d1d;border:1px solid #991b1b}
-.tgrid{display:flex;flex-direction:column;gap:2px}
-.trow{display:flex;gap:2px}
-.trow.sg{margin-left:6px}
-.tcell{width:46px;height:40px;border-radius:4px;background:#14251a;border:1px solid #1e3a1e;display:flex;align-items:center;justify-content:center;position:relative;transition:background .25s}
-.tcell.hl{background:#1a3a28;border-color:#22c55e}
-.tcell .arr{position:absolute;bottom:1px;right:2px;font-size:.55rem;opacity:.7}
-.tcell .arr.dim{opacity:.18}
-.car{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.5rem;line-height:1;transition:transform .25s}
-.car.player-car{
-  width:36px;height:36px;
-  background:#fbbf24;color:#0f172a;
-  font-size:.58rem;font-weight:800;
-  border:2px solid #fff;
-  box-shadow:0 0 0 3px #fbbf24,0 0 14px #fbbf2488;
-  animation:player-pulse 2s ease-in-out infinite;
-}
-.car.rival-car{width:30px;height:30px;}
-.car.moved{animation:car-moved .5s ease-out}
+/* ─ TRACK SECTION ────────────────────────── */
+.track-section{display:flex;flex-direction:column;gap:.4rem;align-items:center}
+.track-outer{display:flex;gap:0;align-items:stretch;border-radius:.5rem;overflow:hidden;box-shadow:0 3px 12px #0003}
+.apron-strip{width:22px;background:#fbbf24;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6px;gap:3px;border-right:3px solid #f59e0b}
+.apron-arrow{font-size:.65rem;color:#92400e;opacity:.8}
+.wall-strip{width:22px;background:#cbd5e1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6px;border-left:3px dashed #fff}
+.tgrid{display:flex;flex-direction:column;gap:3px;background:#9ca3af;padding:3px}
+.trow{display:flex;gap:3px}
+.tcell{width:64px;height:56px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
+.tcell.hl{background:#bbf7d0}
+.tcell .arr{position:absolute;bottom:2px;right:3px;font-size:.6rem;opacity:.5;color:#374151;pointer-events:none}
+.tcell .arr.dim{opacity:.14}
+.tcell .pos-num{position:absolute;top:2px;right:4px;font-size:.46rem;color:#9ca3af;font-weight:700;pointer-events:none}
+.car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s}
+.car.player-car{width:46px;height:46px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.3rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite;z-index:2}
+.car.rival-car{width:46px;height:44px;border-radius:8px;font-size:.58rem;color:#fff;text-transform:uppercase}
+.car.moved{animation:car-moved .4s ease-out}
+
+/* ─ SPEED SECTION ────────────────────────── */
+.speed-section{background:#fff;border-radius:.5rem;padding:.5rem .6rem;width:100%;box-shadow:0 1px 4px #0001}
+.spd-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;text-align:center;margin-bottom:.35rem}
+.spd-slots{display:flex;gap:.35rem;justify-content:center}
+.spd-slot{width:46px;height:46px;border-radius:.45rem;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;border:2px solid #e2e8f0;background:#f8fafc;color:#cbd5e1;transition:all .15s;user-select:none}
+.spd-slot.spd-active{background:#0d9488;color:#fff;border-color:#0d9488;box-shadow:0 0 0 3px #ccfbf1}
+.spd-slot.spd-enabled{color:#0f172a;border-color:#0d9488;cursor:pointer}
+.spd-slot.spd-enabled:hover:not(.spd-active){background:#f0fdfb}
+.spd-slot.spd-disabled{opacity:.3}
+.spd-effects{font-size:.62rem;color:#94a3b8;text-align:center;margin-top:.25rem;min-height:.85rem}
+.spd-confirm{margin-top:.35rem;text-align:center;display:none}
+.spd-confirm button{padding:.28rem .9rem;border:none;border-radius:.35rem;background:#0d9488;color:#fff;font-size:.72rem;font-weight:700;cursor:pointer}
+.spd-confirm button:hover{background:#0f766e}
+
+/* ─ GAUGES SECTION ───────────────────────── */
+.gauges-section{background:#fff;border-radius:.5rem;padding:.45rem .6rem;width:100%;box-shadow:0 1px 4px #0001}
+.gauges{display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap}
+.gauge{display:flex;flex-direction:column;align-items:center;gap:.15rem}
+.glbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8}
+.gpips{display:flex;gap:2px}
+.pip{width:13px;height:13px;border-radius:50%;background:#e2e8f0;border:1px solid #d1d5db;transition:all .3s}
+.pip.t{background:#22c55e}.pip.f{background:#3b82f6}.pip.e{background:#ef4444}
+.pip.warn{animation:pulse-pip 1s infinite}
 
 /* ─ SIDE PANEL ───────────────────────────── */
-.side-panel{width:210px;min-width:185px;display:flex;flex-direction:column;gap:.5rem}
-.pbox{background:#1e293b;border-radius:.65rem;padding:.65rem}
-.pbox h4{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:#475569;margin-bottom:.4rem}
-.dice-row{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:center}
-.die{width:34px;height:34px;border-radius:.35rem;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:700;border:2px solid transparent;transition:all .25s}
-.die.used{opacity:.25;border-style:dashed}
-.die.eq{border-color:#fbbf24}
-.die.appear{animation:dice-appear .35s ease-out}
-.log-box{max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:.1rem}
-.le{font-size:.67rem;color:#64748b;line-height:1.35;padding:.08rem 0;border-bottom:1px solid #0f172a}
-.le.imp{color:#fbbf24}.le.dan{color:#f87171}.le.good{color:#4ade80}
-.pos-list{display:flex;flex-direction:column;gap:.15rem}
-.pr{display:flex;align-items:center;gap:.3rem;font-size:.68rem}
-.pn{width:16px;color:#475569;font-size:.62rem;font-weight:700}
-.pc{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.45rem;font-weight:700}
+.side-panel{flex:1;min-width:195px;display:flex;flex-direction:column;gap:.4rem}
+.pbox{background:#fff;border-radius:.5rem;padding:.55rem;box-shadow:0 1px 3px #0001}
+.pbox h4{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.35rem}
+.dice-row{display:flex;gap:.25rem;flex-wrap:wrap;justify-content:center}
+.die{width:32px;height:32px;border-radius:.3rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;border:2px solid transparent;transition:all .2s}
+.die.used{opacity:.22;border-style:dashed}
+.die.eq{box-shadow:0 0 0 2px #fbbf24}
+.die.appear{animation:dice-appear .3s ease-out}
+.log-box{max-height:145px;overflow-y:auto;display:flex;flex-direction:column;gap:.07rem}
+.le{font-size:.63rem;color:#64748b;line-height:1.3;padding:.06rem 0;border-bottom:1px solid #f8fafc}
+.le.imp{color:#d97706}.le.dan{color:#dc2626}.le.good{color:#16a34a}
+.pos-list{display:flex;flex-direction:column;gap:.12rem}
+.pr{display:flex;align-items:center;gap:.3rem;font-size:.65rem}
+.pn{width:20px;color:#94a3b8;font-size:.6rem;font-weight:700}
+.pc{width:16px;height:16px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.42rem;font-weight:700;color:#fff}
 
-/* ─ ACTION PANEL ─────────────────────────── */
-.action-box{background:#1e293b;border-radius:.65rem;padding:.65rem}
-.action-box h4{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:#475569;margin-bottom:.4rem}
-.phase-title{font-size:.78rem;color:#fbbf24;font-weight:700;margin-bottom:.3rem}
-.phase-desc{font-size:.7rem;color:#94a3b8;margin-bottom:.5rem;line-height:1.45}
-.btn-row{display:flex;gap:.3rem;flex-wrap:wrap}
-.btn{padding:.35rem .65rem;border:none;border-radius:.35rem;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .15s}
-.btn-p{background:#f59e0b;color:#0f172a}.btn-p:hover:not(:disabled){background:#fbbf24}
-.btn-s{background:#334155;color:#e2e8f0}.btn-s:hover:not(:disabled){background:#475569}
-.btn-g{background:#14532d;color:#86efac}.btn-g:hover:not(:disabled){background:#166534}
-.btn:disabled{opacity:.35;cursor:not-allowed}
-.flag-w{background:#e2e8f0;color:#0f172a;padding:.3rem;border-radius:.3rem;font-size:.7rem;font-weight:700;text-align:center;margin-bottom:.4rem}
+/* ─ ACTION BOX ───────────────────────────── */
+.action-box{background:#fff;border-radius:.5rem;padding:.55rem;box-shadow:0 1px 3px #0001}
+.action-box h4{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.35rem}
+.phase-title{font-size:.76rem;color:#0d9488;font-weight:700;margin-bottom:.25rem}
+.phase-desc{font-size:.67rem;color:#64748b;margin-bottom:.4rem;line-height:1.45}
+.btn-row{display:flex;gap:.25rem;flex-wrap:wrap}
+.btn{padding:.3rem .55rem;border:none;border-radius:.3rem;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .12s}
+.btn-p{background:#0d9488;color:#fff}.btn-p:hover:not(:disabled){background:#0f766e}
+.btn-s{background:#e2e8f0;color:#475569}.btn-s:hover:not(:disabled){background:#cbd5e1}
+.btn-g{background:#dcfce7;color:#15803d}.btn-g:hover:not(:disabled){background:#bbf7d0}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.flag-w{background:#fef9c3;color:#854d0e;padding:.25rem .4rem;border-radius:.3rem;font-size:.67rem;font-weight:700;text-align:center;margin-bottom:.35rem}
 
-/* ─ MODAL / OVERLAY ──────────────────────── */
+/* ─ MODAL ────────────────────────────────── */
 .overlay{position:fixed;inset:0;background:#0f172acc;display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
-.modal{background:#1e293b;border-radius:1rem;padding:1.4rem;max-width:360px;width:100%;border:1px solid #334155;display:flex;flex-direction:column;gap:.75rem}
-.modal-title{font-size:1.1rem;font-weight:700;text-align:center}
-.modal-body{font-size:.8rem;color:#94a3b8;line-height:1.55}
-.modal-btns{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}
-.modal.win .modal-title{color:#fbbf24}
-.modal.lose .modal-title{color:#f87171}
-.modal.choose .modal-title{color:#38bdf8}
-.modal.rival-modal .modal-title{font-size:.95rem}
+.modal{background:#fff;border-radius:.85rem;padding:1.25rem;max-width:340px;width:100%;display:flex;flex-direction:column;gap:.65rem;box-shadow:0 8px 32px #0004}
+.modal-title{font-size:1.05rem;font-weight:700;text-align:center;color:#0f172a}
+.modal-body{font-size:.78rem;color:#64748b;line-height:1.5}
+.modal-btns{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:center}
+.modal.win .modal-title{color:#0d9488}
+.modal.lose .modal-title{color:#dc2626}
+.modal.choose .modal-title{color:#2563eb}
+.rival-die-row{display:flex;align-items:center;gap:.55rem;background:#f8fafc;border-radius:.4rem;padding:.45rem .6rem}
+.rdie{width:36px;height:36px;border-radius:.35rem;display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:700;flex-shrink:0}
+.rdie-info{display:flex;flex-direction:column;gap:.12rem}
+.rdie-name{font-weight:700;font-size:.85rem}
+.rdie-cmp{font-size:.7rem;color:#94a3b8}
+.rival-effects{display:flex;flex-direction:column;gap:.15rem}
+.reff{font-size:.72rem;padding:.18rem .35rem;border-radius:.25rem;background:#f8fafc;color:#64748b;line-height:1.35}
+.reff.good{color:#16a34a}.reff.dan{color:#dc2626}.reff.imp{color:#d97706}.reff.neu{color:#94a3b8}
+.gauge-summary{display:flex;gap:.3rem;flex-wrap:wrap}
+.gchip{font-size:.68rem;padding:.12rem .3rem;border-radius:.2rem;font-weight:600}
+.gchip.pos{background:#dcfce7;color:#15803d}.gchip.neg{background:#fee2e2;color:#dc2626}
 
-/* rival step modal */
-.rival-die-row{display:flex;align-items:center;gap:.6rem;background:#0f172a;border-radius:.5rem;padding:.5rem .7rem}
-.rdie{width:38px;height:38px;border-radius:.4rem;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;border:2px solid transparent;flex-shrink:0}
-.rdie-info{display:flex;flex-direction:column;gap:.15rem}
-.rdie-name{font-weight:700;font-size:.88rem}
-.rdie-cmp{font-size:.72rem;color:#64748b}
-.rival-effects{display:flex;flex-direction:column;gap:.2rem}
-.reff{font-size:.75rem;padding:.2rem .4rem;border-radius:.3rem;background:#0f172a;color:#94a3b8;line-height:1.4}
-.reff.good{color:#4ade80}.reff.dan{color:#f87171}.reff.imp{color:#fbbf24}.reff.neu{color:#64748b}
-.gauge-summary{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.1rem}
-.gchip{font-size:.7rem;padding:.15rem .35rem;border-radius:.25rem;font-weight:600}
-.gchip.pos{background:#14532d;color:#86efac}.gchip.neg{background:#7f1d1d;color:#fca5a5}
-
-/* pit result */
-.pit-result-row{display:flex;gap:.4rem;flex-wrap:wrap}
-.pit-chip{background:#0f172a;border-radius:.35rem;padding:.3rem .5rem;font-size:.73rem;text-align:center}
-.pit-chip b{display:block;font-size:.95rem;color:#fbbf24}
+/* ─ ARCADE ───────────────────────────────── */
+.arcade-wrap{display:flex;flex-direction:column;align-items:center;gap:.45rem}
+.arcade-hint{font-size:.68rem;color:#94a3b8}
+.arcade-slots{display:flex;gap:.3rem}
+.arc-slot{width:40px;height:50px;background:#0f172a;color:#0d9488;font-size:1.45rem;font-weight:700;font-family:monospace;border-radius:.3rem;display:flex;align-items:center;justify-content:center;border:2px solid #1e293b;transition:all .15s;text-shadow:0 0 8px #0d9488}
+.arc-slot.cur{border-color:#0d9488;box-shadow:0 0 0 2px #99f6e4;animation:player-pulse 1.2s ease-in-out infinite}
+.arc-ctrl{display:flex;gap:.35rem;align-items:center}
+.arc-btn{width:36px;height:36px;border:none;border-radius:.35rem;background:#e2e8f0;color:#475569;font-size:1rem;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center}
+.arc-btn:hover{background:#cbd5e1}
 
 /* ─ ANIMATIONS ───────────────────────────── */
-@keyframes player-pulse{0%,100%{box-shadow:0 0 0 3px #fbbf24,0 0 14px #fbbf2488}50%{box-shadow:0 0 0 5px #fbbf24,0 0 22px #fbbf24bb}}
-@keyframes car-moved{0%{transform:scale(1.35)}100%{transform:scale(1)}}
-@keyframes dice-appear{0%{transform:scale(.5) rotate(-30deg);opacity:0}100%{transform:scale(1) rotate(0deg);opacity:1}}
-@keyframes pulse-pip{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes fly-badge{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:.9}100%{opacity:0;transform:translate(-50%,-50%) scale(.7)}}
-.fly-badge{position:fixed;pointer-events:none;z-index:600;font-weight:700;font-size:.9rem;padding:2px 8px;border-radius:5px;white-space:nowrap;animation:none;transition:left .55s cubic-bezier(.25,.46,.45,.94),top .55s cubic-bezier(.25,.46,.45,.94),opacity .55s ease}
+@keyframes player-pulse{0%,100%{box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488}50%{box-shadow:0 0 0 3px #fff,0 0 0 8px #0d9488,0 0 18px #0d948866}}
+@keyframes car-moved{0%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes dice-appear{0%{transform:scale(.5) rotate(-20deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes pulse-pip{0%,100%{opacity:1}50%{opacity:.3}}
+.fly-badge{position:fixed;pointer-events:none;z-index:600;font-weight:700;font-size:.85rem;padding:2px 8px;border-radius:5px;white-space:nowrap;transition:left .55s cubic-bezier(.25,.46,.45,.94),top .55s cubic-bezier(.25,.46,.45,.94),opacity .55s ease}
 
-@media(max-width:600px){.body{flex-direction:column}.side-panel{width:100%}.tcell{width:38px;height:34px}.car.player-car{width:30px;height:30px}.car.rival-car{width:24px;height:24px}}
+@media(max-width:600px){
+  .body{flex-direction:column}.side-panel{width:100%}
+  .tcell{width:54px;height:48px}
+  .car.player-car{width:38px;height:38px;font-size:1.05rem}
+  .car.rival-car{width:38px;height:36px}
+  .spd-slot{width:40px;height:40px;font-size:1.1rem}
+}
 </style>
 </head>
 <body>
-<h1>🏁 1 Car-D</h1>
-<h2>Stock Car Racing</h2>
 
+<!-- LEADERBOARD -->
+<div id="leaderboard">
+  <div class="lb-title">🏁 1 Car-D Racing</div>
+  <div class="lb-sub">Tableau des meilleurs pilotes</div>
+  <table class="lb-table">
+    <thead><tr><th>#</th><th>Nom</th><th>Score</th><th>Date</th></tr></thead>
+    <tbody id="lb-body"></tbody>
+  </table>
+  <button class="play-btn" onclick="showSetup()">DÉMARRER ▶</button>
+</div>
+
+<!-- SETUP -->
 <div id="setup">
   <h3>Choisissez votre position de départ</h3>
-  <p style="font-size:.75rem;color:#64748b;margin-bottom:.7rem">1 = Dernier (difficile) &nbsp;·&nbsp; 6 = Pole (facile)</p>
+  <p>1 = Pôle (facile) &nbsp;·&nbsp; 6 = Dernier (difficile)</p>
   <div class="diff-grid">
-    <button class="diff-btn" onclick="selectDiff(1)">1<br><small>Dernier</small></button>
+    <button class="diff-btn sel" onclick="selectDiff(1)">1<br><small>Pôle</small></button>
     <button class="diff-btn" onclick="selectDiff(2)">2</button>
     <button class="diff-btn" onclick="selectDiff(3)">3</button>
     <button class="diff-btn" onclick="selectDiff(4)">4</button>
     <button class="diff-btn" onclick="selectDiff(5)">5</button>
-    <button class="diff-btn sel" onclick="selectDiff(6)">6<br><small>Pole</small></button>
+    <button class="diff-btn" onclick="selectDiff(6)">6<br><small>Dernier</small></button>
   </div>
   <button class="start-btn" onclick="startGame()">DÉMARRER LA COURSE</button>
   <div class="rules">
-    <b>Tour :</b> ① Stands? ② Vitesse (±2) ③ Changement voie? ④ Lancer dés → Rivaux bougent → Avancer tour<br>
-    <b>Pneus :</b> -1 par case changée, -1 si poussé sur le côté &nbsp;|&nbsp; <b>Carbu :</b> -1 à vitesse 4–5<br>
-    <b>Moteur :</b> +1 à vitesse 1, -1 à vitesse 5, -1 contre le mur &nbsp;|&nbsp; <b>Défaite :</b> une jauge à 0<br>
-    <b>Drapeau jaune :</b> 4–5 dés identiques → positions et jauges réinitialisées<br>
-    <b>Aspiration :</b> à vitesse 1–2, les rivaux qui avancent vous entraînent aussi
+    <b>Tour :</b> ① Stands? ② Vitesse (±2) ③ Changer voie? ④ Dés → Rivaux → Avancer<br>
+    <b>Pneus :</b> -1/case changée &nbsp;|&nbsp; <b>Carbu :</b> -1 à vitesse 4–5<br>
+    <b>Moteur :</b> +1 à vit.1, -1 à vit.5 &nbsp;|&nbsp; <b>Défaite :</b> une jauge à 0<br>
+    <b>Drapeau jaune :</b> 4+ dés identiques → réinitialisation
   </div>
 </div>
 
+<!-- GAME -->
 <div id="game">
   <div class="hdr">
+    <div class="hdr-title">1 Car-D Racing</div>
     <div class="lap-box">
-      <div class="lap-label">Tours</div>
-      <div class="lap-num" id="lap-num">10</div>
+      <div class="lap-label">Tour</div>
+      <div class="lap-val" id="lap-num">10</div>
       <div class="lap-bar" id="lap-bar"></div>
-    </div>
-    <div class="gauges" id="gauges"></div>
-    <div class="spd-box">
-      <div class="spd-lbl">Vitesse</div>
-      <div class="spd-row">
-        <button class="spd-btn" id="sp-dn" onclick="changeSpeed(-1)">−</button>
-        <div class="spd-num" id="spd-num">3</div>
-        <button class="spd-btn" id="sp-up" onclick="changeSpeed(1)">+</button>
-      </div>
     </div>
   </div>
 
   <div class="body">
-    <div class="track-wrap">
-      <div class="track-lbl" id="track-lbl">Piste — rang 0 = avant</div>
+    <div class="track-section">
       <div class="track-outer">
-        <div class="track-side">
-          <div class="side-lbl">Apron</div>
-          <div class="side-strip" id="sa"></div>
+        <div class="apron-strip">
+          <div class="apron-arrow">↓</div>
+          <div class="apron-arrow">↓</div>
         </div>
         <div class="tgrid" id="tgrid"></div>
-        <div class="track-side">
-          <div class="side-lbl">Mur</div>
-          <div class="side-strip" id="sw"></div>
+        <div class="wall-strip"></div>
+      </div>
+      <div class="speed-section">
+        <div class="spd-label">Vitesse</div>
+        <div class="spd-slots" id="spd-slots"></div>
+        <div class="spd-effects" id="spd-effects"></div>
+        <div class="spd-confirm" id="spd-confirm">
+          <button onclick="confirmSpeed()">Confirmer ✓</button>
         </div>
+      </div>
+      <div class="gauges-section">
+        <div class="gauges" id="gauges"></div>
       </div>
     </div>
 
@@ -220,7 +247,7 @@ h2{font-size:.9rem;color:#64748b;margin-bottom:.75rem}
         <div id="phase-ui"></div>
       </div>
       <div class="pbox">
-        <h4>Dés (vitesses rivaux)</h4>
+        <h4>Dés rivaux</h4>
         <div class="dice-row" id="dice-ui"></div>
       </div>
       <div class="pbox">
@@ -239,22 +266,76 @@ h2{font-size:.9rem;color:#64748b;margin-bottom:.75rem}
 
 <script>
 'use strict';
-// ── CONSTANTES ───────────────────────────────────────────
-const ROWS=12, COLS=4, APRON=0, WALL=3;
+
+// ── CONSTANTS ──────────────────────────────────────────────────
+const ROWS=5, COLS=3;
 const RIVALS=['red','blue','green','yellow','cyan'];
-const ALL_STARTS=[[8,1],[8,2],[7,1],[7,2],[6,1],[6,2]];
+// Index 0 = pos 1 (pole/front/easiest) … index 5 = pos 6 (last/hardest)
+const ALL_STARTS=[[2,0],[2,1],[3,0],[3,1],[4,0],[4,1]];
 const ARROWS=[
-  [2,2, 1,0],[3,1,-1,0],[7,2, 1,0],
-  [1,2, 1,1],[5,1,-1,1],[9,2, 1,1]
+  [0,1, 1,0],[0,2,-1,0],
+  [1,1,-1,1],[1,2, 1,1],
 ];
-const CAR_BG ={player:'#fbbf24',red:'#f87171',blue:'#60a5fa',green:'#4ade80',yellow:'#a3e635',cyan:'#34d399'};
-const CAR_FG ={player:'#0f172a',red:'#450a0a',blue:'#1e3a5f',green:'#14532d',yellow:'#1a2e05',cyan:'#064e3b'};
-const CAR_LBL={player:'VOUS',red:'RED',blue:'BLU',green:'GRN',yellow:'YLW',cyan:'CYN'};
-const DIE_BG ={red:'#f87171',blue:'#60a5fa',green:'#4ade80',yellow:'#a3e635',cyan:'#34d399'};
-const DIE_FG ={red:'#450a0a',blue:'#1e3a5f',green:'#14532d',yellow:'#1a2e05',cyan:'#064e3b'};
+const CAR_BG ={player:'#0d9488',red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
+const CAR_FG ={player:'#fff',red:'#fff',blue:'#fff',green:'#fff',yellow:'#fff',cyan:'#fff'};
+const CAR_LBL={player:'★',red:'R',blue:'B',green:'G',yellow:'J',cyan:'C'};
+const DIE_BG ={red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
 const GAUGE_ICONS={tires:'🛞',fuel:'⛽',engine:'⚙️'};
 
-// ── ÉTAT ─────────────────────────────────────────────────
+// ── LEADERBOARD ────────────────────────────────────────────────
+const LB_KEY='cardracing_lb_v1';
+
+function loadLB(){
+  const s=localStorage.getItem(LB_KEY);
+  if(s)return JSON.parse(s);
+  // Init: 20 COMPUT at max score for diff=1, P1 all race
+  // Turns 0-18: sum(10..190)=1900, final lap val=200, finish bonus=1000 → 3100
+  const init=[];
+  for(let i=0;i<20;i++)init.push({name:'COMPUT',score:3100,date:'2024-01-01'});
+  saveLB(init);return init;
+}
+function saveLB(arr){localStorage.setItem(LB_KEY,JSON.stringify(arr));}
+
+function renderLB(hi=-1){
+  const lb=loadLB();
+  document.getElementById('lb-body').innerHTML=lb.map((e,i)=>
+    `<tr${i===hi?' class="hi"':''}>`+
+    `<td class="rank">${i+1}</td><td>${e.name}</td>`+
+    `<td>${e.score.toLocaleString('fr-FR')}</td><td>${e.date}</td></tr>`
+  ).join('');
+}
+
+function submitScore(){
+  const name=arcName.join('');
+  const score=Math.round(S.finalScore);
+  const lb=loadLB();
+  const ne={name,score,date:new Date().toLocaleDateString('fr-FR')};
+  lb.push(ne);
+  lb.sort((a,b)=>b.score-a.score);
+  const rank=lb.indexOf(ne);
+  saveLB(lb.slice(0,20));
+  closeModal();
+  document.getElementById('game').style.display='none';
+  document.getElementById('leaderboard').style.display='block';
+  renderLB(rank<20?rank:-1);
+}
+
+// ── ARCADE NAME ────────────────────────────────────────────────
+let arcName=Array(6).fill('A');
+let arcCursor=0;
+function arcUp()   {const c=arcName[arcCursor].charCodeAt(0);arcName[arcCursor]=String.fromCharCode(c<90?c+1:65);renderArcade();}
+function arcDown() {const c=arcName[arcCursor].charCodeAt(0);arcName[arcCursor]=String.fromCharCode(c>65?c-1:90);renderArcade();}
+function arcLeft() {arcCursor=Math.max(0,arcCursor-1);renderArcade();}
+function arcRight(){arcCursor=Math.min(5,arcCursor+1);renderArcade();}
+function renderArcade(){
+  const el=document.getElementById('arc-slots');
+  if(!el)return;
+  el.innerHTML=arcName.map((ch,i)=>
+    `<div class="arc-slot${i===arcCursor?' cur':''}">${ch}</div>`
+  ).join('');
+}
+
+// ── STATE ──────────────────────────────────────────────────────
 let S={};
 
 function newState(diff){
@@ -276,27 +357,23 @@ function newState(diff){
     grid,cars,
     gauges:{tires:6,fuel:6,engine:6},
     speed:3,_baseSpeed:3,
-    lapStep:0,
-    phase:'start',
+    lapStep:0,phase:'start',
     dice:[],diceUsed:Array(5).fill(false),
     rivalQueue:[],rivalIdx:0,
-    pendingChoice:null,
-    stepLogs:[],   // log entries for the current rival step
-    stepGaugeDeltas:null,
-    movedCar:null, // for highlight
+    pendingChoice:null,stepLogs:[],movedCar:null,
     log:['Course démarrée ! Bonne chance !'],
     gameOver:false,won:false,finalPos:null,
     pitTurn:false,diff,
+    turnScore:0,finalScore:0,
   };
 }
 
-// ── GRILLE ───────────────────────────────────────────────
-const getCar=(r,c)=>S.grid[r][c];
+// ── GRID ───────────────────────────────────────────────────────
+const getCar   =(r,c)=>S.grid[r][c];
+const inBounds =(r,c)=>r>=0&&r<ROWS&&c>=0&&c<COLS;
 function movePiece(id,r,c){
   const{row:or,col:oc}=S.cars[id];
-  S.grid[or][oc]=null;
-  S.cars[id]={row:r,col:c};
-  S.grid[r][c]=id;
+  S.grid[or][oc]=null;S.cars[id]={row:r,col:c};S.grid[r][c]=id;
 }
 const allCars=()=>['player',...RIVALS];
 function sortedCars(ids){
@@ -305,12 +382,11 @@ function sortedCars(ids){
     return pa.row!==pb.row?pa.row-pb.row:pa.col-pb.col;
   });
 }
-const standings=()=>sortedCars(allCars().filter(id=>S.cars[id]));
-const arrowAt=(r,c)=>ARROWS.find(a=>a[0]===r&&a[1]===c)||null;
+const standings  =()=>sortedCars(allCars().filter(id=>S.cars[id]));
+const arrowAt    =(r,c)=>ARROWS.find(a=>a[0]===r&&a[1]===c)||null;
 const activeArrow=(r,c)=>{const a=arrowAt(r,c);return a&&a[3]===(S.lapStep%2)?a:null;};
-const inBounds=(r,c)=>r>=0&&r<ROWS&&c>=0&&c<COLS;
 
-// ── MOUVEMENT ────────────────────────────────────────────
+// ── MOVEMENT ───────────────────────────────────────────────────
 function tryPushDown(id,isPit=false){
   const{row,col}=S.cars[id];
   if(row+1>=ROWS)return false;
@@ -327,7 +403,7 @@ function tryPushDown(id,isPit=false){
 
 function applyPushAgainstSide(id,sideCol){
   if(id==='player'){
-    if(sideCol===APRON){S.gauges.tires=Math.max(0,S.gauges.tires-1);stepLog('Vous touchez l\'apron ! Pneus -1','dan');}
+    if(sideCol===0){S.gauges.tires=Math.max(0,S.gauges.tires-1);stepLog('Vous touchez l\'apron ! Pneus -1','dan');}
     else{S.gauges.tires=Math.max(0,S.gauges.tires-1);S.gauges.engine=Math.max(0,S.gauges.engine-1);stepLog('Vous touchez le mur ! Pneus -1, Moteur -1','dan');}
     checkLose();
   }
@@ -340,7 +416,7 @@ function pushLateral(id,row,col,dCol){
   const occ=getCar(row,nc);
   if(occ){pushLateral(occ,row,nc,dCol);if(getCar(row,nc))return false;}
   movePiece(id,row,nc);
-  if(nc===APRON||nc===WALL)applyPushAgainstSide(id,nc);
+  if(nc===0||nc===COLS-1)applyPushAgainstSide(id,nc);
   return true;
 }
 
@@ -349,11 +425,11 @@ function resolveArrow(id){
   const{row,col}=S.cars[id];
   const a=activeArrow(row,col);
   if(!a)return;
-  stepLog(`${CAR_LBL[id]} touche une flèche → ${a[2]>0?'droite':'gauche'}`);
+  stepLog(`${CAR_LBL[id]} flèche → ${a[2]>0?'droite':'gauche'}`);
   pushLateral(id,row,col,a[2]);
 }
 
-// ── DRAPEAU JAUNE ────────────────────────────────────────
+// ── YELLOW FLAG ────────────────────────────────────────────────
 function isYellowFlag(){
   if(S.lapStep>=18)return false;
   const cnt={};
@@ -361,58 +437,43 @@ function isYellowFlag(){
   return Object.values(cnt).some(v=>v>=4);
 }
 function processYellowFlag(){
-  glog('🚨 DRAPEAU JAUNE ! Neutralisation !','imp');
-  S.gauges={tires:6,fuel:6,engine:6};
-  S.speed=3;S._baseSpeed=3;
+  glog('🚨 DRAPEAU JAUNE !','imp');
+  S.gauges={tires:6,fuel:6,engine:6};S.speed=3;S._baseSpeed=3;
   const order=standings();
   const pos=[...ALL_STARTS].reverse();
   for(const id of allCars())if(S.cars[id])S.grid[S.cars[id].row][S.cars[id].col]=null;
   order.forEach((id,i)=>{if(i<pos.length)S.cars[id]={row:pos[i][0],col:pos[i][1]};});
   for(const id of allCars())if(S.cars[id])S.grid[S.cars[id].row][S.cars[id].col]=id;
   S.lapStep=Math.min(S.lapStep+1,19);
-  glog(`Neutralisation : jauges réinitialisées, tour → ${(S.lapStep+1)*10}`,'imp');
-  S.diceUsed=Array(5).fill(false);
-  S.phase='start';
+  glog(`Neutralisation — tour → ${(S.lapStep+1)*10}`,'imp');
+  S.diceUsed=Array(5).fill(false);S.phase='start';
   showYellowFlagModal();
 }
 
-// ── TRAITEMENT RIVAUX (pas-à-pas) ────────────────────────
-function buildQueue(){
-  S.rivalQueue=sortedCars(RIVALS.filter(n=>S.cars[n]));
-  S.rivalIdx=0;
-}
-
-function startRivals(){
-  buildQueue();
-  S.phase='rivals';
-  render();
-  processOneRival();
-}
+// ── RIVALS ─────────────────────────────────────────────────────
+function buildQueue(){S.rivalQueue=sortedCars(RIVALS.filter(n=>S.cars[n]));S.rivalIdx=0;}
+function startRivals(){buildQueue();S.phase='rivals';render();processOneRival();}
 
 function processOneRival(){
-  if(S.rivalIdx>=S.rivalQueue.length){
-    S.phase='lap';render();
-    return;
-  }
+  if(S.rivalIdx>=S.rivalQueue.length){S.phase='lap';render();return;}
   const name=S.rivalQueue[S.rivalIdx];
   const diIdx=RIVALS.indexOf(name);
   S.stepLogs=[];
   const gaugesBefore={...S.gauges};
-  const wasAhead=S.cars[name].row<S.cars.player.row;
+  const wasAhead =S.cars[name].row<S.cars.player.row;
   const wasBehind=S.cars[name].row>S.cars.player.row;
-  const die=S.dice[diIdx];
-  const ps=S.speed;
+  const die=S.dice[diIdx],ps=S.speed;
   let choiceNeeded=false;
 
   if(S.diceUsed[diIdx]){
     stepLog(`Vitesse ${die} = votre vitesse ${ps} → ne bouge pas`,'neu');
-  } else {
+  }else{
     const{row,col}=S.cars[name];
     if(die<ps){
       const ok=tryPushDown(name);
       stepLog(`Vitesse ${die} < ${ps} → ${ok?'recule':'bloqué'}`,ok?'':'neu');
       resolveArrow(name);
-    } else if(die===6){
+    }else if(die===6){
       if(row===0){stepLog('Dé 6 → déjà en tête','neu');}
       else{
         const above=getCar(row-1,col);
@@ -420,8 +481,7 @@ function processOneRival(){
         else{movePiece(above,row,col);movePiece(name,row-1,col);stepLog(`Dé 6 → échange avec ${CAR_LBL[above]}`,'good');}
         resolveArrow(name);
       }
-    } else {
-      // die > ps
+    }else{
       if(row===0){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
       else{
         const above=getCar(row-1,col);
@@ -429,161 +489,114 @@ function processOneRival(){
           movePiece(name,row-1,col);
           stepLog(`Vitesse ${die} > ${ps} → avance`,'good');
           resolveArrow(name);
-          // Aspiration
           if(ps<=2&&(wasAhead||wasBehind)){
             const{row:pr,col:pc}=S.cars.player;
-            if(pr>0&&!getCar(pr-1,pc)){
-              movePiece('player',pr-1,pc);
-              stepLog(`Aspiration ! ${wasAhead?'Entraîné':'Poussé'} en avant par ${CAR_LBL[name]}`,'good');
-            }
+            if(pr>0&&!getCar(pr-1,pc)){movePiece('player',pr-1,pc);stepLog('Aspiration ! Entraîné en avant','good');}
           }
-        } else {
+        }else{
           const canL=inBounds(row,col-1)&&!getCar(row,col-1);
           const canR=inBounds(row,col+1)&&!getCar(row,col+1);
-          if(canL&&canR){
-            choiceNeeded=true;
-            S.pendingChoice={rivalName:name,die,gaugesBefore,wasAhead,wasBehind};
-          } else if(canL){
-            movePiece(name,row,col-1);
-            stepLog(`Bloqué → se décale à gauche`);
-            if(col-1===APRON)applyPushAgainstSide(name,APRON);
-            resolveArrow(name);
-          } else if(canR){
-            movePiece(name,row,col+1);
-            stepLog(`Bloqué → se décale à droite`);
-            if(col+1===WALL)applyPushAgainstSide(name,WALL);
-            resolveArrow(name);
-          } else {
-            stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');
-          }
+          if(canL&&canR){choiceNeeded=true;S.pendingChoice={rivalName:name,die,gaugesBefore,wasAhead,wasBehind};}
+          else if(canL){movePiece(name,row,col-1);stepLog('Bloqué → décale gauche');if(col-1===0)applyPushAgainstSide(name,0);resolveArrow(name);}
+          else if(canR){movePiece(name,row,col+1);stepLog('Bloqué → décale droite');if(col+1===COLS-1)applyPushAgainstSide(name,COLS-1);resolveArrow(name);}
+          else{stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');}
         }
       }
     }
   }
-
-  if(choiceNeeded){
-    render();
-    showChoiceModal();
-    return;
-  }
-
+  if(choiceNeeded){render();showChoiceModal();return;}
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
-  S.movedCar=name;
-  S.rivalIdx++;
-  glogAll();
-  render();
+  S.movedCar=name;S.rivalIdx++;glogAll();render();
   showRivalModal(name,die,gaugeDeltas);
 }
 
 function computeGaugeDeltas(before){
   const d={};
-  for(const k of['tires','fuel','engine']){
-    const delta=S.gauges[k]-before[k];
-    if(delta!==0)d[k]=delta;
-  }
+  for(const k of['tires','fuel','engine']){const delta=S.gauges[k]-before[k];if(delta!==0)d[k]=delta;}
   return d;
 }
 
-// ── MODAUX RIVAUX ────────────────────────────────────────
+// ── RIVAL MODALS ───────────────────────────────────────────────
 function showRivalModal(name,die,gaugeDeltas){
   const ps=S.speed;
-  const cmp=die===S.speed?`=${ps} → ne bouge pas`:die<ps?`< ${ps} → recule`:die===6?`= 6 → échange ou avance`:`> ${ps} → avance`;
-  const effectsHtml=S.stepLogs.map(l=>`<div class="reff ${l.cls}">${l.txt}</div>`).join('');
+  const cmp=die===ps?`=${ps} → ne bouge pas`:die<ps?`< ${ps} → recule`:die===6?`= 6 → avance/échange`:`> ${ps} → avance`;
+  const efx=S.stepLogs.map(l=>`<div class="reff ${l.cls}">${l.txt}</div>`).join('');
   const gd=Object.entries(gaugeDeltas).map(([k,v])=>
     `<span class="gchip ${v>0?'pos':'neg'}">${GAUGE_ICONS[k]} ${v>0?'+':''}${v}</span>`
   ).join('');
-
-  showModal(`<div class="rival-die-row">
-    <div class="rdie" style="background:${CAR_BG[name]};color:${CAR_FG[name]};border-color:${CAR_BG[name]}">${die}</div>
-    <div class="rdie-info">
-      <div class="rdie-name" style="color:${CAR_BG[name]}">${CAR_LBL[name]}</div>
-      <div class="rdie-cmp">Dé ${cmp}</div>
+  showModal(`
+    <div class="rival-die-row">
+      <div class="rdie" style="background:${CAR_BG[name]};color:#fff">${die}</div>
+      <div class="rdie-info">
+        <div class="rdie-name" style="color:${CAR_BG[name]}">${CAR_LBL[name]}</div>
+        <div class="rdie-cmp">Dé ${cmp}</div>
+      </div>
     </div>
-  </div>
-  ${effectsHtml?`<div class="rival-effects">${effectsHtml}</div>`:'<div class="reff neu">Aucun effet notable</div>'}
-  ${gd?`<div class="gauge-summary">${gd}</div>`:''}
-  <div class="modal-btns">
-    <button class="btn btn-p" onclick="continueRivals()">Continuer ▶</button>
-  </div>`,'choose rival-modal');
-
-  if(Object.keys(gaugeDeltas).length>0){
-    setTimeout(()=>launchGaugeFlies(gaugeDeltas),100);
-  }
+    ${efx?`<div class="rival-effects">${efx}</div>`:'<div class="reff neu">Aucun effet</div>'}
+    ${gd?`<div class="gauge-summary">${gd}</div>`:''}
+    <div class="modal-btns">
+      <button class="btn btn-p" onclick="continueRivals()">Continuer ▶</button>
+    </div>`,'choose rival-modal');
+  if(Object.keys(gaugeDeltas).length>0)setTimeout(()=>launchGaugeFlies(gaugeDeltas),100);
 }
 
-function continueRivals(){
-  closeModal();
-  if(S.gameOver){showEndModal();return;}
-  processOneRival();
-}
+function continueRivals(){closeModal();if(S.gameOver){showEndModal();return;}processOneRival();}
 
 function showChoiceModal(){
   const{rivalName}=S.pendingChoice;
-  showModal(`<div class="modal-title choose" style="color:#38bdf8">Choisir la direction</div>
-  <div class="modal-body"><b>${CAR_LBL[rivalName]}</b> est bloqué vers l'avant.<br>Dans quelle direction doit-il se décaler ?</div>
-  <div class="modal-btns">
-    <button class="btn btn-s" onclick="resolveChoice(-1)">← Gauche</button>
-    <button class="btn btn-s" onclick="resolveChoice(1)">Droite →</button>
-  </div>`,'choose');
+  showModal(`
+    <div class="modal-title" style="color:#2563eb">Choisir la direction</div>
+    <div class="modal-body"><b>${CAR_LBL[rivalName]}</b> est bloqué vers l'avant. Quelle direction ?</div>
+    <div class="modal-btns">
+      <button class="btn btn-s" onclick="resolveChoice(-1)">← Gauche</button>
+      <button class="btn btn-s" onclick="resolveChoice(1)">Droite →</button>
+    </div>`,'choose');
 }
 
 function resolveChoice(dir){
   closeModal();
-  const{rivalName,die,gaugesBefore,wasAhead,wasBehind}=S.pendingChoice;
-  S.pendingChoice=null;
-  S.stepLogs=[];
+  const{rivalName,die,gaugesBefore}=S.pendingChoice;
+  S.pendingChoice=null;S.stepLogs=[];
   const{row,col}=S.cars[rivalName];
   const nc=col+dir;
   movePiece(rivalName,row,nc);
-  stepLog(`${CAR_LBL[rivalName]} se décale ${dir>0?'à droite':'à gauche'} (votre choix)`);
-  if(nc===APRON||nc===WALL)applyPushAgainstSide(rivalName,nc);
+  stepLog(`${CAR_LBL[rivalName]} → ${dir>0?'droite':'gauche'} (votre choix)`);
+  if(nc===0||nc===COLS-1)applyPushAgainstSide(rivalName,nc);
   resolveArrow(rivalName);
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
-  S.movedCar=rivalName;
-  S.rivalIdx++;
-  glogAll();
-  render();
+  S.movedCar=rivalName;S.rivalIdx++;glogAll();render();
   showRivalModal(rivalName,die,gaugeDeltas);
 }
 
-// ── DRAPEAU JAUNE MODAL ───────────────────────────────────
 function showYellowFlagModal(){
-  showModal(`<div class="modal-title" style="color:#fbbf24">🚨 Drapeau Jaune !</div>
-  <div class="modal-body">
-    4 ou 5 dés identiques !<br><br>
-    • Positions réinitialisées selon l'ordre actuel<br>
-    • Toutes vos jauges remises à 6<br>
-    • Vitesse → 3<br>
-    • Tour avancé
-  </div>
-  <div class="modal-btns"><button class="btn btn-p" onclick="closeModal();render()">Continuer</button></div>`,'');
+  showModal(`
+    <div class="modal-title">🚨 Drapeau Jaune !</div>
+    <div class="modal-body">4+ dés identiques !<br>• Positions réinitialisées selon le classement<br>• Toutes les jauges → 6<br>• Vitesse → 3</div>
+    <div class="modal-btns"><button class="btn btn-p" onclick="closeModal();render()">Continuer</button></div>`,'');
 }
 
-// ── ACTIONS DU TOUR ──────────────────────────────────────
+// ── ACTIONS ────────────────────────────────────────────────────
 function doPits(restT,restF){
   const before={...S.gauges};
   let drops=0;
   if(restT){S.gauges.tires=6;drops++;glog('Stands : Pneus → 6','good');}
-  if(restF){S.gauges.fuel=6;drops++;glog('Stands : Carbu → 6','good');}
+  if(restF){S.gauges.fuel=6; drops++;glog('Stands : Carbu → 6','good');}
   for(let i=0;i<drops;i++)tryPushDown('player',true);
   S.speed=3;S._baseSpeed=3;
   S.lapStep=Math.min(S.lapStep+1,19);
   glog(`Arrêt terminé. Vitesse→3, tour→${(S.lapStep+1)*10}`);
-  S.pitTurn=true;
-  S.phase='speed';
-  closeModal();
-  render();
-  // Animate gauge flies from the pit stop button area to gauges header
+  S.pitTurn=true;S.phase='speed';
+  closeModal();render();
   const deltas={};
   if(restT&&before.tires<6)deltas.tires=6-before.tires;
-  if(restF&&before.fuel<6)deltas.fuel=6-before.fuel;
+  if(restF&&before.fuel<6) deltas.fuel =6-before.fuel;
   if(Object.keys(deltas).length)setTimeout(()=>launchGaugeFlies(deltas),150);
 }
 
 function applySpeedEffects(spd){
   S.speed=spd;
   if(spd===1){S.gauges.engine=Math.min(6,S.gauges.engine+1);glog('Vitesse 1 : Moteur +1','good');}
-  if(spd>=4){S.gauges.fuel=Math.max(0,S.gauges.fuel-1);glog(`Vitesse ${spd} : Carbu -1`,'dan');}
+  if(spd>=4) {S.gauges.fuel  =Math.max(0,S.gauges.fuel-1);  glog(`Vitesse ${spd} : Carbu -1`,'dan');}
   if(spd===5){S.gauges.engine=Math.max(0,S.gauges.engine-1);glog('Vitesse 5 : Moteur -1','dan');}
   checkLose();
 }
@@ -593,17 +606,16 @@ function doLateral(dCol){
   const steps=Math.abs(dCol),dir=Math.sign(dCol);
   for(let s=1;s<=steps;s++){
     const nc=col+dir*s;
-    if(!inBounds(row,nc)){glog("Impossible : hors piste");return;}
-    if(getCar(row,nc)){glog("Impossible : bloqué");return;}
+    if(!inBounds(row,nc)){glog('Impossible : hors piste');return;}
+    if(getCar(row,nc))   {glog('Impossible : bloqué');   return;}
   }
   movePiece('player',row,col+dCol);
   const before=S.gauges.tires;
   S.gauges.tires=Math.max(0,S.gauges.tires-steps);
-  glog(`Changement de voie ${steps} ${dCol>0?'droite':'gauche'} · Pneus -${steps}`);
+  glog(`Changement voie ${steps} ${dCol>0?'→':'←'} · Pneus -${steps}`);
   checkLose();
   if(S.gauges.tires<before)setTimeout(()=>launchGaugeFlies({tires:S.gauges.tires-before}),100);
-  S.phase='dice';
-  render();
+  S.phase='dice';render();
 }
 
 function doRoll(){
@@ -613,15 +625,18 @@ function doRoll(){
   render();
   setTimeout(()=>{
     if(isYellowFlag()){processYellowFlag();render();}
-    else{
-      const g={...S.gauges};
-      applySpeedEffects(S.speed);  // apply speed effects now (chosen before roll)
-      startRivals();
-    }
+    else{applySpeedEffects(S.speed);startRivals();}
   },150);
 }
 
+function addTurnScore(){
+  const pos   =standings().indexOf('player')+1;
+  const lapVal=(S.lapStep+1)*10;
+  S.turnScore+=S.diff*lapVal*(1/pos);
+}
+
 function advanceLap(){
+  addTurnScore();
   if(!S.pitTurn)S.lapStep=Math.min(S.lapStep+1,19);
   glog(`Tour ${(S.lapStep+1)*10} terminé`);
   if(S.lapStep>=19){endGame();return;}
@@ -633,9 +648,10 @@ function checkLose(){
   const{tires,fuel,engine}=S.gauges;
   if(tires>0&&fuel>0&&engine>0)return;
   const which=tires<=0?'Pneus':fuel<=0?'Carburant':'Moteur';
-  glog(`💥 ${which} à 0 — PARTIE PERDUE !`,'dan');
+  glog(`💥 ${which} à 0 — PERDU !`,'dan');
   S.gameOver=true;S.won=false;
-  S.finalPos=standings().indexOf('player')+1;
+  S.finalPos  =standings().indexOf('player')+1;
+  S.finalScore=S.turnScore;
   S.phase='gameover';render();showEndModal();
 }
 
@@ -644,83 +660,89 @@ function endGame(){
   const ord=standings();
   S.finalPos=ord.indexOf('player')+1;
   S.won=S.finalPos<=Math.ceil(ord.length/2);
-  glog(`Course terminée ! P${S.finalPos}/${ord.length}.`,S.won?'good':'imp');
+  // Final lap score (tour 200)
+  S.turnScore+=S.diff*200*(1/S.finalPos);
+  // Finish bonus if race completed (won or reached end)
+  S.turnScore+=S.diff*1000*(1/S.finalPos);
+  S.finalScore=S.turnScore;
+  glog(`Course terminée ! P${S.finalPos}.`,S.won?'good':'imp');
   S.phase='gameover';render();showEndModal();
 }
 
-// ── VITESSE ──────────────────────────────────────────────
-function changeSpeed(delta){
+// ── SPEED ──────────────────────────────────────────────────────
+function setSpeed(v){
   if(S.phase!=='speed')return;
-  const ns=S.speed+delta;
-  if(ns<1||ns>5||Math.abs(ns-S._baseSpeed)>2)return;
-  S.speed=ns;
-  document.getElementById('spd-num').textContent=ns;
-  updateSpeedBtns();renderPhase();
+  if(v<1||v>5||Math.abs(v-S._baseSpeed)>2)return;
+  S.speed=v;renderSpeed();renderPhase();
 }
-function updateSpeedBtns(){
-  const ok=S.phase==='speed';
-  document.getElementById('sp-dn').disabled=!ok||S.speed<=1||S.speed-S._baseSpeed<=-2;
-  document.getElementById('sp-up').disabled=!ok||S.speed>=5||S.speed-S._baseSpeed>=2;
-}
-function confirmSpeed(){
-  // Don't apply effects here — apply when dice are rolled (per rules: choose speed first)
-  S.phase='lateral';render();
-}
+function confirmSpeed(){S.phase='lateral';render();}
+function skipPits()   {S._baseSpeed=S.speed;S.phase='speed';render();}
+function skipLateral(){S.phase='dice';render();}
 
-// ── MODAUX STANDS / PITS ─────────────────────────────────
+// ── PIT MODAL ──────────────────────────────────────────────────
 function pitModal(){
   const g=S.gauges;
   if(g.tires>=6&&g.fuel>=6){glog('Jauges pleines — stands non nécessaire');return;}
-  showModal(`<div class="modal-title" style="color:#22c55e">🔧 Arrêt aux Stands</div>
-  <div class="modal-body">
-    Restaurer pneus et/ou carbu à 6.<br>
-    Chaque restauration coûte 1 position + 1 tour avancé.
-  </div>
-  <div class="modal-btns" style="flex-direction:column">
-    ${g.tires<6?`<button class="btn btn-g" onclick="doPits(true,false)">🛞 Pneus seulement (-1 pos)</button>`:''}
-    ${g.fuel<6?`<button class="btn btn-g" onclick="doPits(false,true)">⛽ Carbu seulement (-1 pos)</button>`:''}
-    ${g.tires<6&&g.fuel<6?`<button class="btn btn-g" onclick="doPits(true,true)">🛞⛽ Les deux (-2 pos)</button>`:''}
-    <button class="btn btn-s" onclick="closeModal()">Annuler</button>
-  </div>`,'choose');
+  showModal(`
+    <div class="modal-title" style="color:#16a34a">🔧 Arrêt aux Stands</div>
+    <div class="modal-body">Restaurer à 6. Chaque restauration = -1 position + 1 tour avancé.</div>
+    <div class="modal-btns" style="flex-direction:column;gap:.3rem">
+      ${g.tires<6?`<button class="btn btn-g" onclick="doPits(true,false)">🛞 Pneus seulement (-1 pos)</button>`:''}
+      ${g.fuel<6 ?`<button class="btn btn-g" onclick="doPits(false,true)">⛽ Carbu seulement (-1 pos)</button>`:''}
+      ${g.tires<6&&g.fuel<6?`<button class="btn btn-g" onclick="doPits(true,true)">🛞⛽ Les deux (-2 pos)</button>`:''}
+      <button class="btn btn-s" onclick="closeModal()">Annuler</button>
+    </div>`,'choose');
 }
 
-function skipPits(){S._baseSpeed=S.speed;S.phase='speed';render();}
-function skipLateral(){S.phase='dice';render();}
-
-// ── MODAUX UTILITAIRES ────────────────────────────────────
-function showModal(innerHtml,extraClass=''){
+// ── MODALS ─────────────────────────────────────────────────────
+function showModal(html,cls=''){
   const el=document.getElementById('ov');
   el.style.display='flex';
-  el.innerHTML=`<div class="modal ${extraClass}">${innerHtml}</div>`;
+  el.innerHTML=`<div class="modal ${cls}">${html}</div>`;
 }
 function closeModal(){document.getElementById('ov').style.display='none';}
 
 function showEndModal(){
+  arcName=[...Array(6)].map(()=>'A');arcCursor=0;
   const cls=S.won?'win':'lose';
   const ico=S.won?'🏆':'💥';
-  showModal(`<div class="modal-title">${ico} ${S.won?'Victoire !':'Partie terminée'}</div>
-  <div class="modal-body" style="text-align:center">
-    Vous avez terminé <b>P${S.finalPos}</b>.<br>
-    ${S.won?'Excellent pilotage !':'Meilleure chance la prochaine fois !'}
-  </div>
-  <div class="modal-btns"><button class="btn btn-p" onclick="backToSetup()">Rejouer</button></div>`,cls);
+  const scoreStr=Math.round(S.finalScore).toLocaleString('fr-FR');
+  showModal(`
+    <div class="modal-title">${ico} ${S.won?'Victoire !':'Fin de course'}</div>
+    <div class="modal-body" style="text-align:center">
+      Position : <b>P${S.finalPos}</b> &nbsp;·&nbsp; Score : <b>${scoreStr}</b>
+    </div>
+    <div class="arcade-wrap">
+      <div class="arcade-hint">Entrez votre nom (6 lettres)</div>
+      <div class="arcade-slots" id="arc-slots"></div>
+      <div class="arc-ctrl">
+        <button class="arc-btn" onclick="arcLeft()">◀</button>
+        <button class="arc-btn" onclick="arcDown()">▼</button>
+        <button class="arc-btn" onclick="arcUp()">▲</button>
+        <button class="arc-btn" onclick="arcRight()">▶</button>
+      </div>
+      <button class="btn btn-p" onclick="submitScore()">Valider et sauvegarder ✓</button>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-s" onclick="backToSetup()">Rejouer sans sauver</button>
+    </div>`,cls);
+  setTimeout(renderArcade,50);
 }
 
-// ── ANIMATIONS ───────────────────────────────────────────
+// ── ANIMATIONS ─────────────────────────────────────────────────
 function launchGaugeFlies(deltas){
   const gaugeEl=document.getElementById('gauges');
   if(!gaugeEl)return;
-  const gaugeItems=gaugeEl.querySelectorAll('.gauge');
+  const items=gaugeEl.querySelectorAll('.gauge');
   const keys=['tires','fuel','engine'];
   for(const[k,v] of Object.entries(deltas)){
     const idx=keys.indexOf(k);
-    const toEl=gaugeItems[idx];
+    const toEl=items[idx];
     if(!toEl)continue;
     const fromEl=document.getElementById('ov').querySelector('.modal')||document.getElementById('action-box');
-    flyBadge(`${v>0?'+':''}${v} ${GAUGE_ICONS[k]}`,fromEl||document.body,toEl,v>0?'#4ade80':'#f87171');
+    flyBadge(`${v>0?'+':''}${v} ${GAUGE_ICONS[k]}`,fromEl||document.body,toEl,v>0?'#16a34a':'#dc2626');
   }
 }
-
 function flyBadge(text,fromEl,toEl,color){
   if(!fromEl||!toEl)return;
   const fr=fromEl.getBoundingClientRect();
@@ -728,7 +750,7 @@ function flyBadge(text,fromEl,toEl,color){
   const b=document.createElement('div');
   b.className='fly-badge';
   b.textContent=text;
-  b.style.cssText=`left:${fr.left+fr.width/2}px;top:${fr.top+fr.height/2}px;color:${color};background:#0f172a;padding:2px 7px;border-radius:5px;`;
+  b.style.cssText=`left:${fr.left+fr.width/2}px;top:${fr.top+fr.height/2}px;color:${color};background:#fff;border:1px solid ${color};padding:2px 7px;border-radius:5px;`;
   document.body.appendChild(b);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
     b.style.left=`${to.left+to.width/2}px`;
@@ -738,39 +760,64 @@ function flyBadge(text,fromEl,toEl,color){
   }));
 }
 
-// ── LOG ───────────────────────────────────────────────────
-function glog(msg,cls=''){S.log.unshift({msg,cls});if(S.log.length>80)S.log.pop();}
+// ── LOG ────────────────────────────────────────────────────────
+function glog(msg,cls='')   {S.log.unshift({msg,cls});if(S.log.length>80)S.log.pop();}
 function stepLog(txt,cls=''){S.stepLogs.push({txt,cls});}
-function glogAll(){for(const l of S.stepLogs)glog(l.txt,l.cls);}
+function glogAll()          {for(const l of S.stepLogs)glog(l.txt,l.cls);}
 
-// ── RENDU ─────────────────────────────────────────────────
+// ── RENDER ─────────────────────────────────────────────────────
 function render(){
-  renderTrack();renderGauges();renderLap();renderDice();renderStandings();renderLog();renderPhase();
-  updateSpeedBtns();
-  document.getElementById('spd-num').textContent=S.speed;
-  document.getElementById('lap-num').textContent=(S.lapStep+1)*10;
+  renderTrack();renderGauges();renderLap();renderDice();
+  renderStandings();renderLog();renderPhase();renderSpeed();
+}
+
+function renderSpeed(){
+  const el  =document.getElementById('spd-slots');
+  const conf=document.getElementById('spd-confirm');
+  const efx =document.getElementById('spd-effects');
+  if(!el)return;
+  const inSpd=S.phase==='speed';
+  el.innerHTML=[1,2,3,4,5].map(v=>{
+    const active  =v===S.speed;
+    const enabled =inSpd&&Math.abs(v-S._baseSpeed)<=2;
+    return`<div class="spd-slot ${active?'spd-active':''} ${enabled?'spd-enabled':'spd-disabled'}"
+      ${enabled&&!active?`onclick="setSpeed(${v})"`:''}>
+      ${v}
+    </div>`;
+  }).join('');
+  if(conf)conf.style.display=inSpd?'block':'none';
+  if(efx){
+    const v=S.speed;
+    efx.textContent=v===1?'⚙️ Moteur +1':v===4?'⛽ Carbu -1':v===5?'⛽ Carbu -1  ⚙️ Moteur -1':'';
+  }
 }
 
 function renderTrack(){
   const grid=document.getElementById('tgrid');
-  const sa=document.getElementById('sa'),sw=document.getElementById('sw');
-  grid.innerHTML=sa.innerHTML=sw.innerHTML='';
+  grid.innerHTML='';
   for(let r=0;r<ROWS;r++){
-    sa.innerHTML+=`<div class="scell sc-a" style="height:40px">${r===6?'A':''}</div>`;
-    sw.innerHTML+=`<div class="scell sc-w" style="height:40px">${r===6?'W':''}</div>`;
     const row=document.createElement('div');
-    row.className='trow'+(r%2===1?' sg':'');
+    row.className='trow';
     for(let c=0;c<COLS;c++){
       const cell=document.createElement('div');
       cell.className='tcell';
+      // Arrow
       const arr=arrowAt(r,c);
       if(arr){
         const active=activeArrow(r,c);
         const span=document.createElement('span');
         span.className='arr'+(active?'':' dim');
-        span.textContent=arr[2]>0?'→':'←';
+        span.textContent=arr[2]>0?'▷':'◁';
         cell.appendChild(span);
       }
+      // Starting position label
+      const si=ALL_STARTS.findIndex(([sr,sc])=>sr===r&&sc===c);
+      if(si>=0){
+        const sn=document.createElement('span');
+        sn.className='pos-num';sn.textContent=si+1;
+        cell.appendChild(sn);
+      }
+      // Car token
       const id=S.grid[r][c];
       if(id){
         if(id===S.movedCar)cell.classList.add('hl');
@@ -779,7 +826,7 @@ function renderTrack(){
         if(id===S.movedCar)tok.classList.add('moved');
         tok.style.background=CAR_BG[id];
         tok.style.color=CAR_FG[id];
-        tok.textContent=CAR_LBL[id];
+        tok.textContent=id==='player'?S.diff:CAR_LBL[id];
         cell.appendChild(tok);
       }
       row.appendChild(cell);
@@ -791,15 +838,15 @@ function renderTrack(){
 function renderGauges(){
   const el=document.getElementById('gauges');
   const g=S.gauges;
-  el.innerHTML=['tires','fuel','engine'].map((k,ki)=>{
+  el.innerHTML=['tires','fuel','engine'].map(k=>{
     const v=g[k];
     const pips=Array.from({length:6},(_,i)=>{
       const on=i<v;
       const cls=on?(k==='tires'?' t':k==='fuel'?' f':' e'):'';
-      const warn=on&&v<=2?' warn':'';
-      return`<div class="pip${cls}${warn}"></div>`;
+      const wrn=on&&v<=2?' warn':'';
+      return`<div class="pip${cls}${wrn}"></div>`;
     }).join('');
-    return`<div class="gauge" id="gauge-${k}"><div class="glbl">${GAUGE_ICONS[k]} ${k}</div><div class="gpips">${pips}</div></div>`;
+    return`<div class="gauge" id="gauge-${k}"><div class="glbl">${GAUGE_ICONS[k]}</div><div class="gpips">${pips}</div></div>`;
   }).join('');
 }
 
@@ -809,22 +856,22 @@ function renderLap(){
   for(let i=0;i<20;i++){
     const d=document.createElement('div');
     d.className='lseg';
-    if(i<S.lapStep)d.classList.add('done');
-    else if(i===S.lapStep)d.classList.add('now');
-    if(i===18)d.classList.add('wf');
-    if(i===19)d.classList.add('cf');
+    if(i<S.lapStep)  d.classList.add('done');
+    if(i===S.lapStep)d.classList.add('now');
+    if(i===18)       d.classList.add('wf');
+    if(i===19)       d.classList.add('cf');
     el.appendChild(d);
   }
+  document.getElementById('lap-num').textContent=(S.lapStep+1)*10;
 }
 
 function renderDice(){
   const el=document.getElementById('dice-ui');
-  if(!S.dice.length){el.innerHTML='<span style="font-size:.7rem;color:#334155">Pas encore lancés</span>';return;}
+  if(!S.dice.length){el.innerHTML='<span style="font-size:.65rem;color:#cbd5e1">Pas encore lancés</span>';return;}
   el.innerHTML=RIVALS.map((n,i)=>{
     const used=S.diceUsed[i],eq=S.dice[i]===S.speed;
     return`<div class="die ${used?'used':''} ${eq?'eq':''} appear"
-      style="background:${DIE_BG[n]};color:${DIE_FG[n]};border-color:${used?'transparent':DIE_BG[n]}"
-      title="${CAR_LBL[n]}">${S.dice[i]}</div>`;
+      style="background:${DIE_BG[n]};color:#fff" title="${CAR_LBL[n]}">${S.dice[i]}</div>`;
   }).join('');
 }
 
@@ -834,8 +881,8 @@ function renderStandings(){
     const isP=id==='player';
     return`<div class="pr">
       <div class="pn">P${i+1}</div>
-      <div class="pc" style="background:${CAR_BG[id]};color:${CAR_FG[id]}">${CAR_LBL[id]}</div>
-      <div style="font-size:.65rem;color:${isP?'#fbbf24':'#334155'}">${isP?'← Vous':''}</div>
+      <div class="pc" style="background:${CAR_BG[id]}">${CAR_LBL[id]}</div>
+      ${isP?'<span style="font-size:.6rem;color:#0d9488;font-weight:700">← Vous</span>':''}
     </div>`;
   }).join('');
 }
@@ -846,67 +893,59 @@ function renderLog(){
 }
 
 function renderPhase(){
-  const el=document.getElementById('phase-ui');
+  const el  =document.getElementById('phase-ui');
   const last=S.lapStep>=18;
-  let html=last&&S.phase!=='gameover'?'<div class="flag-w">🏳️ DRAPEAU BLANC — Dernier tour !</div>':'';
-  const pc=S.cars.player?S.cars.player.col:1;
-  const eff=S.speed===1?' ⚙️+1':S.speed===4?' ⛽-1':S.speed===5?' ⛽-1 ⚙️-1':'';
+  let html  =last&&S.phase!=='gameover'?'<div class="flag-w">🏳️ DRAPEAU BLANC — Dernier tour !</div>':'';
+  const pc  =S.cars.player?S.cars.player.col:1;
 
   switch(S.phase){
     case'start':
       html+=`<div class="phase-title">① Stands (optionnel)</div>
-      <div class="phase-desc">Restaurer pneus/carbu à 6. Coût : 1 position + 1 tour avancé par restauration.</div>
+      <div class="phase-desc">Restaurer pneus/carbu à 6. Coût : -1 pos + 1 tour avancé par jauge.</div>
       <div class="btn-row">
         <button class="btn btn-g" onclick="pitModal()">🔧 Stands</button>
-        <button class="btn btn-p" onclick="skipPits()">Passer → Vitesse</button>
-      </div>`;
-      break;
+        <button class="btn btn-p" onclick="skipPits()">Passer →</button>
+      </div>`;break;
     case'speed':
       html+=`<div class="phase-title">② Régler la vitesse</div>
-      <div class="phase-desc">Utilisez ± ci-dessus (max ±2). Vitesse <b>${S.speed}</b>${eff}</div>
-      <div class="btn-row">
-        <button class="btn btn-p" onclick="confirmSpeed()">Confirmer vitesse ${S.speed}</button>
-      </div>`;
-      break;
+      <div class="phase-desc">Cliquez une vitesse ci-dessous (max ±2 par rapport à la vitesse actuelle).</div>`;break;
     case'lateral':
       html+=`<div class="phase-title">③ Changer de voie (optionnel)</div>
-      <div class="phase-desc">1–2 cases gauche/droite. Chaque case coûte 1 pneu.</div>
+      <div class="phase-desc">1 ou 2 cases. Chaque case coûte 1 pneu.</div>
       <div class="btn-row">
         <button class="btn btn-s" onclick="doLateral(-2)" ${pc>=2?'':'disabled'}>← 2</button>
         <button class="btn btn-s" onclick="doLateral(-1)" ${pc>=1?'':'disabled'}>← 1</button>
-        <button class="btn btn-p" onclick="skipLateral()">Passer → Dés</button>
-        <button class="btn btn-s" onclick="doLateral(1)"  ${pc<=2?'':'disabled'}>1 →</button>
-        <button class="btn btn-s" onclick="doLateral(2)"  ${pc<=1?'':'disabled'}>2 →</button>
-      </div>`;
-      break;
+        <button class="btn btn-p" onclick="skipLateral()">Passer →</button>
+        <button class="btn btn-s" onclick="doLateral(1)"  ${pc<=1?'':'disabled'}>1 →</button>
+        <button class="btn btn-s" onclick="doLateral(2)"  ${pc<=0?'':'disabled'}>2 →</button>
+      </div>`;break;
     case'dice':
       html+=`<div class="phase-title">④ Lancer les dés</div>
-      <div class="phase-desc">Lance 5 dés colorés pour les vitesses des rivaux. 4+ identiques = 🚨 Drapeau Jaune !</div>
-      <div class="btn-row"><button class="btn btn-p" onclick="doRoll()">🎲 Lancer !</button></div>`;
-      break;
+      <div class="phase-desc">4+ dés identiques = 🚨 Drapeau Jaune !</div>
+      <div class="btn-row"><button class="btn btn-p" onclick="doRoll()">🎲 Lancer !</button></div>`;break;
     case'rivals':
       html+=`<div class="phase-title">⑤ Rivaux en mouvement…</div>
-      <div class="phase-desc">Résolution des rivaux un par un…</div>`;
-      break;
+      <div class="phase-desc">Résolution un par un.</div>`;break;
     case'lap':
       html+=`<div class="phase-title">⑥ Avancer le compteur</div>
       <div class="phase-desc">Tour <b>${(S.lapStep+1)*10}</b> → <b>${Math.min((S.lapStep+2)*10,200)}</b></div>
-      <div class="btn-row"><button class="btn btn-p" onclick="advanceLap()">Tour suivant →</button></div>`;
-      break;
+      <div class="btn-row"><button class="btn btn-p" onclick="advanceLap()">Tour suivant →</button></div>`;break;
     case'gameover':
       html+=`<div class="phase-title">${S.won?'🏆 Victoire !':'💥 Fin de course'}</div>
-      <div class="phase-desc">Vous avez terminé P${S.finalPos}.</div>
-      <div class="btn-row"><button class="btn btn-p" onclick="backToSetup()">Rejouer</button></div>`;
-      break;
+      <div class="phase-desc">P${S.finalPos} — Score : ${Math.round(S.finalScore).toLocaleString('fr-FR')}</div>`;break;
   }
   el.innerHTML=html;
 }
 
-// ── SETUP ─────────────────────────────────────────────────
-let selDiff=6;
+// ── NAVIGATION ─────────────────────────────────────────────────
+let selDiff=1;
 function selectDiff(d){
   selDiff=d;
   document.querySelectorAll('.diff-btn').forEach((b,i)=>b.classList.toggle('sel',i+1===d));
+}
+function showSetup(){
+  document.getElementById('leaderboard').style.display='none';
+  document.getElementById('setup').style.display='block';
 }
 function startGame(){
   S=newState(selDiff);
@@ -917,9 +956,13 @@ function startGame(){
 function backToSetup(){
   closeModal();
   document.getElementById('game').style.display='none';
-  document.getElementById('setup').style.display='block';
+  document.getElementById('setup').style.display='none';
+  document.getElementById('leaderboard').style.display='block';
+  renderLB();
 }
-selectDiff(6);
+
+// ── INIT ───────────────────────────────────────────────────────
+renderLB();
 </script>
 </body>
 </html>
