@@ -59,52 +59,43 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 /* ─ GAME CONTENT (fills remaining height) ── */
 .game-content{flex:1;display:flex;flex-direction:column;gap:.5rem;padding:.5rem}
 
-/* ─ TRACK ────────────────────────────────── */
-.track-outer{display:flex;gap:0;align-items:stretch;border-radius:.6rem;overflow:hidden;box-shadow:0 3px 14px #0004;width:100%}
-.apron-strip{width:60px;flex-shrink:0;background:#fbbf24;display:flex;flex-direction:column;align-items:center;padding:.4rem .2rem;gap:.16rem;border-right:3px solid #f59e0b;overflow:hidden}
-.wall-strip{width:60px;flex-shrink:0;background:#d1d5db;display:flex;flex-direction:column;align-items:center;padding:.4rem .2rem;gap:.14rem;border-left:3px dashed #fff;overflow:hidden}
-.strip-lbl{font-size:.42rem;text-transform:uppercase;letter-spacing:.07em;font-weight:800;opacity:.45;white-space:nowrap}
-.strip-pos{display:flex;align-items:center;gap:.14rem}
-.strip-pnum{width:11px;color:rgba(0,0,0,.38);font-size:.48rem;font-weight:700;text-align:right;flex-shrink:0}
-.strip-car{width:32px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:700;color:#fff;flex-shrink:0}
-.strip-spd{font-size:2rem;font-weight:900;color:#1e293b;line-height:1;text-align:center}
-.strip-sep{width:80%;height:1px;background:rgba(0,0,0,.1);margin:.1rem 0}
-.strip-dice{display:flex;flex-direction:column;gap:2px;align-items:center}
-.strip-die{width:26px;height:26px;border-radius:.28rem;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#fff}
-.tgrid{display:flex;flex-direction:column;gap:3px;background:#8a9099;padding:3px;flex:1;min-width:0}
-.trow{display:flex;gap:3px}
-.tcell{flex:1;min-width:0;height:144px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
+/* ─ TRACK — landscape (mur haut, apron bas) ─ */
+.track-outer{display:flex;flex-direction:column;width:100%;border-radius:.6rem;overflow:hidden;box-shadow:0 3px 14px #0004}
+/* Mur en haut */
+.wall-strip{height:52px;width:100%;flex-shrink:0;background:#d1d5db;display:flex;flex-direction:row;align-items:center;padding:.3rem .5rem;gap:.4rem;border-bottom:3px dashed #fff;overflow:hidden}
+/* Apron en bas */
+.apron-strip{height:52px;width:100%;flex-shrink:0;background:#fbbf24;display:flex;flex-direction:row;align-items:center;padding:.3rem .5rem;gap:.4rem;border-top:3px solid #f59e0b;overflow:hidden}
+/* Grille — flex row (colonnes = positions de course gauche→droite) */
+.tgrid{display:flex;flex-direction:row;gap:3px;background:#8a9099;padding:3px;width:100%}
+.tcol{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.tcell{flex:1;min-height:90px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
 .tcell.hl{background:#bbf7d0}
-/* Arrows - centered in cell */
+
+/* Flèches — centrées, ↑/↓ */
 .tcell .arr{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  font-size:2.2rem;line-height:1;pointer-events:none;
-  transition:opacity .3s,color .3s;
-  z-index:1;
+  font-size:2rem;line-height:1;pointer-events:none;
+  transition:opacity .3s,color .3s;z-index:1;
 }
-.tcell .arr.active-r{color:rgba(13,148,136,.85);opacity:1}
-.tcell .arr.active-l{color:rgba(37,99,235,.85);opacity:1}
+.tcell .arr.active-d{color:rgba(180,83,9,.88);opacity:1}
+.tcell .arr.active-u{color:rgba(30,58,138,.88);opacity:1}
 .tcell .arr.dim{opacity:.18;color:#b0b6bf}
 .tcell .pos-num{position:absolute;top:4px;right:5px;font-size:.58rem;color:#94a3b8;font-weight:700;pointer-events:none;z-index:2}
 .car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s;position:relative;z-index:3}
-.car.player-car{width:48px;height:48px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.35rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite;z-index:2}
-.car.rival-car{width:50px;height:46px;border-radius:9px;font-size:.6rem;color:#fff;text-transform:uppercase}
+.car.player-car{width:52px;height:52px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.35rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite}
+.car.rival-car{width:54px;height:48px;border-radius:9px;font-size:.6rem;color:#fff;text-transform:uppercase}
 .car.moved{animation:car-moved .4s ease-out}
 
-/* ─ INFO ROW (standings + dice) ──────────── */
-.info-row{display:flex;gap:.5rem}
-.info-box{flex:1;background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001;min-width:0}
-.info-lbl{font-size:.52rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.3rem}
-.dice-row{display:flex;gap:.25rem;flex-wrap:wrap}
-.die{width:30px;height:30px;border-radius:.3rem;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;border:2px solid transparent;transition:all .2s}
-.die.used{opacity:.2;border-style:dashed}
-.die.eq{box-shadow:0 0 0 2px #fbbf24}
-.die.appear{animation:dice-appear .3s ease-out}
-.pos-list{display:flex;flex-direction:column;gap:.1rem}
-.pr{display:flex;align-items:center;gap:.28rem;font-size:.63rem}
-.pn{width:18px;color:#94a3b8;font-size:.58rem;font-weight:700}
-.pc{width:15px;height:15px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.4rem;font-weight:700;color:#fff}
+/* ─ STRIPS LATÉRAUX (contenu horizontal) ─── */
+.strip-lbl{font-size:.42rem;text-transform:uppercase;letter-spacing:.07em;font-weight:800;opacity:.45;white-space:nowrap;flex-shrink:0}
+.strip-pos{display:flex;align-items:center;gap:.12rem;flex-shrink:0}
+.strip-pnum{width:10px;color:rgba(0,0,0,.38);font-size:.48rem;font-weight:700;text-align:right}
+.strip-car{width:26px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.48rem;font-weight:700;color:#fff}
+.strip-spd{font-size:1.8rem;font-weight:900;color:#1e293b;line-height:1;flex-shrink:0}
+.strip-sep{width:1px;height:32px;background:rgba(0,0,0,.12);margin:0 .15rem;flex-shrink:0}
+.strip-dice{display:flex;flex-direction:row;gap:3px;align-items:center}
+.strip-die{width:24px;height:24px;border-radius:.28rem;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0}
 
 /* ─ GAUGES ───────────────────────────────── */
 .gauges-bar{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001}
@@ -119,19 +110,18 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 
 /* ─ JOURNAL ──────────────────────────────── */
 .journal-wrap{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001;flex:1;min-height:0}
+.info-lbl{font-size:.52rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.3rem}
 .log-box{max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:.06rem}
 .le{font-size:.62rem;color:#64748b;line-height:1.3;padding:.05rem 0;border-bottom:1px solid #f8fafc}
 .le.imp{color:#d97706}.le.dan{color:#dc2626}.le.good{color:#16a34a}
 
-/* ─ ACTION BAR (natural bottom of flex) ──── */
+/* ─ ACTION BAR ───────────────────────────── */
 .action-bar{
-  background:#fff;
-  border-radius:.85rem .85rem 0 0;
+  background:#fff;border-radius:.85rem .85rem 0 0;
   border-top:2px solid #e2e8f0;
   padding:.7rem .9rem calc(.9rem + env(safe-area-inset-bottom));
   box-shadow:0 -4px 24px #0003;
-  display:flex;flex-direction:column;gap:.4rem;
-  position:sticky;bottom:0;
+  display:flex;flex-direction:column;gap:.4rem;position:sticky;bottom:0;
 }
 .phase-title{font-size:.82rem;color:#0d9488;font-weight:700;margin-bottom:.1rem}
 .phase-desc{font-size:.68rem;color:#64748b;margin-bottom:.3rem;line-height:1.4}
@@ -143,7 +133,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .btn:disabled{opacity:.3;cursor:not-allowed}
 .flag-w{background:#fef9c3;color:#854d0e;padding:.25rem .4rem;border-radius:.3rem;font-size:.68rem;font-weight:700;text-align:center}
 
-/* ─ SPEED in action bar ──────────────────── */
+/* ─ SPEED ────────────────────────────────── */
 .spd-wrap{display:none;flex-direction:column;gap:.3rem}
 .spd-wrap.visible{display:flex}
 .spd-slots{display:flex;gap:.3rem;justify-content:center}
@@ -186,8 +176,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
   border:2px solid #e2e8f0;border-radius:.4rem;
   font-size:1.3rem;font-weight:700;font-family:monospace;
   letter-spacing:.25em;text-align:center;text-transform:uppercase;
-  color:#0f172a;background:#f8fafc;outline:none;
-  transition:border-color .15s;
+  color:#0f172a;background:#f8fafc;outline:none;transition:border-color .15s;
 }
 .name-input:focus{border-color:#0d9488;background:#fff}
 
@@ -198,12 +187,11 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 @keyframes pulse-pip{0%,100%{opacity:1}50%{opacity:.3}}
 .fly-badge{position:fixed;pointer-events:none;z-index:600;font-weight:700;font-size:.85rem;padding:2px 8px;border-radius:5px;white-space:nowrap;transition:left .55s cubic-bezier(.25,.46,.45,.94),top .55s cubic-bezier(.25,.46,.45,.94),opacity .55s ease}
 
-/* Desktop: slightly wider */
 @media(min-width:640px){
   #game{max-width:540px}
-  .tcell{height:106px}
-  .car.player-car{width:54px;height:54px;font-size:1.5rem}
-  .car.rival-car{width:56px;height:52px;font-size:.65rem}
+  .tcell{min-height:100px}
+  .car.player-car{width:56px;height:56px;font-size:1.5rem}
+  .car.rival-car{width:58px;height:54px;font-size:.65rem}
 }
 </style>
 </head>
@@ -235,7 +223,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
   <button class="start-btn" onclick="startGame()">DÉMARRER LA COURSE</button>
   <div class="rules">
     <b>Tour :</b> ① Stands? ② Vitesse (±2) ③ Changer voie? ④ Dés → Rivaux → Avancer<br>
-    <b>Pneus :</b> -1/case changée &nbsp;|&nbsp; <b>Carbu :</b> -1 à vitesse 4–5<br>
+    <b>Pneus :</b> -1/voie changée &nbsp;|&nbsp; <b>Carbu :</b> -1 à vitesse 4–5<br>
     <b>Moteur :</b> +1 à vit.1, -1 à vit.5 &nbsp;|&nbsp; <b>Défaite :</b> une jauge à 0<br>
     <b>Drapeau jaune :</b> 4+ dés identiques → réinitialisation
   </div>
@@ -244,13 +232,10 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 <!-- GAME -->
 <div id="game">
 
-  <!-- Header sticky top: Tour | SCORE | Direction -->
   <div class="hdr">
     <div class="hdr-left">
       <div class="hdr-lbl">Tour</div>
-      <div class="lap-row">
-        <span class="lap-val" id="lap-num">10</span>
-      </div>
+      <div class="lap-row"><span class="lap-val" id="lap-num">10</span></div>
       <div class="lap-bar" id="lap-bar"></div>
     </div>
     <div class="hdr-center">
@@ -259,21 +244,20 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
     </div>
     <div class="hdr-right">
       <div class="hdr-lbl">Flèches</div>
-      <div class="arr-phase" id="arr-phase">▷ Droite</div>
+      <div class="arr-phase" id="arr-phase">↑ Mur</div>
     </div>
   </div>
 
-  <!-- Scrollable content -->
   <div class="game-content">
 
-    <!-- Track with side panels -->
+    <!-- Circuit horizontal : mur haut · grille · apron bas -->
     <div class="track-outer">
-      <div class="apron-strip" id="apron-strip"></div>
-      <div class="tgrid" id="tgrid"></div>
       <div class="wall-strip" id="wall-strip"></div>
+      <div class="tgrid" id="tgrid"></div>
+      <div class="apron-strip" id="apron-strip"></div>
     </div>
 
-    <!-- Gauges -->
+    <!-- Jauges -->
     <div class="gauges-bar">
       <div class="gauges" id="gauges"></div>
     </div>
@@ -286,7 +270,6 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 
   </div>
 
-  <!-- Action bar fixed at bottom -->
   <div class="action-bar" id="action-box">
     <div id="phase-ui"></div>
     <div class="spd-wrap" id="spd-wrap">
@@ -306,17 +289,24 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 'use strict';
 
 // ── CONSTANTS ──────────────────────────────────────────────────
-const ROWS=5, COLS=3;
+// Circuit paysage : 3 voies × 5 positions
+// row 0 = mur (haut), row 1 = milieu, row 2 = apron (bas)
+// col 0 = avant (tête), col 4 = arrière (queue)
+const ROWS=3, COLS=5;
 const RIVALS=['red','blue','green','yellow','cyan'];
-// Index 0 = pos 1 (pole/front/easiest) … index 5 = pos 6 (last/hardest)
-const ALL_STARTS=[[2,0],[2,1],[3,0],[3,1],[4,0],[4,1]];
-// [row, col, dir]  dir: 1=right ▷, -1=left ◁
-// 4 right arrows + 4 left arrows
-// Active: tours 10-50 & 110-150 → RIGHT; tours 60-100 & 160-200 → LEFT
+
+// Index 0=P1(pôle/facile) … index 5=P6(dernier/difficile)
+// Grille de départ : apron(row2) et milieu(row1), cols 2-4
+const ALL_STARTS=[[2,2],[1,2],[2,3],[1,3],[2,4],[1,4]];
+
+// [row, col, dir]  dir: 1=bas(↓, vers apron), -1=haut(↑, vers mur)
+// Tours 10-50 & 110-150 → flèches ↑ (vers mur)
+// Tours 60-100 & 160-200 → flèches ↓ (vers apron)
 const ARROWS=[
-  [0,1, 1],[1,1, 1],[2,0, 1],[3,1, 1],
-  [0,2,-1],[1,2,-1],[2,2,-1],[3,2,-1],
+  [1,4,-1],[1,3,-1],[0,2,-1],[1,1,-1],  // ↑ vers mur
+  [2,4, 1],[2,3, 1],[2,2, 1],[2,1, 1],  // ↓ vers apron
 ];
+
 const CAR_BG ={player:'#0d9488',red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
 const CAR_FG ={player:'#fff',red:'#fff',blue:'#fff',green:'#fff',yellow:'#fff',cyan:'#fff'};
 const CAR_LBL={player:'★',red:'R',blue:'B',green:'G',yellow:'J',cyan:'C'};
@@ -325,18 +315,14 @@ const GAUGE_ICONS={tires:'🛞',fuel:'⛽',engine:'⚙️'};
 
 // ── LEADERBOARD ────────────────────────────────────────────────
 const LB_KEY='cardracing_lb_v1';
-
 function loadLB(){
   const s=localStorage.getItem(LB_KEY);
   if(s)return JSON.parse(s);
-  // Init: 20 COMPUT at max score for diff=1, P1 all race
-  // Turns 0-18: sum(10..190)=1900, final lap val=200, finish bonus=1000 → 3100
   const init=[];
   for(let i=0;i<20;i++)init.push({name:'COMPUT',score:3100,date:'2024-01-01'});
   saveLB(init);return init;
 }
 function saveLB(arr){localStorage.setItem(LB_KEY,JSON.stringify(arr));}
-
 function renderLB(hi=-1){
   const lb=loadLB();
   document.getElementById('lb-body').innerHTML=lb.map((e,i)=>
@@ -345,15 +331,13 @@ function renderLB(hi=-1){
     `<td>${e.score.toLocaleString('fr-FR')}</td><td>${e.date}</td></tr>`
   ).join('');
 }
-
 function submitScore(){
   const raw=document.getElementById('name-input');
   const name=(raw?raw.value.toUpperCase().replace(/[^A-Z]/g,'').padEnd(6,'A').slice(0,6):'AAAAA A');
   const score=Math.round(S.finalScore);
   const lb=loadLB();
   const ne={name,score,date:new Date().toLocaleDateString('fr-FR')};
-  lb.push(ne);
-  lb.sort((a,b)=>b.score-a.score);
+  lb.push(ne);lb.sort((a,b)=>b.score-a.score);
   const rank=lb.indexOf(ne);
   saveLB(lb.slice(0,20));
   closeModal();
@@ -364,21 +348,18 @@ function submitScore(){
 
 // ── STATE ──────────────────────────────────────────────────────
 let S={};
-
 function newState(diff){
   const grid=Array.from({length:ROWS},()=>Array(COLS).fill(null));
   const cars={};
   const pi=diff-1;
   const[pr,pc]=ALL_STARTS[pi];
-  cars.player={row:pr,col:pc};
-  grid[pr][pc]='player';
+  cars.player={row:pr,col:pc};grid[pr][pc]='player';
   let ri=0;
   for(let i=0;i<6;i++){
     if(i===pi)continue;
     const nm=RIVALS[ri++];
     const[r,c]=ALL_STARTS[i];
-    cars[nm]={row:r,col:c};
-    grid[r][c]=nm;
+    cars[nm]={row:r,col:c};grid[r][c]=nm;
   }
   return{
     grid,cars,
@@ -403,60 +384,70 @@ function movePiece(id,r,c){
   S.grid[or][oc]=null;S.cars[id]={row:r,col:c};S.grid[r][c]=id;
 }
 const allCars=()=>['player',...RIVALS];
+
+// Classement : col croissant (avant = col 0), puis row croissant
 function sortedCars(ids){
   return[...ids].sort((a,b)=>{
     const pa=S.cars[a],pb=S.cars[b];
-    return pa.row!==pb.row?pa.row-pb.row:pa.col-pb.col;
+    return pa.col!==pb.col?pa.col-pb.col:pa.row-pb.row;
   });
 }
 const standings  =()=>sortedCars(allCars().filter(id=>S.cars[id]));
 const arrowAt    =(r,c)=>ARROWS.find(a=>a[0]===r&&a[1]===c)||null;
-// Tours 10-50 (lapStep 0-4) and 110-150 (lapStep 10-14) → RIGHT arrows active
-// Tours 60-100 (lapStep 5-9) and 160-200 (lapStep 15-19) → LEFT arrows active
-const isRightPhase=()=>{ const s=S.lapStep; return s<5||(s>=10&&s<15); };
+
+// Phase A (lapStep 0-4, 10-14) → flèches ↑ (dir=-1, vers mur) actives
+// Phase B (lapStep 5-9, 15-19) → flèches ↓ (dir=1, vers apron) actives
+const isPhaseA=()=>{ const s=S.lapStep; return s<5||(s>=10&&s<15); };
 const activeArrow=(r,c)=>{
   const a=arrowAt(r,c);if(!a)return null;
-  return(isRightPhase()&&a[2]===1)||(!isRightPhase()&&a[2]===-1)?a:null;
+  return(isPhaseA()&&a[2]===-1)||(!isPhaseA()&&a[2]===1)?a:null;
 };
 
 // ── MOVEMENT ───────────────────────────────────────────────────
-function tryPushDown(id,isPit=false){
+// Reculer = col+1 (vers l'arrière du circuit)
+function tryPushBack(id,isPit=false){
   const{row,col}=S.cars[id];
-  if(row+1>=ROWS)return false;
-  const nr=row+1,occ=getCar(nr,col);
-  if(!occ){movePiece(id,nr,col);return true;}
-  if(isPit){movePiece(occ,row,col);movePiece(id,nr,col);return true;}
+  if(col+1>=COLS)return false;
+  const nc=col+1,occ=getCar(row,nc);
+  if(!occ){movePiece(id,row,nc);return true;}
+  if(isPit){movePiece(occ,row,col);movePiece(id,row,nc);return true;}
   const chain=[id];
-  let scan=nr;
-  while(scan<ROWS&&getCar(scan,col)){chain.push(getCar(scan,col));scan++;}
-  if(scan>=ROWS)return false;
-  for(let i=chain.length-1;i>=0;i--)movePiece(chain[i],S.cars[chain[i]].row+1,col);
+  let scan=nc;
+  while(scan<COLS&&getCar(row,scan)){chain.push(getCar(row,scan));scan++;}
+  if(scan>=COLS)return false;
+  for(let i=chain.length-1;i>=0;i--)movePiece(chain[i],S.cars[chain[i]].row,S.cars[chain[i]].col+1);
   return true;
 }
 
-function applyPushAgainstSide(id,sideCol){
+// Collision avec mur (row 0) ou apron (row ROWS-1)
+function applyPushAgainstEdge(id,sideRow){
   if(id==='player'){
-    if(sideCol===0){S.gauges.tires=Math.max(0,S.gauges.tires-1);stepLog('Vous touchez l\'apron ! Pneus -1','dan');}
-    else{S.gauges.tires=Math.max(0,S.gauges.tires-1);S.gauges.engine=Math.max(0,S.gauges.engine-1);stepLog('Vous touchez le mur ! Pneus -1, Moteur -1','dan');}
-    checkLose();
-    tryPushDown(id);
+    if(sideRow===ROWS-1){
+      S.gauges.tires=Math.max(0,S.gauges.tires-1);
+      stepLog('Vous touchez l\'apron ! Pneus -1','dan');
+    }else{
+      S.gauges.tires=Math.max(0,S.gauges.tires-1);
+      S.gauges.engine=Math.max(0,S.gauges.engine-1);
+      stepLog('Vous touchez le mur ! Pneus -1, Moteur -1','dan');
+    }
+    checkLose();tryPushBack(id);
   }else{
-    // Rivals: no damage, go directly to bottom row
-    const col=S.cars[id].col;
-    let target=ROWS-1;
-    while(target>S.cars[id].row&&getCar(target,col))target--;
-    if(target>S.cars[id].row)movePiece(id,target,col);
-    stepLog(`${CAR_LBL[id]} → ligne du bas`,'neu');
+    const row=S.cars[id].row;
+    let target=COLS-1;
+    while(target>S.cars[id].col&&getCar(row,target))target--;
+    if(target>S.cars[id].col)movePiece(id,row,target);
+    stepLog(`${CAR_LBL[id]} → position arrière`,'neu');
   }
 }
 
-function pushLateral(id,row,col,dCol){
-  const nc=col+dCol;
-  if(!inBounds(row,nc)){applyPushAgainstSide(id,col);return false;}
-  const occ=getCar(row,nc);
-  if(occ){pushLateral(occ,row,nc,dCol);if(getCar(row,nc))return false;}
-  movePiece(id,row,nc);
-  if(nc===0||nc===COLS-1)applyPushAgainstSide(id,nc);
+// Changement de voie = déplacement vertical (row ±1)
+function pushLateral(id,row,col,dRow){
+  const nr=row+dRow;
+  if(!inBounds(nr,col)){applyPushAgainstEdge(id,row);return false;}
+  const occ=getCar(nr,col);
+  if(occ){pushLateral(occ,nr,col,dRow);if(getCar(nr,col))return false;}
+  movePiece(id,nr,col);
+  if(nr===0||nr===ROWS-1)applyPushAgainstEdge(id,nr);
   return true;
 }
 
@@ -465,7 +456,7 @@ function resolveArrow(id){
   const{row,col}=S.cars[id];
   const a=activeArrow(row,col);
   if(!a)return;
-  stepLog(`${CAR_LBL[id]} flèche → ${a[2]>0?'droite':'gauche'}`);
+  stepLog(`${CAR_LBL[id]} flèche → ${a[2]>0?'↓ apron':'↑ mur'}`);
   pushLateral(id,row,col,a[2]);
 }
 
@@ -500,8 +491,8 @@ function processOneRival(){
   const diIdx=RIVALS.indexOf(name);
   S.stepLogs=[];
   const gaugesBefore={...S.gauges};
-  const wasAhead =S.cars[name].row<S.cars.player.row;
-  const wasBehind=S.cars[name].row>S.cars.player.row;
+  const wasAhead =S.cars[name].col<S.cars.player.col;
+  const wasBehind=S.cars[name].col>S.cars.player.col;
   const die=S.dice[diIdx],ps=S.speed;
   let choiceNeeded=false;
 
@@ -510,35 +501,35 @@ function processOneRival(){
   }else{
     const{row,col}=S.cars[name];
     if(die<ps){
-      const ok=tryPushDown(name);
+      const ok=tryPushBack(name);
       stepLog(`Vitesse ${die} < ${ps} → ${ok?'recule':'bloqué'}`,ok?'':'neu');
       resolveArrow(name);
     }else if(die===6){
-      if(row===0){stepLog('Dé 6 → déjà en tête','neu');}
+      if(col===0){stepLog('Dé 6 → déjà en tête','neu');}
       else{
-        const above=getCar(row-1,col);
-        if(!above){movePiece(name,row-1,col);stepLog('Dé 6 → avance','good');}
-        else{movePiece(above,row,col);movePiece(name,row-1,col);stepLog(`Dé 6 → échange avec ${CAR_LBL[above]}`,'good');}
+        const inFront=getCar(row,col-1);
+        if(!inFront){movePiece(name,row,col-1);stepLog('Dé 6 → avance','good');}
+        else{movePiece(inFront,row,col);movePiece(name,row,col-1);stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');}
         resolveArrow(name);
       }
     }else{
-      if(row===0){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
+      if(col===0){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
       else{
-        const above=getCar(row-1,col);
-        if(!above){
-          movePiece(name,row-1,col);
+        const inFront=getCar(row,col-1);
+        if(!inFront){
+          movePiece(name,row,col-1);
           stepLog(`Vitesse ${die} > ${ps} → avance`,'good');
           resolveArrow(name);
           if(ps<=2&&(wasAhead||wasBehind)){
             const{row:pr,col:pc}=S.cars.player;
-            if(pr>0&&!getCar(pr-1,pc)){movePiece('player',pr-1,pc);stepLog('Aspiration ! Entraîné en avant','good');}
+            if(pc>0&&!getCar(pr,pc-1)){movePiece('player',pr,pc-1);stepLog('Aspiration ! Entraîné en avant','good');}
           }
         }else{
-          const canL=inBounds(row,col-1)&&!getCar(row,col-1);
-          const canR=inBounds(row,col+1)&&!getCar(row,col+1);
-          if(canL&&canR){choiceNeeded=true;S.pendingChoice={rivalName:name,die,gaugesBefore,wasAhead,wasBehind};}
-          else if(canL){movePiece(name,row,col-1);stepLog('Bloqué → décale gauche');if(col-1===0)applyPushAgainstSide(name,0);resolveArrow(name);}
-          else if(canR){movePiece(name,row,col+1);stepLog('Bloqué → décale droite');if(col+1===COLS-1)applyPushAgainstSide(name,COLS-1);resolveArrow(name);}
+          const canU=inBounds(row-1,col)&&!getCar(row-1,col);
+          const canD=inBounds(row+1,col)&&!getCar(row+1,col);
+          if(canU&&canD){choiceNeeded=true;S.pendingChoice={rivalName:name,die,gaugesBefore,wasAhead,wasBehind};}
+          else if(canU){movePiece(name,row-1,col);stepLog('Bloqué → voie haute');if(row-1===0)applyPushAgainstEdge(name,0);resolveArrow(name);}
+          else if(canD){movePiece(name,row+1,col);stepLog('Bloqué → voie basse');if(row+1===ROWS-1)applyPushAgainstEdge(name,ROWS-1);resolveArrow(name);}
           else{stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');}
         }
       }
@@ -585,11 +576,11 @@ function continueRivals(){closeModal();if(S.gameOver){showEndModal();return;}pro
 function showChoiceModal(){
   const{rivalName}=S.pendingChoice;
   showModal(`
-    <div class="modal-title" style="color:#2563eb">Choisir la direction</div>
-    <div class="modal-body"><b>${CAR_LBL[rivalName]}</b> est bloqué vers l'avant. Quelle direction ?</div>
+    <div class="modal-title" style="color:#2563eb">Choisir la voie</div>
+    <div class="modal-body"><b>${CAR_LBL[rivalName]}</b> est bloqué vers l'avant. Quelle voie ?</div>
     <div class="modal-btns">
-      <button class="btn btn-s" onclick="resolveChoice(-1)">← Gauche</button>
-      <button class="btn btn-s" onclick="resolveChoice(1)">Droite →</button>
+      <button class="btn btn-s" onclick="resolveChoice(-1)">↑ Mur</button>
+      <button class="btn btn-s" onclick="resolveChoice(1)">↓ Apron</button>
     </div>`,'choose');
 }
 
@@ -598,10 +589,10 @@ function resolveChoice(dir){
   const{rivalName,die,gaugesBefore}=S.pendingChoice;
   S.pendingChoice=null;S.stepLogs=[];
   const{row,col}=S.cars[rivalName];
-  const nc=col+dir;
-  movePiece(rivalName,row,nc);
-  stepLog(`${CAR_LBL[rivalName]} → ${dir>0?'droite':'gauche'} (votre choix)`);
-  if(nc===0||nc===COLS-1)applyPushAgainstSide(rivalName,nc);
+  const nr=row+dir;
+  movePiece(rivalName,nr,col);
+  stepLog(`${CAR_LBL[rivalName]} → ${dir>0?'↓ apron':'↑ mur'} (votre choix)`);
+  if(nr===0||nr===ROWS-1)applyPushAgainstEdge(rivalName,nr);
   resolveArrow(rivalName);
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
   S.movedCar=rivalName;S.rivalIdx++;glogAll();render();
@@ -621,7 +612,7 @@ function doPits(restT,restF){
   let drops=0;
   if(restT){S.gauges.tires=6;drops++;glog('Stands : Pneus → 6','good');}
   if(restF){S.gauges.fuel=6; drops++;glog('Stands : Carbu → 6','good');}
-  for(let i=0;i<drops;i++)tryPushDown('player',true);
+  for(let i=0;i<drops;i++)tryPushBack('player',true);
   S.speed=3;S._baseSpeed=3;
   S.lapStep=Math.min(S.lapStep+1,19);
   glog(`Arrêt terminé. Vitesse→3, tour→${(S.lapStep+1)*10}`);
@@ -641,18 +632,19 @@ function applySpeedEffects(spd){
   checkLose();
 }
 
-function doLateral(dCol){
+// Changement de voie joueur : dRow négatif = vers mur (haut), positif = vers apron (bas)
+function doLateral(dRow){
   const{row,col}=S.cars.player;
-  const steps=Math.abs(dCol),dir=Math.sign(dCol);
+  const steps=Math.abs(dRow),dir=Math.sign(dRow);
   for(let s=1;s<=steps;s++){
-    const nc=col+dir*s;
-    if(!inBounds(row,nc)){glog('Impossible : hors piste');return;}
-    if(getCar(row,nc))   {glog('Impossible : bloqué');   return;}
+    const nr=row+dir*s;
+    if(!inBounds(nr,col)){glog('Impossible : hors piste');return;}
+    if(getCar(nr,col)){glog('Impossible : bloqué');return;}
   }
-  movePiece('player',row,col+dCol);
+  movePiece('player',row+dRow,col);
   const before=S.gauges.tires;
   S.gauges.tires=Math.max(0,S.gauges.tires-steps);
-  glog(`Changement voie ${steps} ${dCol>0?'→':'←'} · Pneus -${steps}`);
+  glog(`Changement voie ${steps} ${dRow>0?'↓ Apron':'↑ Mur'} · Pneus -${steps}`);
   checkLose();
   if(S.gauges.tires<before)setTimeout(()=>launchGaugeFlies({tires:S.gauges.tires-before}),100);
   S.phase='dice';render();
@@ -705,9 +697,7 @@ function endGame(){
   const ord=standings();
   S.finalPos=ord.indexOf('player')+1;
   S.won=S.finalPos<=Math.ceil(ord.length/2);
-  // Final lap score (tour 200)
   S.turnScore+=S.diff*200*(1/S.finalPos);
-  // Finish bonus if race completed (won or reached end)
   S.turnScore+=S.diff*1000*(1/S.finalPos);
   S.finalScore=S.turnScore;
   glog(`Course terminée ! P${S.finalPos}.`,S.won?'good':'imp');
@@ -759,7 +749,7 @@ function showEndModal(){
     <div class="name-entry">
       <label class="name-lbl">Votre nom (6 lettres)</label>
       <input id="name-input" type="text" class="name-input" maxlength="6"
-        placeholder="AAAAAА" autocomplete="off" autocorrect="off" spellcheck="false"
+        placeholder="AAAAAA" autocomplete="off" autocorrect="off" spellcheck="false"
         oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6)">
       <button class="btn btn-p" onclick="submitScore()" style="width:100%">Valider et sauvegarder ✓</button>
     </div>
@@ -777,8 +767,7 @@ function launchGaugeFlies(deltas){
   const keys=['tires','fuel','engine'];
   for(const[k,v] of Object.entries(deltas)){
     const idx=keys.indexOf(k);
-    const toEl=items[idx];
-    if(!toEl)continue;
+    const toEl=items[idx];if(!toEl)continue;
     const fromEl=document.getElementById('ov').querySelector('.modal')||document.getElementById('action-box');
     flyBadge(`${v>0?'+':''}${v} ${GAUGE_ICONS[k]}`,fromEl||document.body,toEl,v>0?'#16a34a':'#dc2626');
   }
@@ -788,8 +777,7 @@ function flyBadge(text,fromEl,toEl,color){
   const fr=fromEl.getBoundingClientRect();
   const to=toEl.getBoundingClientRect();
   const b=document.createElement('div');
-  b.className='fly-badge';
-  b.textContent=text;
+  b.className='fly-badge';b.textContent=text;
   b.style.cssText=`left:${fr.left+fr.width/2}px;top:${fr.top+fr.height/2}px;color:${color};background:#fff;border:1px solid ${color};padding:2px 7px;border-radius:5px;`;
   document.body.appendChild(b);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
@@ -837,38 +825,36 @@ function renderSpeed(){
 function renderArrowPhase(){
   const el=document.getElementById('arr-phase');
   if(!el)return;
-  const right=isRightPhase();
-  el.textContent=right?'▷ Droite':'◁ Gauche';
-  el.className='arr-phase'+(right?'':' left');
+  const phaseA=isPhaseA();
+  el.textContent=phaseA?'↑ Mur':'↓ Apron';
+  el.className='arr-phase'+(phaseA?'':' left');
 }
 
+// Grille : itère COLS (positions) puis ROWS (voies)
 function renderTrack(){
   const grid=document.getElementById('tgrid');
   grid.innerHTML='';
-  for(let r=0;r<ROWS;r++){
-    const row=document.createElement('div');
-    row.className='trow';
-    for(let c=0;c<COLS;c++){
+  for(let c=0;c<COLS;c++){
+    const colEl=document.createElement('div');
+    colEl.className='tcol';
+    for(let r=0;r<ROWS;r++){
       const cell=document.createElement('div');
       cell.className='tcell';
-      // Arrow — big and colored
       const arr=arrowAt(r,c);
       if(arr){
         const active=activeArrow(r,c);
         const span=document.createElement('span');
-        const dir=arr[2]>0?'r':'l';
+        const dir=arr[2]>0?'d':'u';
         span.className='arr '+(active?`active-${dir}`:'dim');
-        span.textContent=arr[2]>0?'▷':'◁';
+        span.textContent=arr[2]>0?'↓':'↑';
         cell.appendChild(span);
       }
-      // Starting position label
       const si=ALL_STARTS.findIndex(([sr,sc])=>sr===r&&sc===c);
       if(si>=0){
         const sn=document.createElement('span');
         sn.className='pos-num';sn.textContent=si+1;
         cell.appendChild(sn);
       }
-      // Car token
       const id=S.grid[r][c];
       if(id){
         if(id===S.movedCar)cell.classList.add('hl');
@@ -880,9 +866,9 @@ function renderTrack(){
         tok.textContent=id==='player'?S.diff:CAR_LBL[id];
         cell.appendChild(tok);
       }
-      row.appendChild(cell);
+      colEl.appendChild(cell);
     }
-    grid.appendChild(row);
+    grid.appendChild(colEl);
   }
 }
 
@@ -920,16 +906,7 @@ function renderLap(){
   document.getElementById('lap-num').textContent=(S.lapStep+1)*10;
 }
 
-function renderDice(){
-  const el=document.getElementById('dice-ui');
-  if(!S.dice.length){el.innerHTML='<span style="font-size:.65rem;color:#cbd5e1">Pas encore lancés</span>';return;}
-  el.innerHTML=RIVALS.map((n,i)=>{
-    const used=S.diceUsed[i],eq=S.dice[i]===S.speed;
-    return`<div class="die ${used?'used':''} ${eq?'eq':''} appear"
-      style="background:${DIE_BG[n]};color:#fff" title="${CAR_LBL[n]}">${S.dice[i]}</div>`;
-  }).join('');
-}
-
+// Classement dans le strip apron (bas, horizontal)
 function renderStandings(){
   const el=document.getElementById('apron-strip');
   if(!el)return;
@@ -943,6 +920,7 @@ function renderStandings(){
     }).join('');
 }
 
+// Vitesse + dés dans le strip mur (haut, horizontal)
 function renderSideWall(){
   const el=document.getElementById('wall-strip');
   if(!el)return;
@@ -950,7 +928,7 @@ function renderSideWall(){
     ?RIVALS.map((n,i)=>
         `<div class="strip-die" style="background:${DIE_BG[n]};opacity:${S.diceUsed[i]?.28:1}">${S.dice[i]}</div>`
       ).join('')
-    :'<span style="font-size:.55rem;opacity:.35;color:#64748b">—</span>';
+    :'<span style="font-size:.55rem;opacity:.35;color:#475569">—</span>';
   el.innerHTML=`<div class="strip-lbl">VIT.</div>
     <div class="strip-spd">${S.speed||'—'}</div>
     <div class="strip-sep"></div>
@@ -967,7 +945,7 @@ function renderPhase(){
   const el  =document.getElementById('phase-ui');
   const last=S.lapStep>=18;
   let html  =last&&S.phase!=='gameover'?'<div class="flag-w">🏳️ DRAPEAU BLANC — Dernier tour !</div>':'';
-  const pc  =S.cars.player?S.cars.player.col:1;
+  const pr  =S.cars.player?S.cars.player.row:1;
 
   switch(S.phase){
     case'start':
@@ -982,13 +960,13 @@ function renderPhase(){
       <div class="phase-desc">Cliquez votre vitesse (max ±2). Effets au lancer des dés.</div>`;break;
     case'lateral':
       html+=`<div class="phase-title">③ Changer de voie (optionnel)</div>
-      <div class="phase-desc">1 ou 2 cases. Chaque case coûte 1 pneu.</div>
+      <div class="phase-desc">1 ou 2 voies. Chaque voie coûte 1 pneu.</div>
       <div class="btn-row">
-        <button class="btn btn-s" onclick="doLateral(-2)" ${pc>=2?'':'disabled'}>← 2</button>
-        <button class="btn btn-s" onclick="doLateral(-1)" ${pc>=1?'':'disabled'}>← 1</button>
+        <button class="btn btn-s" onclick="doLateral(-2)" ${pr>=2?'':'disabled'}>↑ 2</button>
+        <button class="btn btn-s" onclick="doLateral(-1)" ${pr>=1?'':'disabled'}>↑ 1</button>
         <button class="btn btn-p" onclick="skipLateral()">Passer →</button>
-        <button class="btn btn-s" onclick="doLateral(1)"  ${pc<=1?'':'disabled'}>1 →</button>
-        <button class="btn btn-s" onclick="doLateral(2)"  ${pc<=0?'':'disabled'}>2 →</button>
+        <button class="btn btn-s" onclick="doLateral(1)"  ${pr<=ROWS-2?'':'disabled'}>↓ 1</button>
+        <button class="btn btn-s" onclick="doLateral(2)"  ${pr<=ROWS-3?'':'disabled'}>↓ 2</button>
       </div>`;break;
     case'dice':
       html+=`<div class="phase-title">④ Lancer les dés</div>
