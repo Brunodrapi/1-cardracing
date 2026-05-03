@@ -216,12 +216,12 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
   <h3>Choisissez votre position de départ</h3>
   <p>1 = Pôle (facile) &nbsp;·&nbsp; 6 = Dernier (difficile)</p>
   <div class="diff-grid">
-    <button class="diff-btn sel" onclick="selectDiff(1)">1<br><small>Pôle</small></button>
-    <button class="diff-btn" onclick="selectDiff(2)">2</button>
-    <button class="diff-btn" onclick="selectDiff(3)">3</button>
-    <button class="diff-btn" onclick="selectDiff(4)">4</button>
-    <button class="diff-btn" onclick="selectDiff(5)">5</button>
-    <button class="diff-btn" onclick="selectDiff(6)">6<br><small>Dernier</small></button>
+    <button class="diff-btn" onclick="selectDiff(1)">1<br><small>🛺 Tricycle</small></button>
+    <button class="diff-btn" onclick="selectDiff(2)">2<br><small>🚗 Débutant</small></button>
+    <button class="diff-btn" onclick="selectDiff(3)">3<br><small>🏎️ Amateur</small></button>
+    <button class="diff-btn" onclick="selectDiff(4)">4<br><small>🔥 Pro</small></button>
+    <button class="diff-btn" onclick="selectDiff(5)">5<br><small>💀 Expert</small></button>
+    <button class="diff-btn sel" onclick="selectDiff(6)">6<br><small>🏆 Champion</small></button>
   </div>
   <button class="start-btn" onclick="startGame()">DÉMARRER LA COURSE</button>
   <div class="rules">
@@ -1004,7 +1004,7 @@ function renderPhase(){
 }
 
 // ── NAVIGATION ─────────────────────────────────────────────────
-let selDiff=1;
+let selDiff=6;
 function selectDiff(d){
   selDiff=d;
   document.querySelectorAll('.diff-btn').forEach((b,i)=>b.classList.toggle('sel',i+1===d));
