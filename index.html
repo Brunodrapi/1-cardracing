@@ -85,6 +85,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s;position:relative;z-index:3}
 .car.player-car{width:52px;height:52px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.35rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite}
 .car.rival-car{width:54px;height:48px;border-radius:9px;font-size:.6rem;color:#fff;text-transform:uppercase}
+.car.car-img{width:92%;height:88%;object-fit:contain;background:transparent !important;border-radius:0 !important;box-shadow:none !important}
 .car.moved{animation:car-moved .4s ease-out}
 
 /* ─ STRIPS LATÉRAUX (contenu horizontal) ─── */
@@ -307,6 +308,7 @@ const ARROWS=[
   [2,4, 1],[2,3, 1],[2,2, 1],[2,1, 1],  // ↓ vers apron
 ];
 
+const CAR_IMG={red:'car-red.png'};
 const CAR_BG ={player:'#0d9488',red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
 const CAR_FG ={player:'#fff',red:'#fff',blue:'#fff',green:'#fff',yellow:'#fff',cyan:'#fff'};
 const CAR_LBL={player:'★',red:'R',blue:'B',green:'G',yellow:'J',cyan:'C'};
@@ -858,12 +860,20 @@ function renderTrack(){
       const id=S.grid[r][c];
       if(id){
         if(id===S.movedCar)cell.classList.add('hl');
-        const tok=document.createElement('div');
-        tok.className='car '+(id==='player'?'player-car':'rival-car');
+        let tok;
+        if(id!=='player'&&CAR_IMG[id]){
+          tok=document.createElement('img');
+          tok.src=CAR_IMG[id];
+          tok.className='car rival-car car-img';
+          tok.alt=CAR_LBL[id];
+        }else{
+          tok=document.createElement('div');
+          tok.className='car '+(id==='player'?'player-car':'rival-car');
+          tok.style.background=CAR_BG[id];
+          tok.style.color=CAR_FG[id];
+          tok.textContent=id==='player'?S.diff:CAR_LBL[id];
+        }
         if(id===S.movedCar)tok.classList.add('moved');
-        tok.style.background=CAR_BG[id];
-        tok.style.color=CAR_FG[id];
-        tok.textContent=id==='player'?S.diff:CAR_LBL[id];
         cell.appendChild(tok);
       }
       colEl.appendChild(cell);
