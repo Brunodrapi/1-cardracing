@@ -197,7 +197,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
   75% {transform:scale(1.08) rotate(5deg)}
   100%{transform:scale(1) rotate(0);opacity:1}
 }
-.strip-die{animation:die-roll .55s ease-out both}
+.strip-die.rolling{animation:die-roll .55s ease-out both}
 @keyframes pulse-pip{0%,100%{opacity:1}50%{opacity:.3}}
 .fly-badge{position:fixed;pointer-events:none;z-index:600;font-weight:700;font-size:.85rem;padding:2px 8px;border-radius:5px;white-space:nowrap;transition:left .55s cubic-bezier(.25,.46,.45,.94),top .55s cubic-bezier(.25,.46,.45,.94),opacity .55s ease}
 
@@ -403,7 +403,7 @@ function newState(diff){
     gauges:{tires:6,fuel:6,engine:6},
     speed:3,_baseSpeed:3,
     lapStep:0,phase:'start',
-    dice:[],diceUsed:Array(5).fill(false),
+    dice:[],diceUsed:Array(5).fill(false),diceJustRolled:false,
     rivalQueue:[],rivalIdx:0,
     pendingChoice:null,stepLogs:[],movedCar:null,
     log:[{msg:'Course démarrée ! Bonne chance !',cls:'good'}],
@@ -419,6 +419,11 @@ const inBounds =(r,c)=>r>=0&&r<ROWS&&c>=0&&c<COLS;
 function movePiece(id,r,c){
   const{row:or,col:oc}=S.cars[id];
   S.grid[or][oc]=null;S.cars[id]={row:r,col:c};S.grid[r][c]=id;
+}
+function swapPieces(id1,id2){
+  const p1={...S.cars[id1]},p2={...S.cars[id2]};
+  S.grid[p1.row][p1.col]=id2;S.grid[p2.row][p2.col]=id1;
+  S.cars[id1]=p2;S.cars[id2]=p1;
 }
 const allCars=()=>['player',...RIVALS];
 
@@ -546,7 +551,7 @@ function processOneRival(){
       else{
         const inFront=getCar(row,col-1);
         if(!inFront){movePiece(name,row,col-1);stepLog('Dé 6 → avance','good');}
-        else{movePiece(inFront,row,col);movePiece(name,row,col-1);stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');}
+        else{swapPieces(name,inFront);stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');}
         resolveArrow(name);
       }
     }else{
@@ -690,6 +695,7 @@ function doLateral(dRow){
 function doRoll(){
   S.dice=RIVALS.map(()=>Math.ceil(Math.random()*6));
   S.diceUsed=S.dice.map(d=>d===S.speed);
+  S.diceJustRolled=true;
   glog(`Dés : ${RIVALS.map((n,i)=>CAR_LBL[n]+'='+S.dice[i]).join(' ')}`);
   render();
   setTimeout(()=>{
@@ -976,9 +982,11 @@ function renderStandings(){
 function renderSideWall(){
   const el=document.getElementById('wall-strip');
   if(!el)return;
+  const rolling=S.diceJustRolled;
+  S.diceJustRolled=false;
   const diceHtml=S.dice.length
     ?RIVALS.map((n,i)=>
-        `<div class="strip-die" style="background:${DIE_BG[n]};opacity:${S.diceUsed[i]?.28:1};animation-delay:${i*0.07}s">${S.dice[i]}</div>`
+        `<div class="strip-die${rolling?' rolling':''}" style="background:${DIE_BG[n]};opacity:${S.diceUsed[i]?.28:1};animation-delay:${i*0.07}s">${S.dice[i]}</div>`
       ).join('')
     :'<span style="font-size:.55rem;opacity:.35;color:#475569">—</span>';
   el.innerHTML=`<div class="strip-lbl">VIT.</div>
