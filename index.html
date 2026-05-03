@@ -24,6 +24,13 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 #setup{display:none;max-width:380px;width:100%;background:#fff;border-radius:1rem;padding:1.2rem;text-align:center;box-shadow:0 2px 16px #0002}
 #setup h3{font-size:.95rem;font-weight:700;color:#0f172a;margin-bottom:.25rem}
 #setup p{font-size:.72rem;color:#94a3b8;margin-bottom:.7rem}
+.car-pick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.6rem}
+.car-pick-btn{border:2px solid #e2e8f0;border-radius:.5rem;background:#f8fafc;cursor:pointer;padding:.35rem .2rem .25rem;display:flex;flex-direction:column;align-items:center;gap:.15rem;transition:all .15s}
+.car-pick-btn:hover{border-color:#0d9488}
+.car-pick-btn.sel{border-color:#0d9488;background:#f0fdfb;box-shadow:0 0 0 2px #0d948840}
+.car-pick-btn img{width:100%;height:auto;display:block}
+.car-pick-num{font-size:.78rem;font-weight:900;color:#0f172a;line-height:1}
+.car-pick-name{font-size:.55rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em}
 .diff-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.3rem;margin-bottom:1rem}
 .diff-btn{padding:.55rem .1rem;border-radius:.4rem;border:2px solid #e2e8f0;background:#f8fafc;color:#475569;cursor:pointer;font-size:.82rem;font-weight:700;transition:all .15s;line-height:1.3}
 .diff-btn small{display:block;font-size:.55rem;font-weight:400;color:#94a3b8}
@@ -213,7 +220,9 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 
 <!-- SETUP -->
 <div id="setup">
-  <h3>Choisissez votre position de départ</h3>
+  <h3>Choisissez votre voiture</h3>
+  <div class="car-pick-grid" id="car-pick-grid"></div>
+  <h3 style="margin-top:.7rem">Position de départ</h3>
   <p>1 = Pôle (facile) &nbsp;·&nbsp; 6 = Dernier (difficile)</p>
   <div class="diff-grid">
     <button class="diff-btn" onclick="selectDiff(1)">1<br><small>🛒 Caddie Carrefour</small></button>
@@ -310,12 +319,27 @@ const ARROWS=[
   [2,4, 1],[2,3, 1],[2,2, 1],[2,1, 1],  // ↓ vers apron
 ];
 
-const CAR_IMG={player:'car-player.png',red:'car-red.png',blue:'car-blue.png',green:'car-green.png',yellow:'car-yellow.png',cyan:'car-cyan.png'};
-const CAR_BG ={player:'#0d9488',red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
-const CAR_FG ={player:'#fff',red:'#fff',blue:'#fff',green:'#fff',yellow:'#fff',cyan:'#fff'};
-const CAR_LBL={player:'★',red:'5',blue:'B',green:'G',yellow:'J',cyan:'C'};
-const CAR_FNAME={player:'Vous',red:'Rouge',blue:'Bleu',green:'Vert',yellow:'Jaune',cyan:'Cyan'};
-const DIE_BG ={red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
+// ── CAR SKINS (ordre fixe, assignés dynamiquement selon le choix joueur) ──
+const SKINS=[
+  {img:'car-player.png',num:'12',name:'Discount Tire',bg:'#64748b',fg:'#fff'},
+  {img:'car-red.png',   num:'24',name:'Axalta',       bg:'#dc2626',fg:'#fff'},
+  {img:'car-blue.png',  num:'9', name:'NAPA',         bg:'#2563eb',fg:'#fff'},
+  {img:'car-green.png', num:'19',name:'Monster',      bg:'#16a34a',fg:'#fff'},
+  {img:'car-yellow.png',num:'22',name:'Pennzoil',     bg:'#ca8a04',fg:'#fff'},
+  {img:'car-cyan.png',  num:'11',name:'FedEx',        bg:'#7c3aed',fg:'#fff'},
+];
+// Mutable — réassignés à chaque partie selon selSkin
+let CAR_IMG={},CAR_BG={},CAR_FG={},CAR_LBL={},CAR_FNAME={},DIE_BG={};
+function applySkins(skinIdx){
+  const ids=['player',...RIVALS];
+  const order=[skinIdx,...SKINS.map((_,i)=>i).filter(i=>i!==skinIdx)];
+  ids.forEach((id,i)=>{
+    const s=SKINS[order[i]];
+    CAR_IMG[id]=s.img; CAR_BG[id]=s.bg; CAR_FG[id]=s.fg;
+    CAR_LBL[id]=s.num; CAR_FNAME[id]=s.name;
+    if(id!=='player') DIE_BG[id]=s.bg;
+  });
+}
 const GAUGE_ICONS={tires:'🛞',fuel:'⛽',engine:'⚙️'};
 
 // ── LEADERBOARD ────────────────────────────────────────────────
@@ -1004,16 +1028,30 @@ function renderPhase(){
 }
 
 // ── NAVIGATION ─────────────────────────────────────────────────
-let selDiff=6;
+let selDiff=6, selSkin=0;
 function selectDiff(d){
   selDiff=d;
   document.querySelectorAll('.diff-btn').forEach((b,i)=>b.classList.toggle('sel',i+1===d));
 }
+function selectSkin(i){
+  selSkin=i;
+  document.querySelectorAll('.car-pick-btn').forEach((b,j)=>b.classList.toggle('sel',j===i));
+}
+function renderCarPicker(){
+  document.getElementById('car-pick-grid').innerHTML=SKINS.map((s,i)=>`
+    <button class="car-pick-btn${i===selSkin?' sel':''}" onclick="selectSkin(${i})">
+      <img src="${s.img}" alt="#${s.num}">
+      <div class="car-pick-num">#${s.num}</div>
+      <div class="car-pick-name">${s.name}</div>
+    </button>`).join('');
+}
 function showSetup(){
   document.getElementById('leaderboard').style.display='none';
   document.getElementById('setup').style.display='block';
+  renderCarPicker();
 }
 function startGame(){
+  applySkins(selSkin);
   S=newState(selDiff);
   document.getElementById('setup').style.display='none';
   document.getElementById('game').style.display='flex';
