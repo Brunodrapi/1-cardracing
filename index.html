@@ -66,33 +66,24 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 /* ─ GAME CONTENT (fills remaining height) ── */
 .game-content{flex:1;display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}
 
-/* ─ TRACK — landscape (mur haut, apron bas) ─ */
+/* ─ TRACK — plateau image ─────────────────── */
 .track-outer{display:flex;flex-direction:column;width:100%;border-radius:.6rem;overflow:hidden;box-shadow:0 3px 14px #0004}
-/* Mur en haut */
 .wall-strip{height:52px;width:100%;flex-shrink:0;background:#d1d5db;display:flex;flex-direction:row;align-items:center;padding:.3rem .5rem;gap:.4rem;border-bottom:3px dashed #fff;overflow:hidden}
-/* Apron en bas */
 .apron-strip{height:52px;width:100%;flex-shrink:0;background:#fbbf24;display:flex;flex-direction:row;align-items:center;padding:.3rem .5rem;gap:.4rem;border-top:3px solid #f59e0b;overflow:hidden}
-/* Grille — flex row (colonnes = positions de course gauche→droite) */
-.tgrid{display:flex;flex-direction:row;gap:3px;background:#8a9099;padding:3px;width:100%}
-.tcol{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
-.tcell{flex:1;min-height:90px;border-radius:4px;background:#c5c9d1;display:flex;align-items:center;justify-content:center;position:relative;transition:background .2s}
-.tcell.hl{background:#bbf7d0}
-
-/* Flèches — centrées, ↑/↓ */
-.tcell .arr{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  font-size:2rem;line-height:1;pointer-events:none;
-  transition:opacity .3s,color .3s;z-index:1;
-}
-.tcell .arr.active-d{color:rgba(180,83,9,.88);opacity:1}
-.tcell .arr.active-u{color:rgba(30,58,138,.88);opacity:1}
-.tcell .arr.dim{opacity:.18;color:#b0b6bf}
-.tcell .pos-num{position:absolute;top:4px;right:5px;font-size:.58rem;color:#94a3b8;font-weight:700;pointer-events:none;z-index:2}
-.car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s;position:relative;z-index:3}
-.car.player-car{width:52px;height:52px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.35rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite}
-.car.rival-car{width:54px;height:48px;border-radius:9px;font-size:.6rem;color:#fff;text-transform:uppercase}
-.car.car-img{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);object-fit:contain;background:transparent !important;border-radius:0 !important;box-shadow:none !important}
+.board-wrap{position:relative;width:100%;flex-shrink:0}
+.board-img{width:100%;height:auto;display:block}
+.board-overlay{position:absolute;inset:0;pointer-events:none}
+/* tokens positionnés absolument sur le plateau */
+.board-token{position:absolute;transform:translate(-50%,-50%);pointer-events:none}
+.board-token.arr{font-size:4vw;line-height:1;transition:opacity .3s,color .3s;z-index:1;text-shadow:0 1px 3px #000a}
+.board-token.arr.active-d{color:rgba(251,146,60,.95);opacity:1}
+.board-token.arr.active-u{color:rgba(147,197,253,.95);opacity:1}
+.board-token.arr.dim{opacity:.2;color:#fff}
+.board-token.pos-num{font-size:1.8vw;color:rgba(255,255,255,.5);font-weight:700;z-index:2;transform:translate(-50%,-50%) translate(6vw,-3vw)}
+.board-token.car{z-index:3;transform:translate(-50%,-50%)}
+.board-car-img{width:16%;height:auto;object-fit:contain;filter:drop-shadow(0 2px 4px #000a)}
+.board-car-img.moved{animation:car-moved .4s ease-out}
+.board-car-hl::before{content:'';position:absolute;inset:-4px;border-radius:6px;background:#bbf7d080;z-index:-1}
 .car.moved{animation:car-moved .4s ease-out}
 
 /* ─ STRIPS LATÉRAUX (contenu horizontal) ─── */
@@ -208,8 +199,6 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 
 @media(min-width:640px){
   .tcell{min-height:100px}
-  .car.player-car{width:56px;height:56px;font-size:1.5rem}
-  .car.rival-car{width:58px;height:54px;font-size:.65rem}
 }
 </style>
 </head>
@@ -270,10 +259,13 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 
   <div class="game-content">
 
-    <!-- Circuit horizontal : mur haut · grille · apron bas -->
+    <!-- Circuit : image plateau + overlay voitures/flèches -->
     <div class="track-outer">
       <div class="wall-strip" id="wall-strip"></div>
-      <div class="tgrid" id="tgrid"></div>
+      <div class="board-wrap">
+        <img class="board-img" src="1_card_board_3.png" alt="Circuit">
+        <div class="board-overlay" id="board-overlay"></div>
+      </div>
       <div class="apron-strip" id="apron-strip"></div>
     </div>
 
@@ -313,6 +305,9 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 // row 0 = mur (haut), row 1 = milieu, row 2 = apron (bas)
 // col 0 = avant (tête), col 4 = arrière (queue)
 const ROWS=3, COLS=5;
+// Positions cellules sur le plateau (% image width/height)
+const CELL_X=[14.0,31.5,50.0,68.5,85.5]; // col 0-4 (front→back)
+const CELL_Y=[32.0,54.0,79.0]; // row 0-2 (wall→apron)
 const RIVALS=['red','blue','green','yellow','cyan'];
 
 // Index 0=P1(pôle/facile) … index 5=P6(dernier/difficile)
@@ -868,53 +863,57 @@ function renderArrowPhase(){
   el.className='arr-phase'+(phaseA?'':' left');
 }
 
-// Grille : itère COLS (positions) puis ROWS (voies)
+// Plateau : voitures et flèches positionnées absolument sur l'image
 function renderTrack(){
-  const grid=document.getElementById('tgrid');
-  grid.innerHTML='';
-  for(let c=0;c<COLS;c++){
-    const colEl=document.createElement('div');
-    colEl.className='tcol';
-    for(let r=0;r<ROWS;r++){
-      const cell=document.createElement('div');
-      cell.className='tcell';
+  const overlay=document.getElementById('board-overlay');
+  if(!overlay)return;
+  overlay.innerHTML='';
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      const lx=CELL_X[c]+'%';
+      const ly=CELL_Y[r]+'%';
+      // Flèche
       const arr=arrowAt(r,c);
       if(arr){
         const active=activeArrow(r,c);
-        const span=document.createElement('span');
         const dir=arr[2]>0?'d':'u';
-        span.className='arr '+(active?`active-${dir}`:'dim');
+        const span=document.createElement('span');
+        span.className='board-token arr '+(active?`active-${dir}`:'dim');
         span.textContent=arr[2]>0?'↓':'↑';
-        cell.appendChild(span);
+        span.style.left=lx;span.style.top=ly;
+        overlay.appendChild(span);
       }
+      // Numéro de départ
       const si=ALL_STARTS.findIndex(([sr,sc])=>sr===r&&sc===c);
       if(si>=0){
         const sn=document.createElement('span');
-        sn.className='pos-num';sn.textContent=si+1;
-        cell.appendChild(sn);
+        sn.className='board-token pos-num';
+        sn.textContent=si+1;
+        sn.style.left=lx;sn.style.top=ly;
+        overlay.appendChild(sn);
       }
+      // Voiture
       const id=S.grid[r][c];
       if(id){
-        if(id===S.movedCar)cell.classList.add('hl');
-        let tok;
+        const hl=id===S.movedCar;
         if(CAR_IMG[id]){
-          tok=document.createElement('img');
+          const tok=document.createElement('img');
           tok.src=CAR_IMG[id];
-          tok.className='car car-img';
+          tok.className='board-token board-car-img'+(hl?' moved':'');
           tok.alt=CAR_LBL[id];
+          tok.style.left=lx;tok.style.top=ly;
+          overlay.appendChild(tok);
         }else{
-          tok=document.createElement('div');
-          tok.className='car '+(id==='player'?'player-car':'rival-car');
+          const tok=document.createElement('div');
+          tok.className='board-token car '+(id==='player'?'player-car':'rival-car')+(hl?' moved':'');
           tok.style.background=CAR_BG[id];
           tok.style.color=CAR_FG[id];
           tok.textContent=id==='player'?S.diff:CAR_LBL[id];
+          tok.style.left=lx;tok.style.top=ly;
+          overlay.appendChild(tok);
         }
-        if(id===S.movedCar)tok.classList.add('moved');
-        cell.appendChild(tok);
       }
-      colEl.appendChild(cell);
     }
-    grid.appendChild(colEl);
   }
 }
 
