@@ -85,7 +85,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .car{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1;transition:transform .2s;position:relative;z-index:3}
 .car.player-car{width:52px;height:52px;border-radius:50%;background:#0d9488;color:#fff;font-size:1.35rem;box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488;animation:player-pulse 2s ease-in-out infinite}
 .car.rival-car{width:54px;height:48px;border-radius:9px;font-size:.6rem;color:#fff;text-transform:uppercase}
-.car.car-img{width:92%;height:88%;object-fit:contain;background:transparent !important;border-radius:0 !important;box-shadow:none !important}
+.car.car-img{width:98%;height:98%;object-fit:contain;background:transparent !important;border-radius:0 !important;box-shadow:none !important}
 .car.moved{animation:car-moved .4s ease-out}
 
 /* ─ STRIPS LATÉRAUX (contenu horizontal) ─── */
@@ -97,6 +97,9 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .strip-sep{width:1px;height:32px;background:rgba(0,0,0,.12);margin:0 .15rem;flex-shrink:0}
 .strip-dice{display:flex;flex-direction:row;gap:3px;align-items:center}
 .strip-die{width:24px;height:24px;border-radius:.28rem;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0}
+.strip-consequence{font-size:.6rem;font-weight:800;white-space:nowrap;flex-shrink:0;padding:.15rem .3rem;border-radius:.3rem}
+.wall-consequence{background:rgba(30,58,138,.15);color:#1e3a8a}
+.apron-consequence{background:rgba(146,64,14,.15);color:#92400e}
 
 /* ─ GAUGES ───────────────────────────────── */
 .gauges-bar{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001}
@@ -311,7 +314,7 @@ const ARROWS=[
 const CAR_IMG={red:'car-red.png'};
 const CAR_BG ={player:'#0d9488',red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
 const CAR_FG ={player:'#fff',red:'#fff',blue:'#fff',green:'#fff',yellow:'#fff',cyan:'#fff'};
-const CAR_LBL={player:'★',red:'R',blue:'B',green:'G',yellow:'J',cyan:'C'};
+const CAR_LBL={player:'★',red:'5',blue:'B',green:'G',yellow:'J',cyan:'C'};
 const DIE_BG ={red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#eab308',cyan:'#06b6d4'};
 const GAUGE_ICONS={tires:'🛞',fuel:'⛽',engine:'⚙️'};
 
@@ -916,7 +919,7 @@ function renderLap(){
   document.getElementById('lap-num').textContent=(S.lapStep+1)*10;
 }
 
-// Classement dans le strip apron (bas, horizontal)
+// Classement + rappel conséquence apron (bas, horizontal)
 function renderStandings(){
   const el=document.getElementById('apron-strip');
   if(!el)return;
@@ -927,10 +930,12 @@ function renderStandings(){
         <div class="strip-pnum">${i+1}</div>
         <div class="strip-car" style="background:${CAR_BG[id]};${isP?'outline:2px solid #fff;outline-offset:-1px':''}">${CAR_LBL[id]}</div>
       </div>`;
-    }).join('');
+    }).join('')+
+    `<div class="strip-sep" style="margin-left:auto"></div>
+     <div class="strip-consequence apron-consequence">⬅ 🛞-1</div>`;
 }
 
-// Vitesse + dés dans le strip mur (haut, horizontal)
+// Vitesse + dés + rappel conséquence mur (haut, horizontal)
 function renderSideWall(){
   const el=document.getElementById('wall-strip');
   if(!el)return;
@@ -943,7 +948,9 @@ function renderSideWall(){
     <div class="strip-spd">${S.speed||'—'}</div>
     <div class="strip-sep"></div>
     <div class="strip-lbl">DÉS</div>
-    <div class="strip-dice">${diceHtml}</div>`;
+    <div class="strip-dice">${diceHtml}</div>
+    <div class="strip-sep" style="margin-left:auto"></div>
+    <div class="strip-consequence wall-consequence">⬅ 🛞-1 ⚙️-1</div>`;
 }
 
 function renderLog(){
