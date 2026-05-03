@@ -537,7 +537,7 @@ function processOneRival(){
   }
   if(choiceNeeded){render();showChoiceModal();return;}
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
-  S.movedCar=name;S.rivalIdx++;glogAll();render();
+  S.movedCar=name;S.rivalIdx++;glogAll();
   showRivalModal(name,die,gaugeDeltas);
 }
 
@@ -571,7 +571,7 @@ function showRivalModal(name,die,gaugeDeltas){
   if(Object.keys(gaugeDeltas).length>0)setTimeout(()=>launchGaugeFlies(gaugeDeltas),100);
 }
 
-function continueRivals(){closeModal();if(S.gameOver){showEndModal();return;}processOneRival();}
+function continueRivals(){closeModal();render();if(S.gameOver){showEndModal();return;}processOneRival();}
 
 function showChoiceModal(){
   const{rivalName}=S.pendingChoice;
@@ -595,7 +595,7 @@ function resolveChoice(dir){
   if(nr===0||nr===ROWS-1)applyPushAgainstEdge(rivalName,nr);
   resolveArrow(rivalName);
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
-  S.movedCar=rivalName;S.rivalIdx++;glogAll();render();
+  S.movedCar=rivalName;S.rivalIdx++;glogAll();
   showRivalModal(rivalName,die,gaugeDeltas);
 }
 
