@@ -108,23 +108,23 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .wall-consequence{background:rgba(30,58,138,.15);color:#1e3a8a}
 .apron-consequence{background:rgba(146,64,14,.15);color:#92400e}
 
-/* ─ GAUGES ───────────────────────────────── */
-.gauges-bar{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001;margin:0 .5rem}
-.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
-.gauge{display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.5rem .3rem .45rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0}
-.gico{font-size:1.5rem;line-height:1}
-.gval{font-size:2rem;font-weight:900;color:#0f172a;line-height:1.1}
-.gval.gwarn{color:#dc2626;animation:pulse-pip 1s infinite}
-.glbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;font-weight:700}
-.gbar-wrap{width:90%;height:7px;background:#e2e8f0;border-radius:4px;overflow:hidden}
-.gbar{height:100%;border-radius:4px;transition:width .35s,background .35s}
+/* ─ JOURNAL (herbe) ──────────────────────── */
+.journal-wrap{background:#15803d;padding:.5rem .7rem;flex:1;min-height:0}
+.info-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.55);margin-bottom:.3rem;font-weight:700}
+.log-box{max-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:.08rem}
+.le{font-size:.78rem;color:#bbf7d0;line-height:1.35;padding:.06rem 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.le.imp{color:#fde68a}.le.dan{color:#fca5a5}.le.good{color:#86efac}.le.neu{color:rgba(255,255,255,.45)}
 
-/* ─ JOURNAL ──────────────────────────────── */
-.journal-wrap{background:#fff;border-radius:.5rem;padding:.5rem;box-shadow:0 1px 3px #0001;flex:1;min-height:0;margin:0 .5rem}
-.info-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:.3rem}
-.log-box{max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:.06rem}
-.le{font-size:.78rem;color:#64748b;line-height:1.3;padding:.05rem 0;border-bottom:1px solid #f8fafc}
-.le.imp{color:#d97706}.le.dan{color:#dc2626}.le.good{color:#16a34a}
+/* ─ HABITACLE (tableau de bord) ─────────── */
+.gauges-bar{background:#0f172a;padding:.55rem .5rem;margin:0}
+.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+.gauge{display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.5rem .3rem .45rem;background:#1e293b;border-radius:.5rem;border:1px solid #334155}
+.gico{font-size:1.5rem;line-height:1}
+.gval{font-size:2rem;font-weight:900;color:#fb923c;line-height:1.1}
+.gval.gwarn{color:#dc2626;animation:pulse-pip 1s infinite}
+.glbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;font-weight:700}
+.gbar-wrap{width:90%;height:7px;background:#334155;border-radius:4px;overflow:hidden}
+.gbar{height:100%;border-radius:4px;transition:width .35s,background .35s}
 
 /* ─ ACTION BAR ───────────────────────────── */
 .action-bar{
@@ -159,8 +159,8 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .spd-confirm button:hover{background:#0f766e}
 
 /* ─ MODAL ────────────────────────────────── */
-.overlay{position:fixed;inset:0;background:#0f172acc;display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
-.modal{background:#fff;border-radius:.85rem;padding:1.25rem;max-width:340px;width:100%;display:flex;flex-direction:column;gap:.65rem;box-shadow:0 8px 32px #0004}
+.overlay{position:fixed;inset:0;background:#0f172acc;display:flex;align-items:flex-end;justify-content:center;z-index:200;padding:0}
+.modal{background:#fff;border-radius:.85rem .85rem 0 0;padding:1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));max-width:100%;width:100%;display:flex;flex-direction:column;gap:.65rem;box-shadow:0 -4px 32px #0006}
 .modal-title{font-size:1.05rem;font-weight:700;text-align:center;color:#0f172a}
 .modal-body{font-size:.78rem;color:#64748b;line-height:1.5}
 .modal-btns{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:center}
@@ -195,6 +195,14 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 @keyframes player-pulse{0%,100%{box-shadow:0 0 0 3px #fff,0 0 0 6px #0d9488}50%{box-shadow:0 0 0 3px #fff,0 0 0 8px #0d9488,0 0 18px #0d948866}}
 @keyframes car-moved{0%{transform:scale(1.3)}100%{transform:scale(1)}}
 @keyframes dice-appear{0%{transform:scale(.5) rotate(-20deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes die-roll{
+  0%  {transform:scale(.4) rotate(-30deg);opacity:0}
+  35% {transform:scale(1.3) rotate(18deg);opacity:1}
+  55% {transform:scale(.9) rotate(-10deg)}
+  75% {transform:scale(1.08) rotate(5deg)}
+  100%{transform:scale(1) rotate(0);opacity:1}
+}
+.strip-die{animation:die-roll .55s ease-out both}
 @keyframes pulse-pip{0%,100%{opacity:1}50%{opacity:.3}}
 .fly-badge{position:fixed;pointer-events:none;z-index:600;font-weight:700;font-size:.85rem;padding:2px 8px;border-radius:5px;white-space:nowrap;transition:left .55s cubic-bezier(.25,.46,.45,.94),top .55s cubic-bezier(.25,.46,.45,.94),opacity .55s ease}
 
@@ -269,15 +277,15 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
       <div class="apron-strip" id="apron-strip"></div>
     </div>
 
-    <!-- Jauges -->
-    <div class="gauges-bar">
-      <div class="gauges" id="gauges"></div>
+    <!-- Journal (herbe verte) -->
+    <div class="journal-wrap">
+      <div class="info-lbl">📡 Journal de course</div>
+      <div class="log-box" id="log-box"></div>
     </div>
 
-    <!-- Journal -->
-    <div class="journal-wrap">
-      <div class="info-lbl">Journal</div>
-      <div class="log-box" id="log-box"></div>
+    <!-- Habitacle (tableau de bord noir/orange) -->
+    <div class="gauges-bar">
+      <div class="gauges" id="gauges"></div>
     </div>
 
   </div>
@@ -314,9 +322,10 @@ const ALL_STARTS=[[2,2],[1,2],[2,3],[1,3],[2,4],[1,4]];
 // [row, col, dir]  dir: 1=bas(↓, vers apron), -1=haut(↑, vers mur)
 // Tours 10-50 & 110-150 → flèches ↑ (vers mur)
 // Tours 60-100 & 160-200 → flèches ↓ (vers apron)
+// Format [row, col, dir] — 0-indexed, colonnexligne 1-indexed dans les règles
 const ARROWS=[
-  [1,4,-1],[1,3,-1],[0,2,-1],[1,1,-1],  // ↑ vers mur
-  [2,4, 1],[2,3, 1],[2,2, 1],[2,1, 1],  // ↓ vers apron
+  [2,0,-1],[1,1,-1],[2,2,-1],[1,3,-1],  // ↑ vers mur  : B1×L3,B2×L2,N3×L3,N4×L2
+  [1,0, 1],[0,1, 1],[1,2, 1],[0,3, 1],  // ↓ vers apron: N1×L2,N2×L1,B3×L2,B4×L1
 ];
 
 // ── CAR SKINS (ordre fixe, assignés dynamiquement selon le choix joueur) ──
@@ -956,7 +965,7 @@ function renderStandings(){
       </div>`;
     }).join('')+
     `<div class="strip-sep" style="margin-left:auto"></div>
-     <div class="strip-consequence apron-consequence">⬅ 🛞-1</div>`;
+     <div class="strip-consequence apron-consequence">➡ 🛞-1</div>`;
 }
 
 // Vitesse + dés + rappel conséquence mur (haut, horizontal)
@@ -965,7 +974,7 @@ function renderSideWall(){
   if(!el)return;
   const diceHtml=S.dice.length
     ?RIVALS.map((n,i)=>
-        `<div class="strip-die" style="background:${DIE_BG[n]};opacity:${S.diceUsed[i]?.28:1}">${S.dice[i]}</div>`
+        `<div class="strip-die" style="background:${DIE_BG[n]};opacity:${S.diceUsed[i]?.28:1};animation-delay:${i*0.07}s">${S.dice[i]}</div>`
       ).join('')
     :'<span style="font-size:.55rem;opacity:.35;color:#475569">—</span>';
   el.innerHTML=`<div class="strip-lbl">VIT.</div>
@@ -974,7 +983,7 @@ function renderSideWall(){
     <div class="strip-lbl">DÉS</div>
     <div class="strip-dice">${diceHtml}</div>
     <div class="strip-sep" style="margin-left:auto"></div>
-    <div class="strip-consequence wall-consequence">⬅ 🛞-1 ⚙️-1</div>`;
+    <div class="strip-consequence wall-consequence">➡ 🛞-1 ⚙️-1</div>`;
 }
 
 function renderLog(){
