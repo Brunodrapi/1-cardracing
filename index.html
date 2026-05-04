@@ -530,6 +530,10 @@ function resolveArrow(id){
   const{row,col}=S.cars[id];
   const a=activeArrow(row,col);
   if(!a)return;
+  const nr=row+a[2];
+  // Arrow alone never pushes directly to wall (0) or apron (ROWS-1)
+  // It can chain-push a car already "just before" the edge (handled by pushLateral)
+  if(nr<1||nr>ROWS-2)return;
   stepLog(`${CAR_LBL[id]} flèche → ${a[2]>0?'↓ apron':'↑ mur'}`);
   pushLateral(id,row,col,a[2]);
 }
@@ -990,12 +994,6 @@ function renderGauges(){
           <div class="dash-vg-val">${g.fuel}</div>
           <div class="dash-vg-lbl">Carbu</div>
         </div>
-        <div class="dash-vg" id="gauge-tires">
-          <div class="dash-vg-lbl">🛞</div>
-          <div class="dash-vg-track"><div class="dash-vg-fill" style="height:${tp}%;background:${tc}"></div></div>
-          <div class="dash-vg-val">${g.tires}</div>
-          <div class="dash-vg-lbl">Pneus</div>
-        </div>
       </div>
       <div class="dash-center">
         <div class="dash-top">
@@ -1011,6 +1009,14 @@ function renderGauges(){
         <div class="dash-spd">
           <div class="dash-spd-v">${spd}</div>
           <div class="dash-spd-l">Vitesse</div>
+        </div>
+      </div>
+      <div class="dash-side">
+        <div class="dash-vg" id="gauge-tires">
+          <div class="dash-vg-lbl">🛞</div>
+          <div class="dash-vg-track"><div class="dash-vg-fill" style="height:${tp}%;background:${tc}"></div></div>
+          <div class="dash-vg-val">${g.tires}</div>
+          <div class="dash-vg-lbl">Pneus</div>
         </div>
       </div>
     </div>`;
