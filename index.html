@@ -516,13 +516,12 @@ function applyPushAgainstEdge(id,sideRow){
       S.gauges.engine=Math.max(0,S.gauges.engine-1);
       stepLog('Vous touchez le mur ! Pneus -1, Moteur -1','dan');
     }
-    checkLose();tryPushBack(id);
+    checkLose();
+    return tryPushBack(id);
   }else{
-    const row=S.cars[id].row;
-    let target=COLS-1;
-    while(target>S.cars[id].col&&getCar(row,target))target--;
-    if(target>S.cars[id].col)movePiece(id,row,target);
-    stepLog(`${CAR_LBL[id]} → position arrière`,'neu');
+    const ok=tryPushBack(id);
+    stepLog(`${CAR_LBL[id]} → ${ok?"recule d'une case":"bloqué"}`,'neu');
+    return ok;
   }
 }
 
@@ -530,27 +529,49 @@ function applyPushAgainstEdge(id,sideRow){
 // Si B est à l'arrivée → B + voitures derrière B (même rangée, vers col4) reculent 1 col.
 function resolveArrow(id){
   if(id==='player')return;
-  const{row,col}=S.cars[id];
+
+  const {row,col}=S.cars[id];
   const a=activeArrow(row,col);
   if(!a)return;
+
   const dRow=a[2];
-  const nr=row+dRow;
-  if(!inBounds(nr,col))return;
   stepLog(`${CAR_LBL[id]} flèche → ${dRow>0?'↓ apron':'↑ mur'}`);
-  const occ=getCar(nr,col);
-  if(!occ){movePiece(id,nr,col);return;}
-  // B présent — collecter B + voitures derrière (même rangée, consécutives vers col4)
-  const chain=[];
-  let scan=col;
-  while(scan<COLS&&getCar(nr,scan)){chain.push(getCar(nr,scan));scan++;}
-  // Vérifier place pour la chaîne
-  if(S.cars[chain[chain.length-1]].col+1>=COLS){
-    stepLog(`${CAR_LBL[id]} flèche bloquée (chaîne au bord)`,'neu');return;
+
+  const chain=[id];
+  let scanRow=row;
+  let edgeHit=false;
+
+  while(true){
+    const nextRow=scanRow+dRow;
+
+    if(nextRow<0||nextRow>=ROWS){
+      const last=chain[chain.length-1];
+      const ok=applyPushAgainstEdge(last,dRow<0?0:ROWS-1);
+
+      if(!ok){
+        stepLog(`${CAR_LBL[id]} flèche bloquée`,'neu');
+        return;
+      }
+
+      edgeHit=true;
+      break;
+    }
+
+    const occ=getCar(nextRow,col);
+
+    if(!occ)break;
+
+    chain.push(occ);
+    scanRow=nextRow;
   }
-  // Reculer la chaîne d'une case (de droite à gauche)
-  for(let i=chain.length-1;i>=0;i--)movePiece(chain[i],S.cars[chain[i]].row,S.cars[chain[i]].col+1);
-  movePiece(id,nr,col);
-  stepLog(`${chain.map(c=>CAR_LBL[c]).join('+')} → recule`,'neu');
+
+  const start=edgeHit ? chain.length-2 : chain.length-1;
+
+  for(let i=start;i>=0;i--){
+    const car=chain[i];
+    const {row:r,col:c}=S.cars[car];
+    movePiece(car,r+dRow,c);
+  }
 }
 
 // ── YELLOW FLAG ────────────────────────────────────────────────
@@ -584,8 +605,9 @@ function processOneRival(){
   const diIdx=RIVALS.indexOf(name);
   S.stepLogs=[];
   const gaugesBefore={...S.gauges};
-  const wasAhead =S.cars[name].col<S.cars.player.col;
-  const wasBehind=S.cars[name].col>S.cars.player.col;
+  const wasDraftingPlayer =
+  S.cars[name].row===S.cars.player.row &&
+  Math.abs(S.cars[name].col-S.cars.player.col)===1;
   const die=S.dice[diIdx],ps=S.speed;
   let choiceNeeded=false;
 
@@ -613,7 +635,7 @@ function processOneRival(){
           movePiece(name,row,col-1);
           stepLog(`Vitesse ${die} > ${ps} → avance`,'good');
           resolveArrow(name);
-          if(ps<=2&&(wasAhead||wasBehind)){
+          if(ps<=2&&wasDraftingPlayer){
             const{row:pr,col:pc}=S.cars.player;
             if(pc>0&&!getCar(pr,pc-1)){movePiece('player',pr,pc-1);stepLog('Aspiration ! Entraîné en avant','good');}
           }
@@ -621,8 +643,8 @@ function processOneRival(){
           const canU=inBounds(row-1,col)&&!getCar(row-1,col);
           const canD=inBounds(row+1,col)&&!getCar(row+1,col);
           if(canU&&canD){choiceNeeded=true;S.pendingChoice={rivalName:name,die,gaugesBefore,wasAhead,wasBehind};}
-          else if(canU){movePiece(name,row-1,col);stepLog('Bloqué → voie haute');if(row-1===0)applyPushAgainstEdge(name,0);resolveArrow(name);}
-          else if(canD){movePiece(name,row+1,col);stepLog('Bloqué → voie basse');if(row+1===ROWS-1)applyPushAgainstEdge(name,ROWS-1);resolveArrow(name);}
+          else if(canU){movePiece(name,row-1,col);stepLog('Bloqué → voie haute');resolveArrow(name);}
+          else if(canD){movePiece(name,row+1,col);stepLog('Bloqué → voie basse');resolveArrow(name);}
           else{stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');}
         }
       }
@@ -685,7 +707,6 @@ function resolveChoice(dir){
   const nr=row+dir;
   movePiece(rivalName,nr,col);
   stepLog(`${CAR_LBL[rivalName]} → ${dir>0?'↓ apron':'↑ mur'} (votre choix)`);
-  if(nr>ROWS||nr<0)applyPushAgainstEdge(rivalName,nr);
   resolveArrow(rivalName);
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
   S.movedCar=rivalName;S.rivalIdx++;glogAll(rivalName);
