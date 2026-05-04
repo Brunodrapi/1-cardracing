@@ -143,23 +143,25 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .dash-spd-v{font-size:3.8rem;font-weight:900;color:#2dd4bf;line-height:1}
 .dash-spd-l{font-size:.42rem;text-transform:uppercase;letter-spacing:.12em;color:#374151;font-weight:700}
 
+/* ─ PANNEAU BAS (dashboard + action) ────── */
+.bottom-panel{position:sticky;bottom:0;background:#080c10;box-shadow:0 -4px 24px #0008;z-index:30}
+
 /* ─ ACTION BAR ───────────────────────────── */
 .action-bar{
-  background:#080c10;border-radius:0;
-  border-top:none;
-  padding:.7rem .9rem calc(.9rem + env(safe-area-inset-bottom));
-  box-shadow:0 -4px 24px #0006;
-  display:flex;flex-direction:column;gap:.4rem;position:sticky;bottom:0;
+  background:#080c10;
+  border-top:1px solid #1e293b;
+  padding:.6rem .9rem calc(.7rem + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:.35rem;
 }
-.phase-title{font-size:.82rem;color:#2dd4bf;font-weight:700;margin-bottom:.1rem}
-.phase-desc{font-size:.8rem;color:#6b7280;margin-bottom:.3rem;line-height:1.4}
-.btn-row{display:flex;gap:.35rem;flex-wrap:wrap}
-.btn{padding:.5rem .9rem;border:none;border-radius:2rem;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .12s;flex:1;min-width:0;text-align:center;letter-spacing:.02em}
-.btn-p{background:#0d9488;color:#fff}.btn-p:hover:not(:disabled){background:#0f766e}
+.phase-title{font-size:.8rem;color:#2dd4bf;font-weight:700;margin-bottom:.05rem}
+.phase-desc{font-size:.75rem;color:#4b5563;margin-bottom:.25rem;line-height:1.4}
+.btn-row{display:flex;gap:.4rem;flex-wrap:wrap}
+.btn{padding:.55rem .8rem;border:none;border-radius:2rem;font-size:.78rem;font-weight:800;cursor:pointer;transition:all .12s;flex:1;min-width:0;text-align:center;letter-spacing:.04em;text-transform:uppercase}
+.btn-p{background:#0d9488;color:#fff;box-shadow:0 2px 10px #0d948866}.btn-p:hover:not(:disabled){background:#0f766e}
 .btn-s{background:#1e293b;color:#94a3b8;border:1px solid #334155}.btn-s:hover:not(:disabled){background:#334155;color:#e2e8f0}
-.btn-g{background:#14532d;color:#4ade80}.btn-g:hover:not(:disabled){background:#166534}
-.btn:disabled{opacity:.3;cursor:not-allowed}
-.flag-w{background:#78350f;color:#fde68a;padding:.25rem .4rem;border-radius:1rem;font-size:.68rem;font-weight:700;text-align:center}
+.btn-g{background:#15803d;color:#4ade80;box-shadow:0 2px 10px #15803d55}.btn-g:hover:not(:disabled){background:#166534}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+.flag-w{background:#78350f;color:#fde68a;padding:.2rem .4rem;border-radius:1rem;font-size:.66rem;font-weight:700;text-align:center}
 
 /* ─ SPEED ────────────────────────────────── */
 .spd-wrap{display:none;flex-direction:column;gap:.3rem}
@@ -302,18 +304,19 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
       <div class="apron-strip" id="apron-strip"></div>
     </div>
 
-    <!-- Tableau de bord NASCAR -->
-    <div class="gauges-bar" id="gauges"></div>
-
   </div>
 
-  <div class="action-bar" id="action-box">
-    <div id="phase-ui"></div>
-    <div class="spd-wrap" id="spd-wrap">
-      <div class="spd-slots" id="spd-slots"></div>
-      <div class="spd-effects" id="spd-effects"></div>
-      <div class="spd-confirm" id="spd-confirm">
-        <button onclick="confirmSpeed()">Confirmer ✓</button>
+  <!-- Panneau bas collé : tableau de bord + boutons d'action -->
+  <div class="bottom-panel">
+    <div class="gauges-bar" id="gauges"></div>
+    <div class="action-bar" id="action-box">
+      <div id="phase-ui"></div>
+      <div class="spd-wrap" id="spd-wrap">
+        <div class="spd-slots" id="spd-slots"></div>
+        <div class="spd-effects" id="spd-effects"></div>
+        <div class="spd-confirm" id="spd-confirm">
+          <button onclick="confirmSpeed()">Confirmer ✓</button>
+        </div>
       </div>
     </div>
   </div>
@@ -523,53 +526,31 @@ function applyPushAgainstEdge(id,sideRow){
   }
 }
 
-// Chaîne arrow : tous les membres reculent 1 col si le mur est touché
-let _pushChain=null, _chainFallbackDone=false;
-
-function wallChainFallback(hitId){
-  _chainFallbackDone=true;
-  stepLog(`${CAR_LBL[hitId]} percuté contre le mur ! Toute la ligne recule`,'dan');
-  for(let i=_pushChain.length-1;i>=0;i--){
-    const cid=_pushChain[i];
-    const{row:cr,col:cc}=S.cars[cid];
-    if(cc+1<COLS&&!getCar(cr,cc+1))movePiece(cid,cr,cc+1);
-  }
-}
-
-// Changement de voie = déplacement vertical (row ±1)
-function pushLateral(id,row,col,dRow){
-  if(_chainFallbackDone)return false;
-  if(_pushChain!==null)_pushChain.push(id);
-  const nr=row+dRow;
-  if(!inBounds(nr,col)){
-    // Hors limites — si chain vers le mur, déclenche recul de la chaîne
-    if(_pushChain!==null&&dRow===-1&&!_chainFallbackDone){wallChainFallback(id);}
-    else{applyPushAgainstEdge(id,row);}
-    return false;
-  }
-  const occ=getCar(nr,col);
-  if(occ){
-    pushLateral(occ,nr,col,dRow);
-    if(_chainFallbackDone)return false;
-    if(getCar(nr,col))return false;
-  }
-  if(_chainFallbackDone)return false;
-  movePiece(id,nr,col);
-  // Atterrissage sur le mur pendant une chaîne → recul
-  if(nr===0&&_pushChain!==null&&!_chainFallbackDone){wallChainFallback(id);return false;}
-  if(nr===0||nr===ROWS-1)applyPushAgainstEdge(id,nr);
-  return true;
-}
-
+// Flèche : A se décale d'1 case latérale.
+// Si B est à l'arrivée → B + voitures derrière B (même rangée, vers col4) reculent 1 col.
 function resolveArrow(id){
   if(id==='player')return;
   const{row,col}=S.cars[id];
   const a=activeArrow(row,col);
   if(!a)return;
-  stepLog(`${CAR_LBL[id]} flèche → ${a[2]>0?'↓ apron':'↑ mur'}`);
-  _pushChain=[];_chainFallbackDone=false;
-  pushLateral(id,row,col,a[2]);
-  _pushChain=null;_chainFallbackDone=false;
+  const dRow=a[2];
+  const nr=row+dRow;
+  if(!inBounds(nr,col))return;
+  stepLog(`${CAR_LBL[id]} flèche → ${dRow>0?'↓ apron':'↑ mur'}`);
+  const occ=getCar(nr,col);
+  if(!occ){movePiece(id,nr,col);return;}
+  // B présent — collecter B + voitures derrière (même rangée, consécutives vers col4)
+  const chain=[];
+  let scan=col;
+  while(scan<COLS&&getCar(nr,scan)){chain.push(getCar(nr,scan));scan++;}
+  // Vérifier place pour la chaîne
+  if(S.cars[chain[chain.length-1]].col+1>=COLS){
+    stepLog(`${CAR_LBL[id]} flèche bloquée (chaîne au bord)`,'neu');return;
+  }
+  // Reculer la chaîne d'une case (de droite à gauche)
+  for(let i=chain.length-1;i>=0;i--)movePiece(chain[i],S.cars[chain[i]].row,S.cars[chain[i]].col+1);
+  movePiece(id,nr,col);
+  stepLog(`${chain.map(c=>CAR_LBL[c]).join('+')} → recule`,'neu');
 }
 
 // ── YELLOW FLAG ────────────────────────────────────────────────
