@@ -685,7 +685,7 @@ function resolveChoice(dir){
   const nr=row+dir;
   movePiece(rivalName,nr,col);
   stepLog(`${CAR_LBL[rivalName]} → ${dir>0?'↓ apron':'↑ mur'} (votre choix)`);
-  if(nr===0||nr===ROWS-1)applyPushAgainstEdge(rivalName,nr);
+  if(nr>ROWS||nr<0)applyPushAgainstEdge(rivalName,nr);
   resolveArrow(rivalName);
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
   S.movedCar=rivalName;S.rivalIdx++;glogAll(rivalName);
