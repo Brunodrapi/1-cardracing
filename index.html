@@ -328,17 +328,17 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 // ── CONSTANTS ──────────────────────────────────────────────────
 // Circuit paysage : 3 voies × 5 positions
 // row 0 = mur (haut), row 1 = milieu, row 2 = apron (bas)
-// col 4 = avant (tête), col 0 = arrière (queue)
+// col 0 = avant (tête/gauche), col 4 = arrière (queue/droite) — avance droite→gauche
 const ROWS=3, COLS=5;
 // Positions cellules calculées depuis les séparateurs de 1_card_board_3.png
-const CELL_X=[10.6,30.5,49.9,69.3,88.9]; // col 0-4 (back→front)
+const CELL_X=[10.6,30.5,49.9,69.3,88.9]; // col 0-4 (front→back, gauche→droite)
 const CELL_Y=[31.9,54.2,79.1]; // row 0-2 (wall→apron)
 const RIVALS=['red','blue','green','yellow','cyan'];
 
 // Index 0=P1(pôle/facile) … index 5=P6(dernier/difficile)
-// Grille de départ : apron(row2) et milieu(row1), cols 0-2
-// Numérotation snake : col4=15(tête), col0=1(queue)
-const ALL_STARTS=[[2,2],[1,2],[2,1],[1,1],[2,0],[1,0]];
+// Positions 3x2,3x3,4x2,4x3,5x2,5x3 (col×row 1-indexé)
+// Snake : col0=cellules 1-3 (tête), col4=cellules 13-15 (queue)
+const ALL_STARTS=[[2,2],[1,2],[1,3],[2,3],[2,4],[1,4]];
 
 // [row, col, dir]  dir: 1=bas(↓, vers apron), -1=haut(↑, vers mur)
 // Tours 10-50 & 110-150 → flèches ↑ (vers mur)
@@ -464,14 +464,15 @@ function swapPieces(id1,id2){
 const allCars=()=>['player',...RIVALS];
 
 // Numérotation snake : col pair = bottom→top, col impair = top→bottom
-// Exemple col0: (row2)=1,(row1)=2,(row0)=3 ; col1: (row0)=4,(row1)=5,(row2)=6 ; col4: (row0)=15
+// col0: (row2)=1,(row1)=2,(row0)=3 ; col1: (row0)=4,(row1)=5,(row2)=6 … col4: (row0)=15
+// Avance droite→gauche : cellule 1 (col0) = tête, cellule 15 (col4) = queue
 const cellNum=(r,c)=>c%2===0?c*3+(2-r)+1:c*3+r+1;
 
-// Classement : cellNum décroissant (col4 = tête = cellule 15)
+// Classement : cellNum croissant (cellule 1 = tête, cellule 15 = queue)
 function sortedCars(ids){
   return[...ids].sort((a,b)=>{
     const pa=S.cars[a],pb=S.cars[b];
-    return cellNum(pb.row,pb.col)-cellNum(pa.row,pa.col);
+    return cellNum(pa.row,pa.col)-cellNum(pb.row,pb.col);
   });
 }
 const standings  =()=>sortedCars(allCars().filter(id=>S.cars[id]));
@@ -486,18 +487,18 @@ const activeArrow=(r,c)=>{
 };
 
 // ── MOVEMENT ───────────────────────────────────────────────────
-// Reculer = col-1 (vers col0 = arrière du circuit)
+// Reculer = col+1 (vers col4 = droite/arrière)
 function tryPushBack(id,isPit=false){
   const{row,col}=S.cars[id];
-  if(col-1<0)return false;
-  const nc=col-1,occ=getCar(row,nc);
+  if(col+1>=COLS)return false;
+  const nc=col+1,occ=getCar(row,nc);
   if(!occ){movePiece(id,row,nc);return true;}
   if(isPit){movePiece(occ,row,col);movePiece(id,row,nc);return true;}
   const chain=[id];
   let scan=nc;
-  while(scan>=0&&getCar(row,scan)){chain.push(getCar(row,scan));scan--;}
-  if(scan<0)return false;
-  for(let i=chain.length-1;i>=0;i--)movePiece(chain[i],S.cars[chain[i]].row,S.cars[chain[i]].col-1);
+  while(scan<COLS&&getCar(row,scan)){chain.push(getCar(row,scan));scan++;}
+  if(scan>=COLS)return false;
+  for(let i=chain.length-1;i>=0;i--)movePiece(chain[i],S.cars[chain[i]].row,S.cars[chain[i]].col+1);
   return true;
 }
 
@@ -515,9 +516,9 @@ function applyPushAgainstEdge(id,sideRow){
     checkLose();tryPushBack(id);
   }else{
     const row=S.cars[id].row;
-    let target=0;
-    while(target<S.cars[id].col&&getCar(row,target))target++;
-    if(target<S.cars[id].col)movePiece(id,row,target);
+    let target=COLS-1;
+    while(target>S.cars[id].col&&getCar(row,target))target--;
+    if(target>S.cars[id].col)movePiece(id,row,target);
     stepLog(`${CAR_LBL[id]} → position arrière`,'neu');
   }
 }
@@ -531,7 +532,7 @@ function wallChainFallback(hitId){
   for(let i=_pushChain.length-1;i>=0;i--){
     const cid=_pushChain[i];
     const{row:cr,col:cc}=S.cars[cid];
-    if(cc>0&&!getCar(cr,cc-1))movePiece(cid,cr,cc-1);
+    if(cc+1<COLS&&!getCar(cr,cc+1))movePiece(cid,cr,cc+1);
   }
 }
 
@@ -602,8 +603,8 @@ function processOneRival(){
   const diIdx=RIVALS.indexOf(name);
   S.stepLogs=[];
   const gaugesBefore={...S.gauges};
-  const wasAhead =S.cars[name].col>S.cars.player.col;
-  const wasBehind=S.cars[name].col<S.cars.player.col;
+  const wasAhead =S.cars[name].col<S.cars.player.col;
+  const wasBehind=S.cars[name].col>S.cars.player.col;
   const die=S.dice[diIdx],ps=S.speed;
   let choiceNeeded=false;
 
@@ -616,24 +617,24 @@ function processOneRival(){
       stepLog(`Vitesse ${die} < ${ps} → ${ok?'recule':'bloqué'}`,ok?'':'neu');
       resolveArrow(name);
     }else if(die===6){
-      if(col===COLS-1){stepLog('Dé 6 → déjà en tête','neu');}
+      if(col===0){stepLog('Dé 6 → déjà en tête','neu');}
       else{
-        const inFront=getCar(row,col+1);
-        if(!inFront){movePiece(name,row,col+1);stepLog('Dé 6 → avance','good');}
+        const inFront=getCar(row,col-1);
+        if(!inFront){movePiece(name,row,col-1);stepLog('Dé 6 → avance','good');}
         else{swapPieces(name,inFront);stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');}
         resolveArrow(name);
       }
     }else{
-      if(col===COLS-1){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
+      if(col===0){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
       else{
-        const inFront=getCar(row,col+1);
+        const inFront=getCar(row,col-1);
         if(!inFront){
-          movePiece(name,row,col+1);
+          movePiece(name,row,col-1);
           stepLog(`Vitesse ${die} > ${ps} → avance`,'good');
           resolveArrow(name);
           if(ps<=2&&(wasAhead||wasBehind)){
             const{row:pr,col:pc}=S.cars.player;
-            if(pc<COLS-1&&!getCar(pr,pc+1)){movePiece('player',pr,pc+1);stepLog('Aspiration ! Entraîné en avant','good');}
+            if(pc>0&&!getCar(pr,pc-1)){movePiece('player',pr,pc-1);stepLog('Aspiration ! Entraîné en avant','good');}
           }
         }else{
           const canU=inBounds(row-1,col)&&!getCar(row-1,col);
