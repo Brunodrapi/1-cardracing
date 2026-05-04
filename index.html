@@ -103,23 +103,42 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .wall-consequence{background:rgba(30,58,138,.15);color:#1e3a8a}
 .apron-consequence{background:rgba(146,64,14,.15);color:#92400e}
 
-/* ─ JOURNAL (herbe) ──────────────────────── */
-.journal-wrap{background:#15803d;padding:.5rem .7rem;flex:1;min-height:0}
-.info-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.55);margin-bottom:.3rem;font-weight:700}
-.log-box{max-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:.08rem}
-.le{font-size:.78rem;color:#bbf7d0;line-height:1.35;padding:.06rem 0;border-bottom:1px solid rgba(255,255,255,.07)}
-.le.imp{color:#fde68a}.le.dan{color:#fca5a5}.le.good{color:#86efac}.le.neu{color:rgba(255,255,255,.45)}
+/* ─ JOURNAL (modal uniquement) ──────────── */
+.le{font-size:.78rem;color:#bbf7d0;line-height:1.35;padding:.07rem .2rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.le.imp{color:#fde68a}.le.dan{color:#fca5a5}.le.good{color:#86efac}.le.neu{color:rgba(255,255,255,.4)}
+.log-modal-bg{background:#15803d;padding:.5rem .6rem;border-radius:.45rem;max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:.04rem}
+.journal-btn{border:none;background:rgba(255,255,255,.1);color:#94a3b8;font-size:.68rem;cursor:pointer;padding:.18rem .4rem;border-radius:.3rem;font-weight:700;letter-spacing:.04em}
+.journal-btn:hover{background:rgba(255,255,255,.2);color:#fff}
 
-/* ─ HABITACLE (tableau de bord) ─────────── */
-.gauges-bar{background:#0f172a;padding:.55rem .5rem;margin:0}
-.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
-.gauge{display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.5rem .3rem .45rem;background:#1e293b;border-radius:.5rem;border:1px solid #334155}
-.gico{font-size:1.5rem;line-height:1}
-.gval{font-size:2rem;font-weight:900;color:#fb923c;line-height:1.1}
-.gval.gwarn{color:#dc2626;animation:pulse-pip 1s infinite}
-.glbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;font-weight:700}
-.gbar-wrap{width:90%;height:7px;background:#334155;border-radius:4px;overflow:hidden}
-.gbar{height:100%;border-radius:4px;transition:width .35s,background .35s}
+/* ─ TABLEAU DE BORD NASCAR ──────────────── */
+.gauges-bar{background:#080c10;padding:.35rem .45rem .4rem}
+.dash-leds{display:flex;justify-content:center;gap:3px;margin-bottom:.3rem}
+.dash-led{width:12px;height:12px;border-radius:50%;transition:all .2s;flex-shrink:0}
+.dash-led.off{background:#111827}
+.dash-led.spd1{background:#22c55e;box-shadow:0 0 7px #22c55e}
+.dash-led.spd2{background:#84cc16;box-shadow:0 0 7px #84cc16}
+.dash-led.spd3{background:#eab308;box-shadow:0 0 7px #eab308}
+.dash-led.spd4{background:#f97316;box-shadow:0 0 7px #f97316}
+.dash-led.spd5{background:#ef4444;box-shadow:0 0 7px #ef4444}
+@keyframes led-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.15;transform:scale(.75)}}
+.dash-led.pulse{animation:led-pulse .38s infinite}
+.dash-main{display:flex;gap:.3rem;align-items:stretch;min-height:75px}
+.dash-side{display:flex;flex-direction:column;gap:.2rem;width:26px;flex-shrink:0}
+.dash-vg{display:flex;flex-direction:column;align-items:center;gap:.05rem;flex:1}
+.dash-vg-lbl{font-size:.38rem;text-transform:uppercase;color:#374151;letter-spacing:.06em;font-weight:800;line-height:1.1}
+.dash-vg-track{flex:1;width:8px;background:#111827;border-radius:2px;overflow:hidden;position:relative;min-height:22px}
+.dash-vg-fill{position:absolute;bottom:0;left:0;right:0;border-radius:2px;transition:height .3s,background .3s}
+.dash-vg-val{font-size:.58rem;font-weight:700;color:#4b5563;line-height:1}
+.dash-center{flex:1;display:flex;flex-direction:column;gap:.1rem;align-items:center}
+.dash-top{display:grid;grid-template-columns:1fr 1fr;gap:.15rem;width:100%}
+.dash-cell{display:flex;flex-direction:column;align-items:center;gap:.02rem}
+.dash-cell-v{font-size:1.45rem;font-weight:900;color:#2dd4bf;line-height:1.05}
+.dash-cell-v.hot{color:#f87171}
+.dash-cell-v.warn{color:#ef4444;animation:pulse-pip 1s infinite}
+.dash-cell-l{font-size:.38rem;text-transform:uppercase;letter-spacing:.09em;color:#374151;font-weight:700;line-height:1}
+.dash-spd{display:flex;flex-direction:column;align-items:center;gap:.03rem;flex:1;justify-content:center}
+.dash-spd-v{font-size:3.8rem;font-weight:900;color:#2dd4bf;line-height:1}
+.dash-spd-l{font-size:.42rem;text-transform:uppercase;letter-spacing:.12em;color:#374151;font-weight:700}
 
 /* ─ ACTION BAR ───────────────────────────── */
 .action-bar{
@@ -258,8 +277,13 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
       <div class="score-val" id="score-val">0</div>
     </div>
     <div class="hdr-right">
-      <div class="hdr-lbl">Flèches</div>
-      <div class="arr-phase" id="arr-phase">↑ Mur</div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:.5rem;flex-wrap:wrap">
+        <button class="journal-btn" onclick="showJournalModal()">📡 Journal</button>
+        <div>
+          <div class="hdr-lbl">Flèches</div>
+          <div class="arr-phase" id="arr-phase">↑ Mur</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -275,16 +299,8 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
       <div class="apron-strip" id="apron-strip"></div>
     </div>
 
-    <!-- Journal (herbe verte) -->
-    <div class="journal-wrap">
-      <div class="info-lbl">📡 Journal de course</div>
-      <div class="log-box" id="log-box"></div>
-    </div>
-
-    <!-- Habitacle (tableau de bord noir/orange) -->
-    <div class="gauges-bar">
-      <div class="gauges" id="gauges"></div>
-    </div>
+    <!-- Tableau de bord NASCAR -->
+    <div class="gauges-bar" id="gauges"></div>
 
   </div>
 
@@ -595,7 +611,7 @@ function processOneRival(){
   }
   if(choiceNeeded){render();showChoiceModal();return;}
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
-  S.movedCar=name;S.rivalIdx++;glogAll();
+  S.movedCar=name;S.rivalIdx++;glogAll(name);
   showRivalModal(name,die,gaugeDeltas);
 }
 
@@ -653,7 +669,7 @@ function resolveChoice(dir){
   if(nr===0||nr===ROWS-1)applyPushAgainstEdge(rivalName,nr);
   resolveArrow(rivalName);
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
-  S.movedCar=rivalName;S.rivalIdx++;glogAll();
+  S.movedCar=rivalName;S.rivalIdx++;glogAll(rivalName);
   showRivalModal(rivalName,die,gaugeDeltas);
 }
 
@@ -821,13 +837,8 @@ function showEndModal(){
 
 // ── ANIMATIONS ─────────────────────────────────────────────────
 function launchGaugeFlies(deltas){
-  const gaugeEl=document.getElementById('gauges');
-  if(!gaugeEl)return;
-  const items=gaugeEl.querySelectorAll('.gauge');
-  const keys=['tires','fuel','engine'];
   for(const[k,v] of Object.entries(deltas)){
-    const idx=keys.indexOf(k);
-    const toEl=items[idx];if(!toEl)continue;
+    const toEl=document.getElementById('gauge-'+k);if(!toEl)continue;
     const fromEl=document.getElementById('ov').querySelector('.modal')||document.getElementById('action-box');
     flyBadge(`${v>0?'+':''}${v} ${GAUGE_ICONS[k]}`,fromEl||document.body,toEl,v>0?'#16a34a':'#dc2626');
   }
@@ -851,12 +862,23 @@ function flyBadge(text,fromEl,toEl,color){
 // ── LOG ────────────────────────────────────────────────────────
 function glog(msg,cls='')   {S.log.unshift({msg,cls});if(S.log.length>80)S.log.pop();}
 function stepLog(txt,cls=''){S.stepLogs.push({txt,cls});}
-function glogAll()          {for(const l of S.stepLogs)glog(l.txt,l.cls);}
+function glogAll(carId=''){
+  const pre=carId?`[#${CAR_LBL[carId]} ${CAR_FNAME[carId]}] `:'';
+  for(const l of S.stepLogs)glog(pre+l.txt,l.cls);
+}
+function showJournalModal(){
+  const entries=S.log.slice(0,50).map(l=>`<div class="le ${l.cls}">${l.msg}</div>`).join('');
+  showModal(`
+    <div class="modal-title">📡 Journal de course</div>
+    <div class="log-modal-bg">${entries||'<div class="le neu">—</div>'}</div>
+    <div class="modal-btns"><button class="btn btn-s" onclick="closeModal()">Fermer ✕</button></div>
+  `,'');
+}
 
 // ── RENDER ─────────────────────────────────────────────────────
 function render(){
   renderTrack();renderGauges();renderLap();
-  renderStandings();renderSideWall();renderLog();renderPhase();renderSpeed();renderScore();renderArrowPhase();
+  renderStandings();renderSideWall();renderPhase();renderSpeed();renderScore();renderArrowPhase();
 }
 
 function renderSpeed(){
@@ -946,21 +968,52 @@ function renderTrack(){
 
 function renderGauges(){
   const el=document.getElementById('gauges');
-  const g=S.gauges;
-  const LBLS={tires:'Pneus',fuel:'Carbu',engine:'Moteur'};
-  const CLRS={tires:'#22c55e',fuel:'#3b82f6',engine:'#ef4444'};
-  el.innerHTML=['tires','fuel','engine'].map(k=>{
-    const v=g[k];
-    const pct=Math.round(v/6*100);
-    const warn=v<=2;
-    const barClr=warn?'#f97316':CLRS[k];
-    return`<div class="gauge" id="gauge-${k}">
-      <div class="gico">${GAUGE_ICONS[k]}</div>
-      <div class="gval${warn?' gwarn':''}">${v}</div>
-      <div class="gbar-wrap"><div class="gbar" style="width:${pct}%;background:${barClr}"></div></div>
-      <div class="glbl">${LBLS[k]}</div>
-    </div>`;
+  if(!el)return;
+  const g=S.gauges, spd=S.speed||1;
+  // 15 LEDs: 3 per speed level (1=green … 5=red), pulse at max
+  const LEDCLS=['spd1','spd2','spd3','spd4','spd5'];
+  const leds=Array.from({length:15},(_,i)=>{
+    const s=Math.floor(i/3)+1;
+    const on=s<=spd;
+    return`<div class="dash-led ${on?LEDCLS[s-1]:'off'}${on&&spd===5&&s===5?' pulse':''}"></div>`;
   }).join('');
+  const fp=Math.round(g.fuel/6*100), tp=Math.round(g.tires/6*100);
+  const fc=g.fuel<=2?'#f97316':'#3b82f6', tc=g.tires<=2?'#f97316':'#22c55e';
+  const ew=g.engine<=2?' warn':'';
+  el.innerHTML=`
+    <div class="dash-leds">${leds}</div>
+    <div class="dash-main">
+      <div class="dash-side">
+        <div class="dash-vg" id="gauge-fuel">
+          <div class="dash-vg-lbl">⛽</div>
+          <div class="dash-vg-track"><div class="dash-vg-fill" style="height:${fp}%;background:${fc}"></div></div>
+          <div class="dash-vg-val">${g.fuel}</div>
+          <div class="dash-vg-lbl">Carbu</div>
+        </div>
+        <div class="dash-vg" id="gauge-tires">
+          <div class="dash-vg-lbl">🛞</div>
+          <div class="dash-vg-track"><div class="dash-vg-fill" style="height:${tp}%;background:${tc}"></div></div>
+          <div class="dash-vg-val">${g.tires}</div>
+          <div class="dash-vg-lbl">Pneus</div>
+        </div>
+      </div>
+      <div class="dash-center">
+        <div class="dash-top">
+          <div class="dash-cell">
+            <div class="dash-cell-v">${(S.lapStep+1)*10}</div>
+            <div class="dash-cell-l">Tour</div>
+          </div>
+          <div class="dash-cell" id="gauge-engine">
+            <div class="dash-cell-v hot${ew}">${g.engine}</div>
+            <div class="dash-cell-l">Moteur</div>
+          </div>
+        </div>
+        <div class="dash-spd">
+          <div class="dash-spd-v">${spd}</div>
+          <div class="dash-spd-l">Vitesse</div>
+        </div>
+      </div>
+    </div>`;
 }
 
 function renderLap(){
