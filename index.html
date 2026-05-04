@@ -126,13 +126,16 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .dash-side{display:flex;flex-direction:column;gap:.2rem;width:26px;flex-shrink:0}
 .dash-vg{display:flex;flex-direction:column;align-items:center;gap:.05rem;flex:1}
 .dash-vg-lbl{font-size:.38rem;text-transform:uppercase;color:#374151;letter-spacing:.06em;font-weight:800;line-height:1.1}
-.dash-vg-track{flex:1;width:8px;background:#111827;border-radius:2px;overflow:hidden;position:relative;min-height:22px}
-.dash-vg-fill{position:absolute;bottom:0;left:0;right:0;border-radius:2px;transition:height .3s,background .3s}
+.dash-seg-track{display:flex;flex-direction:column;gap:2px;flex:1;width:34px;min-height:52px}
+.dash-seg{flex:1;border-radius:2px;min-height:6px;transition:background .3s}
+.dash-seg.filled{background:var(--sc,#22c55e)}
+.dash-seg.empty{background:#4c0519;opacity:.55}
 .dash-vg-val{font-size:.58rem;font-weight:700;color:#4b5563;line-height:1}
-.dash-center{flex:1;display:flex;flex-direction:column;gap:.1rem;align-items:center}
+.dash-center{flex:1;display:flex;flex-direction:column;gap:.08rem;align-items:center}
 .dash-top{display:grid;grid-template-columns:1fr 1fr;gap:.15rem;width:100%}
 .dash-cell{display:flex;flex-direction:column;align-items:center;gap:.02rem}
-.dash-cell-v{font-size:1.45rem;font-weight:900;color:#2dd4bf;line-height:1.05}
+.dash-cell-v{font-size:2rem;font-weight:900;color:#2dd4bf;line-height:1.05}
+.dash-class{font-size:.72rem;font-weight:700;color:#6b7280;line-height:1;text-align:center}
 .dash-cell-v.hot{color:#f87171}
 .dash-cell-v.warn{color:#ef4444;animation:pulse-pip 1s infinite}
 .dash-cell-l{font-size:.38rem;text-transform:uppercase;letter-spacing:.09em;color:#374151;font-weight:700;line-height:1}
@@ -142,30 +145,30 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 
 /* ─ ACTION BAR ───────────────────────────── */
 .action-bar{
-  background:#fff;border-radius:.85rem .85rem 0 0;
-  border-top:2px solid #e2e8f0;
+  background:#080c10;border-radius:0;
+  border-top:none;
   padding:.7rem .9rem calc(.9rem + env(safe-area-inset-bottom));
-  box-shadow:0 -4px 24px #0003;
+  box-shadow:0 -4px 24px #0006;
   display:flex;flex-direction:column;gap:.4rem;position:sticky;bottom:0;
 }
-.phase-title{font-size:.82rem;color:#0d9488;font-weight:700;margin-bottom:.1rem}
-.phase-desc{font-size:.8rem;color:#64748b;margin-bottom:.3rem;line-height:1.4}
-.btn-row{display:flex;gap:.3rem;flex-wrap:wrap}
-.btn{padding:.45rem .75rem;border:none;border-radius:.4rem;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .12s;flex:1;min-width:0;text-align:center}
+.phase-title{font-size:.82rem;color:#2dd4bf;font-weight:700;margin-bottom:.1rem}
+.phase-desc{font-size:.8rem;color:#6b7280;margin-bottom:.3rem;line-height:1.4}
+.btn-row{display:flex;gap:.35rem;flex-wrap:wrap}
+.btn{padding:.5rem .9rem;border:none;border-radius:2rem;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .12s;flex:1;min-width:0;text-align:center;letter-spacing:.02em}
 .btn-p{background:#0d9488;color:#fff}.btn-p:hover:not(:disabled){background:#0f766e}
-.btn-s{background:#e2e8f0;color:#475569}.btn-s:hover:not(:disabled){background:#cbd5e1}
-.btn-g{background:#dcfce7;color:#15803d}.btn-g:hover:not(:disabled){background:#bbf7d0}
+.btn-s{background:#1e293b;color:#94a3b8;border:1px solid #334155}.btn-s:hover:not(:disabled){background:#334155;color:#e2e8f0}
+.btn-g{background:#14532d;color:#4ade80}.btn-g:hover:not(:disabled){background:#166534}
 .btn:disabled{opacity:.3;cursor:not-allowed}
-.flag-w{background:#fef9c3;color:#854d0e;padding:.25rem .4rem;border-radius:.3rem;font-size:.68rem;font-weight:700;text-align:center}
+.flag-w{background:#78350f;color:#fde68a;padding:.25rem .4rem;border-radius:1rem;font-size:.68rem;font-weight:700;text-align:center}
 
 /* ─ SPEED ────────────────────────────────── */
 .spd-wrap{display:none;flex-direction:column;gap:.3rem}
 .spd-wrap.visible{display:flex}
 .spd-slots{display:flex;gap:.3rem;justify-content:center}
-.spd-slot{flex:1;height:52px;border-radius:.45rem;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:700;border:2px solid #e2e8f0;background:#f8fafc;color:#cbd5e1;transition:all .15s;user-select:none}
-.spd-slot.spd-active{background:#0d9488;color:#fff;border-color:#0d9488;box-shadow:0 0 0 3px #ccfbf1}
-.spd-slot.spd-enabled{color:#0f172a;border-color:#0d9488;cursor:pointer}
-.spd-slot.spd-enabled:hover:not(.spd-active){background:#f0fdfb}
+.spd-slot{flex:1;height:52px;border-radius:2rem;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:700;border:2px solid #1e293b;background:#111827;color:#374151;transition:all .15s;user-select:none}
+.spd-slot.spd-active{background:#0d9488;color:#fff;border-color:#0d9488;box-shadow:0 0 0 3px #0d948840}
+.spd-slot.spd-enabled{color:#e2e8f0;border-color:#0d9488;cursor:pointer}
+.spd-slot.spd-enabled:hover:not(.spd-active){background:#0d948820}
 .spd-slot.spd-disabled{opacity:.28}
 .spd-effects{font-size:.63rem;color:#94a3b8;text-align:center;min-height:.8rem}
 .spd-confirm{text-align:center;display:none}
@@ -325,16 +328,17 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 // ── CONSTANTS ──────────────────────────────────────────────────
 // Circuit paysage : 3 voies × 5 positions
 // row 0 = mur (haut), row 1 = milieu, row 2 = apron (bas)
-// col 0 = avant (tête), col 4 = arrière (queue)
+// col 4 = avant (tête), col 0 = arrière (queue)
 const ROWS=3, COLS=5;
 // Positions cellules calculées depuis les séparateurs de 1_card_board_3.png
-const CELL_X=[10.6,30.5,49.9,69.3,88.9]; // col 0-4 (front→back)
+const CELL_X=[10.6,30.5,49.9,69.3,88.9]; // col 0-4 (back→front)
 const CELL_Y=[31.9,54.2,79.1]; // row 0-2 (wall→apron)
 const RIVALS=['red','blue','green','yellow','cyan'];
 
 // Index 0=P1(pôle/facile) … index 5=P6(dernier/difficile)
-// Grille de départ : apron(row2) et milieu(row1), cols 2-4
-const ALL_STARTS=[[2,2],[1,2],[2,3],[1,3],[2,4],[1,4]];
+// Grille de départ : apron(row2) et milieu(row1), cols 0-2
+// Numérotation snake : col4=15(tête), col0=1(queue)
+const ALL_STARTS=[[2,2],[1,2],[2,1],[1,1],[2,0],[1,0]];
 
 // [row, col, dir]  dir: 1=bas(↓, vers apron), -1=haut(↑, vers mur)
 // Tours 10-50 & 110-150 → flèches ↑ (vers mur)
@@ -459,11 +463,15 @@ function swapPieces(id1,id2){
 }
 const allCars=()=>['player',...RIVALS];
 
-// Classement : col croissant (avant = col 0), puis row croissant
+// Numérotation snake : col pair = bottom→top, col impair = top→bottom
+// Exemple col0: (row2)=1,(row1)=2,(row0)=3 ; col1: (row0)=4,(row1)=5,(row2)=6 ; col4: (row0)=15
+const cellNum=(r,c)=>c%2===0?c*3+(2-r)+1:c*3+r+1;
+
+// Classement : cellNum décroissant (col4 = tête = cellule 15)
 function sortedCars(ids){
   return[...ids].sort((a,b)=>{
     const pa=S.cars[a],pb=S.cars[b];
-    return pa.col!==pb.col?pa.col-pb.col:pa.row-pb.row;
+    return cellNum(pb.row,pb.col)-cellNum(pa.row,pa.col);
   });
 }
 const standings  =()=>sortedCars(allCars().filter(id=>S.cars[id]));
@@ -478,18 +486,18 @@ const activeArrow=(r,c)=>{
 };
 
 // ── MOVEMENT ───────────────────────────────────────────────────
-// Reculer = col+1 (vers l'arrière du circuit)
+// Reculer = col-1 (vers col0 = arrière du circuit)
 function tryPushBack(id,isPit=false){
   const{row,col}=S.cars[id];
-  if(col+1>=COLS)return false;
-  const nc=col+1,occ=getCar(row,nc);
+  if(col-1<0)return false;
+  const nc=col-1,occ=getCar(row,nc);
   if(!occ){movePiece(id,row,nc);return true;}
   if(isPit){movePiece(occ,row,col);movePiece(id,row,nc);return true;}
   const chain=[id];
   let scan=nc;
-  while(scan<COLS&&getCar(row,scan)){chain.push(getCar(row,scan));scan++;}
-  if(scan>=COLS)return false;
-  for(let i=chain.length-1;i>=0;i--)movePiece(chain[i],S.cars[chain[i]].row,S.cars[chain[i]].col+1);
+  while(scan>=0&&getCar(row,scan)){chain.push(getCar(row,scan));scan--;}
+  if(scan<0)return false;
+  for(let i=chain.length-1;i>=0;i--)movePiece(chain[i],S.cars[chain[i]].row,S.cars[chain[i]].col-1);
   return true;
 }
 
@@ -507,20 +515,47 @@ function applyPushAgainstEdge(id,sideRow){
     checkLose();tryPushBack(id);
   }else{
     const row=S.cars[id].row;
-    let target=COLS-1;
-    while(target>S.cars[id].col&&getCar(row,target))target--;
-    if(target>S.cars[id].col)movePiece(id,row,target);
+    let target=0;
+    while(target<S.cars[id].col&&getCar(row,target))target++;
+    if(target<S.cars[id].col)movePiece(id,row,target);
     stepLog(`${CAR_LBL[id]} → position arrière`,'neu');
+  }
+}
+
+// Chaîne arrow : tous les membres reculent 1 col si le mur est touché
+let _pushChain=null, _chainFallbackDone=false;
+
+function wallChainFallback(hitId){
+  _chainFallbackDone=true;
+  stepLog(`${CAR_LBL[hitId]} percuté contre le mur ! Toute la ligne recule`,'dan');
+  for(let i=_pushChain.length-1;i>=0;i--){
+    const cid=_pushChain[i];
+    const{row:cr,col:cc}=S.cars[cid];
+    if(cc>0&&!getCar(cr,cc-1))movePiece(cid,cr,cc-1);
   }
 }
 
 // Changement de voie = déplacement vertical (row ±1)
 function pushLateral(id,row,col,dRow){
+  if(_chainFallbackDone)return false;
+  if(_pushChain!==null)_pushChain.push(id);
   const nr=row+dRow;
-  if(!inBounds(nr,col)){applyPushAgainstEdge(id,row);return false;}
+  if(!inBounds(nr,col)){
+    // Hors limites — si chain vers le mur, déclenche recul de la chaîne
+    if(_pushChain!==null&&dRow===-1&&!_chainFallbackDone){wallChainFallback(id);}
+    else{applyPushAgainstEdge(id,row);}
+    return false;
+  }
   const occ=getCar(nr,col);
-  if(occ){pushLateral(occ,nr,col,dRow);if(getCar(nr,col))return false;}
+  if(occ){
+    pushLateral(occ,nr,col,dRow);
+    if(_chainFallbackDone)return false;
+    if(getCar(nr,col))return false;
+  }
+  if(_chainFallbackDone)return false;
   movePiece(id,nr,col);
+  // Atterrissage sur le mur pendant une chaîne → recul
+  if(nr===0&&_pushChain!==null&&!_chainFallbackDone){wallChainFallback(id);return false;}
   if(nr===0||nr===ROWS-1)applyPushAgainstEdge(id,nr);
   return true;
 }
@@ -530,12 +565,10 @@ function resolveArrow(id){
   const{row,col}=S.cars[id];
   const a=activeArrow(row,col);
   if(!a)return;
-  const nr=row+a[2];
-  // Arrow alone never pushes directly to wall (0) or apron (ROWS-1)
-  // It can chain-push a car already "just before" the edge (handled by pushLateral)
-  if(nr<1||nr>ROWS-2)return;
   stepLog(`${CAR_LBL[id]} flèche → ${a[2]>0?'↓ apron':'↑ mur'}`);
+  _pushChain=[];_chainFallbackDone=false;
   pushLateral(id,row,col,a[2]);
+  _pushChain=null;_chainFallbackDone=false;
 }
 
 // ── YELLOW FLAG ────────────────────────────────────────────────
@@ -569,8 +602,8 @@ function processOneRival(){
   const diIdx=RIVALS.indexOf(name);
   S.stepLogs=[];
   const gaugesBefore={...S.gauges};
-  const wasAhead =S.cars[name].col<S.cars.player.col;
-  const wasBehind=S.cars[name].col>S.cars.player.col;
+  const wasAhead =S.cars[name].col>S.cars.player.col;
+  const wasBehind=S.cars[name].col<S.cars.player.col;
   const die=S.dice[diIdx],ps=S.speed;
   let choiceNeeded=false;
 
@@ -583,24 +616,24 @@ function processOneRival(){
       stepLog(`Vitesse ${die} < ${ps} → ${ok?'recule':'bloqué'}`,ok?'':'neu');
       resolveArrow(name);
     }else if(die===6){
-      if(col===0){stepLog('Dé 6 → déjà en tête','neu');}
+      if(col===COLS-1){stepLog('Dé 6 → déjà en tête','neu');}
       else{
-        const inFront=getCar(row,col-1);
-        if(!inFront){movePiece(name,row,col-1);stepLog('Dé 6 → avance','good');}
+        const inFront=getCar(row,col+1);
+        if(!inFront){movePiece(name,row,col+1);stepLog('Dé 6 → avance','good');}
         else{swapPieces(name,inFront);stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');}
         resolveArrow(name);
       }
     }else{
-      if(col===0){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
+      if(col===COLS-1){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
       else{
-        const inFront=getCar(row,col-1);
+        const inFront=getCar(row,col+1);
         if(!inFront){
-          movePiece(name,row,col-1);
+          movePiece(name,row,col+1);
           stepLog(`Vitesse ${die} > ${ps} → avance`,'good');
           resolveArrow(name);
           if(ps<=2&&(wasAhead||wasBehind)){
             const{row:pr,col:pc}=S.cars.player;
-            if(pc>0&&!getCar(pr,pc-1)){movePiece('player',pr,pc-1);stepLog('Aspiration ! Entraîné en avant','good');}
+            if(pc<COLS-1&&!getCar(pr,pc+1)){movePiece('player',pr,pc+1);stepLog('Aspiration ! Entraîné en avant','good');}
           }
         }else{
           const canU=inBounds(row-1,col)&&!getCar(row-1,col);
@@ -981,20 +1014,27 @@ function renderGauges(){
     const on=s<=spd;
     return`<div class="dash-led ${on?LEDCLS[s-1]:'off'}${on&&spd===5&&s===5?' pulse':''}"></div>`;
   }).join('');
-  const fp=Math.round(g.fuel/6*100), tp=Math.round(g.tires/6*100);
-  const fc=g.fuel<=2?'#f97316':'#3b82f6', tc=g.tires<=2?'#f97316':'#22c55e';
+  // Segmented gauge builder (6 segments, top=consumed faded red, bottom=filled)
+  function segGauge(id,val,maxVal,color,icon,label){
+    const low=val<=2, sc=low?'#f97316':color;
+    const segs=Array.from({length:maxVal},(_,i)=>{
+      const filled=i>=(maxVal-val);
+      return`<div class="dash-seg ${filled?'filled':'empty'}" style="${filled?`--sc:${sc}`:''}"></div>`;
+    }).join('');
+    return`<div class="dash-vg" id="${id}">
+      <div class="dash-vg-lbl">${icon}</div>
+      <div class="dash-seg-track">${segs}</div>
+      <div class="dash-vg-val">${val}</div>
+      <div class="dash-vg-lbl">${label}</div>
+    </div>`;
+  }
   const ew=g.engine<=2?' warn':'';
+  const pos=standings().indexOf('player')+1;
+  const total=allCars().filter(id=>S.cars[id]).length;
   el.innerHTML=`
     <div class="dash-leds">${leds}</div>
     <div class="dash-main">
-      <div class="dash-side">
-        <div class="dash-vg" id="gauge-fuel">
-          <div class="dash-vg-lbl">⛽</div>
-          <div class="dash-vg-track"><div class="dash-vg-fill" style="height:${fp}%;background:${fc}"></div></div>
-          <div class="dash-vg-val">${g.fuel}</div>
-          <div class="dash-vg-lbl">Carbu</div>
-        </div>
-      </div>
+      <div class="dash-side">${segGauge('gauge-fuel',g.fuel,6,'#3b82f6','⛽','Carbu')}</div>
       <div class="dash-center">
         <div class="dash-top">
           <div class="dash-cell">
@@ -1010,15 +1050,9 @@ function renderGauges(){
           <div class="dash-spd-v">${spd}</div>
           <div class="dash-spd-l">Vitesse</div>
         </div>
+        <div class="dash-class">${pos>0?`P${pos}/${total}`:'-'}</div>
       </div>
-      <div class="dash-side">
-        <div class="dash-vg" id="gauge-tires">
-          <div class="dash-vg-lbl">🛞</div>
-          <div class="dash-vg-track"><div class="dash-vg-fill" style="height:${tp}%;background:${tc}"></div></div>
-          <div class="dash-vg-val">${g.tires}</div>
-          <div class="dash-vg-lbl">Pneus</div>
-        </div>
-      </div>
+      <div class="dash-side">${segGauge('gauge-tires',g.tires,6,'#22c55e','🛞','Pneus')}</div>
     </div>`;
 }
 
@@ -1041,7 +1075,7 @@ function renderLap(){
 function renderStandings(){
   const el=document.getElementById('apron-strip');
   if(!el)return;
-  el.innerHTML=`<div class="strip-lbl" style="color:#92400e">CLASS.</div>`+
+  el.innerHTML=`<div class="strip-lbl" style="color:#92400e">Classement</div>`+
     standings().map((id,i)=>{
       const isP=id==='player';
       return`<div class="strip-pos">
@@ -1050,6 +1084,7 @@ function renderStandings(){
       </div>`;
     }).join('')+
     `<div class="strip-sep" style="margin-left:auto"></div>
+     <div style="font-size:.9rem;line-height:1" title="Zone Apron">🟡</div>
      <div class="strip-consequence apron-consequence">➡ 🛞-1</div>`;
 }
 
