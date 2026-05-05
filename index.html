@@ -629,7 +629,7 @@ function processOneRival(){
       const ok=tryPushBack(name);
       stepLog(`Vitesse ${die} < ${ps} → ${ok?'recule':'bloqué'}`,ok?'':'neu');
       resolveArrow(name);
-    }else if(die===6){
+    }}else if(die===6){
   if(col===0){
     stepLog('Dé 6 → déjà en tête','neu');
   }else{
@@ -639,8 +639,6 @@ function processOneRival(){
       movePiece(name,row,col-1);
       stepLog('Dé 6 → avance','good');
 
-      // Aspiration autorisée seulement si le rival était juste DEVANT vous.
-      // S'il était derrière, le cas important de la règle ne s'applique pas.
       if(ps<=2 && wasDraftingAhead){
         const{row:pr,col:pc}=S.cars.player;
         if(pc>0&&!getCar(pr,pc-1)){
@@ -652,7 +650,6 @@ function processOneRival(){
     }else{
       swapPieces(name,inFront);
       stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');
-      // Pas d'aspiration en cas de swap.
     }
 
     resolveArrow(name);
@@ -673,7 +670,7 @@ function processOneRival(){
         }else{
           const canU=inBounds(row-1,col)&&!getCar(row-1,col);
           const canD=inBounds(row+1,col)&&!getCar(row+1,col);
-          if(canU&&canD){choiceNeeded=true;S.pendingChoice={rivalName:name,die,gaugesBefore,wasAhead,wasBehind};}
+          if(canU&&canD){choiceNeeded=true;S.pendingChoice={rivalName:name,die,gaugesBefore};}
           else if(canU){movePiece(name,row-1,col);stepLog('Bloqué → voie haute');resolveArrow(name);}
           else if(canD){movePiece(name,row+1,col);stepLog('Bloqué → voie basse');resolveArrow(name);}
           else{stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');}
