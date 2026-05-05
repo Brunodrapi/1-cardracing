@@ -601,58 +601,129 @@ function startRivals(){buildQueue();S.phase='rivals';render();processOneRival();
 
 function processOneRival(){
   if(S.rivalIdx>=S.rivalQueue.length){S.phase='lap';render();return;}
+
   const name=S.rivalQueue[S.rivalIdx];
   const diIdx=RIVALS.indexOf(name);
   S.stepLogs=[];
+
   const gaugesBefore={...S.gauges};
-  const wasDraftingPlayer =
-  S.cars[name].row===S.cars.player.row &&
-  Math.abs(S.cars[name].col-S.cars.player.col)===1;
   const die=S.dice[diIdx],ps=S.speed;
   let choiceNeeded=false;
+
+  const wasDraftingAhead =
+    S.cars[name].row===S.cars.player.row &&
+    S.cars[name].col===S.cars.player.col-1;
+
+  const wasDraftingBehind =
+    S.cars[name].row===S.cars.player.row &&
+    S.cars[name].col===S.cars.player.col+1;
+
+  const draftPlayerForward = ()=>{
+    const{row:pr,col:pc}=S.cars.player;
+    if(pc>0&&!getCar(pr,pc-1)){
+      movePiece('player',pr,pc-1);
+      stepLog('Aspiration ! Entraîné en avant','good');
+      return true;
+    }
+    stepLog('Aspiration impossible : votre case avant est bloquée','neu');
+    return false;
+  };
 
   if(S.diceUsed[diIdx]){
     stepLog(`Vitesse ${die} = votre vitesse ${ps} → ne bouge pas`,'neu');
   }else{
     const{row,col}=S.cars[name];
+
     if(die<ps){
       const ok=tryPushBack(name);
       stepLog(`Vitesse ${die} < ${ps} → ${ok?'recule':'bloqué'}`,ok?'':'neu');
       resolveArrow(name);
+
     }else if(die===6){
-      if(col===0){stepLog('Dé 6 → déjà en tête','neu');}
-      else{
+      if(col===0){
+        stepLog('Dé 6 → déjà en tête','neu');
+      }else{
         const inFront=getCar(row,col-1);
-        if(!inFront){movePiece(name,row,col-1);stepLog('Dé 6 → avance','good');}
-        else{swapPieces(name,inFront);stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');}
+
+        if(!inFront){
+          movePiece(name,row,col-1);
+          stepLog('Dé 6 → avance','good');
+
+          if(ps<=2 && wasDraftingAhead){
+            draftPlayerForward();
+          }
+
+        }else{
+          swapPieces(name,inFront);
+          stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');
+        }
+
         resolveArrow(name);
       }
+
     }else{
-      if(col===0){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
-      else{
+      if(col===0){
+        stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');
+      }else{
         const inFront=getCar(row,col-1);
+
         if(!inFront){
           movePiece(name,row,col-1);
           stepLog(`Vitesse ${die} > ${ps} → avance`,'good');
           resolveArrow(name);
-          if(ps<=2&&wasDraftingPlayer){
-            const{row:pr,col:pc}=S.cars.player;
-            if(pc>0&&!getCar(pr,pc-1)){movePiece('player',pr,pc-1);stepLog('Aspiration ! Entraîné en avant','good');}
+
+          // Rival juste DEVANT vous au départ : il vous tire en avant.
+          if(ps<=2 && wasDraftingAhead){
+            draftPlayerForward();
           }
+
         }else{
-          const canU=inBounds(row-1,col)&&!getCar(row-1,col);
-          const canD=inBounds(row+1,col)&&!getCar(row+1,col);
-          if(canU&&canD){choiceNeeded=true;S.pendingChoice={rivalName:name,die,gaugesBefore,wasAhead,wasBehind};}
-          else if(canU){movePiece(name,row-1,col);stepLog('Bloqué → voie haute');resolveArrow(name);}
-          else if(canD){movePiece(name,row+1,col);stepLog('Bloqué → voie basse');resolveArrow(name);}
-          else{stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');}
+          // Rival juste DERRIÈRE vous au départ et veut entrer sur votre case :
+          // vous avancez d'abord, puis le rival prend votre ancienne place.
+          if(inFront==='player' && ps<=2 && wasDraftingBehind){
+            const ok=draftPlayerForward();
+
+            if(ok){
+              movePiece(name,row,col-1);
+              stepLog(`${CAR_LBL[name]} prend votre aspiration`,'good');
+              resolveArrow(name);
+            }else{
+              stepLog(`${CAR_LBL[name]} bloqué derrière vous`,'neu');
+            }
+
+          }else{
+            const canU=inBounds(row-1,col)&&!getCar(row-1,col);
+            const canD=inBounds(row+1,col)&&!getCar(row+1,col);
+
+            if(canU&&canD){
+              choiceNeeded=true;
+              S.pendingChoice={rivalName:name,die,gaugesBefore};
+            }
+            else if(canU){
+              movePiece(name,row-1,col);
+              stepLog('Bloqué → voie haute');
+              resolveArrow(name);
+            }
+            else if(canD){
+              movePiece(name,row+1,col);
+              stepLog('Bloqué → voie basse');
+              resolveArrow(name);
+            }
+            else{
+              stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');
+            }
+          }
         }
       }
     }
   }
+
   if(choiceNeeded){render();showChoiceModal();return;}
+
   const gaugeDeltas=computeGaugeDeltas(gaugesBefore);
-  S.movedCar=name;S.rivalIdx++;glogAll(name);
+  S.movedCar=name;
+  S.rivalIdx++;
+  glogAll(name);
   showRivalModal(name,die,gaugeDeltas);
 }
 
