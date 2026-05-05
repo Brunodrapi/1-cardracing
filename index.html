@@ -726,7 +726,19 @@ function doPits(restT,restF){
   let drops=0;
   if(restT){S.gauges.tires=6;drops++;glog('Stands : Pneus → 6','good');}
   if(restF){S.gauges.fuel=6; drops++;glog('Stands : Carbu → 6','good');}
-  for(let i=0;i<drops;i++)tryPushBack('player',true);
+  for(let i=0;i<drops;i++){
+    const {row,col}=S.cars.player;
+
+    if(col+1>=COLS) continue;
+
+    const occ=getCar(row,col+1);
+
+    if(!occ){
+      movePiece('player',row,col+1);
+    }else{
+      swapPieces('player',occ);
+    }
+  }
   S.speed=3;S._baseSpeed=3;
   S.lapStep=Math.min(S.lapStep+1,19);
   glog(`Arrêt terminé. Vitesse→3, tour→${(S.lapStep+1)*10}`);
