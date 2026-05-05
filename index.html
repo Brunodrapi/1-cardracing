@@ -618,7 +618,16 @@ function processOneRival(){
     S.cars[name].row===S.cars.player.row &&
     S.cars[name].col===S.cars.player.col+1;
 
-  const wasDraftingPlayer = wasDraftingAhead || wasDraftingBehind;
+  const draftPlayerForward = ()=>{
+    const{row:pr,col:pc}=S.cars.player;
+    if(pc>0&&!getCar(pr,pc-1)){
+      movePiece('player',pr,pc-1);
+      stepLog('Aspiration ! Entraîné en avant','good');
+      return true;
+    }
+    stepLog('Aspiration impossible : votre case avant est bloquée','neu');
+    return false;
+  };
 
   if(S.diceUsed[diIdx]){
     stepLog(`Vitesse ${die} = votre vitesse ${ps} → ne bouge pas`,'neu');
@@ -641,11 +650,7 @@ function processOneRival(){
           stepLog('Dé 6 → avance','good');
 
           if(ps<=2 && wasDraftingAhead){
-            const{row:pr,col:pc}=S.cars.player;
-            if(pc>0&&!getCar(pr,pc-1)){
-              movePiece('player',pr,pc-1);
-              stepLog('Aspiration ! Entraîné en avant','good');
-            }
+            draftPlayerForward();
           }
 
         }else{
@@ -667,34 +672,46 @@ function processOneRival(){
           stepLog(`Vitesse ${die} > ${ps} → avance`,'good');
           resolveArrow(name);
 
-          if(ps<=2&&wasDraftingPlayer){
-            const{row:pr,col:pc}=S.cars.player;
-            if(pc>0&&!getCar(pr,pc-1)){
-              movePiece('player',pr,pc-1);
-              stepLog('Aspiration ! Entraîné en avant','good');
-            }
+          // Rival juste DEVANT vous au départ : il vous tire en avant.
+          if(ps<=2 && wasDraftingAhead){
+            draftPlayerForward();
           }
 
         }else{
-          const canU=inBounds(row-1,col)&&!getCar(row-1,col);
-          const canD=inBounds(row+1,col)&&!getCar(row+1,col);
+          // Rival juste DERRIÈRE vous au départ et veut entrer sur votre case :
+          // vous avancez d'abord, puis le rival prend votre ancienne place.
+          if(inFront==='player' && ps<=2 && wasDraftingBehind){
+            const ok=draftPlayerForward();
 
-          if(canU&&canD){
-            choiceNeeded=true;
-            S.pendingChoice={rivalName:name,die,gaugesBefore};
-          }
-          else if(canU){
-            movePiece(name,row-1,col);
-            stepLog('Bloqué → voie haute');
-            resolveArrow(name);
-          }
-          else if(canD){
-            movePiece(name,row+1,col);
-            stepLog('Bloqué → voie basse');
-            resolveArrow(name);
-          }
-          else{
-            stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');
+            if(ok){
+              movePiece(name,row,col-1);
+              stepLog(`${CAR_LBL[name]} prend votre aspiration`,'good');
+              resolveArrow(name);
+            }else{
+              stepLog(`${CAR_LBL[name]} bloqué derrière vous`,'neu');
+            }
+
+          }else{
+            const canU=inBounds(row-1,col)&&!getCar(row-1,col);
+            const canD=inBounds(row+1,col)&&!getCar(row+1,col);
+
+            if(canU&&canD){
+              choiceNeeded=true;
+              S.pendingChoice={rivalName:name,die,gaugesBefore};
+            }
+            else if(canU){
+              movePiece(name,row-1,col);
+              stepLog('Bloqué → voie haute');
+              resolveArrow(name);
+            }
+            else if(canD){
+              movePiece(name,row+1,col);
+              stepLog('Bloqué → voie basse');
+              resolveArrow(name);
+            }
+            else{
+              stepLog(`Vitesse ${die} > ${ps} → totalement bloqué`,'neu');
+            }
           }
         }
       }
