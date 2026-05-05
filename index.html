@@ -610,7 +610,17 @@ function processOneRival(){
   Math.abs(S.cars[name].col-S.cars.player.col)===1;
   const die=S.dice[diIdx],ps=S.speed;
   let choiceNeeded=false;
+  const wasDraftingAhead =
+    S.cars[name].row===S.cars.player.row &&
+    S.cars[name].col===S.cars.player.col-1;
+  
+  const wasDraftingBehind =
+    S.cars[name].row===S.cars.player.row &&
+    S.cars[name].col===S.cars.player.col+1;
+  
+  const wasDraftingPlayer = wasDraftingAhead || wasDraftingBehind;
 
+  
   if(S.diceUsed[diIdx]){
     stepLog(`Vitesse ${die} = votre vitesse ${ps} → ne bouge pas`,'neu');
   }else{
@@ -620,13 +630,34 @@ function processOneRival(){
       stepLog(`Vitesse ${die} < ${ps} → ${ok?'recule':'bloqué'}`,ok?'':'neu');
       resolveArrow(name);
     }else if(die===6){
-      if(col===0){stepLog('Dé 6 → déjà en tête','neu');}
-      else{
-        const inFront=getCar(row,col-1);
-        if(!inFront){movePiece(name,row,col-1);stepLog('Dé 6 → avance','good');}
-        else{swapPieces(name,inFront);stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');}
-        resolveArrow(name);
+  if(col===0){
+    stepLog('Dé 6 → déjà en tête','neu');
+  }else{
+    const inFront=getCar(row,col-1);
+
+    if(!inFront){
+      movePiece(name,row,col-1);
+      stepLog('Dé 6 → avance','good');
+
+      // Aspiration autorisée seulement si le rival était juste DEVANT vous.
+      // S'il était derrière, le cas important de la règle ne s'applique pas.
+      if(ps<=2 && wasDraftingAhead){
+        const{row:pr,col:pc}=S.cars.player;
+        if(pc>0&&!getCar(pr,pc-1)){
+          movePiece('player',pr,pc-1);
+          stepLog('Aspiration ! Entraîné en avant','good');
+        }
       }
+
+    }else{
+      swapPieces(name,inFront);
+      stepLog(`Dé 6 → échange avec ${CAR_LBL[inFront]}`,'good');
+      // Pas d'aspiration en cas de swap.
+    }
+
+    resolveArrow(name);
+  }
+}
     }else{
       if(col===0){stepLog(`Vitesse ${die} > ${ps} → déjà en tête`,'neu');}
       else{
