@@ -453,3 +453,155 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
   font-weight:900;
   line-height:1;
 }
+
+/* Ajustements mobile habitacle + actions */
+@media(max-width:700px){
+  body{
+    padding-top:env(safe-area-inset-top);
+  }
+
+  .hdr{
+    padding-top:calc(.35rem + env(safe-area-inset-top));
+    min-height:68px;
+  }
+
+  .gauges-bar{
+    padding:.75rem .65rem .85rem;
+  }
+
+  .dash-main{
+    grid-template-columns:54px 54px 1fr 54px;
+    min-height:135px;
+    gap:.45rem;
+  }
+
+  .dash-seg-track{
+    width:42px;
+    min-height:92px;
+  }
+
+  .dash-seg{
+    min-height:8px;
+  }
+
+  .dash-vg-val{
+    font-size:.8rem;
+  }
+
+  .dash-vg-lbl{
+    font-size:.45rem;
+  }
+
+  .dash-cell-v{
+    font-size:2rem;
+  }
+
+  .dash-spd-v{
+    font-size:4.2rem;
+  }
+
+  .dash-cell-l,
+  .dash-spd-l{
+    font-size:.48rem;
+  }
+
+  .dash-led{
+    width:13px;
+    height:13px;
+  }
+
+  .dash-die{
+    width:22px;
+    height:22px;
+    font-size:.72rem;
+  }
+
+  .dash-rank-car-h{
+    width:25px;
+    height:18px;
+    font-size:.58rem;
+  }
+
+  .action-bar{
+    padding:.7rem .8rem calc(.8rem + env(safe-area-inset-bottom));
+  }
+
+  .btn,
+  .spd-confirm button{
+    min-height:64px;
+    width:100%;
+    font-size:1rem;
+    border-radius:.85rem;
+  }
+
+  .spd-confirm{
+    width:100%;
+  }
+
+  .spd-confirm button{
+    display:block;
+  }
+
+  .btn-row{
+    width:100%;
+  }
+
+  .spd-slot{
+    width:58px;
+    height:58px;
+    font-size:1.45rem;
+  }
+}
+
+/* Uniformiser les textes d'actions */
+#phase-ui .reff,
+#phase-ui .reff.good,
+#phase-ui .reff.neu,
+#phase-ui .reff.dan{
+  font-size:1.15rem;
+  line-height:1.2;
+  font-weight:700;
+
+  min-height:52px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:.45rem .7rem;
+
+  border-radius:.6rem;
+
+  text-align:center;
+}
+
+/* titre rival */
+#phase-ui .rdie-name{
+  font-size:1.45rem;
+  font-weight:900;
+}
+
+/* sous texte rival */
+#phase-ui .rdie-cmp{
+  font-size:1.05rem;
+  font-weight:600;
+}
+
+/* ligne rival */
+#phase-ui .rival-die-row{
+  min-height:84px;
+  padding:.7rem .9rem;
+}
+
+/* gros dé */
+#phase-ui .rdie{
+  width:58px;
+  height:58px;
+  font-size:2rem;
+  font-weight:900;
+}
+
+/* espace général */
+#phase-ui{
+  gap:.7rem;
+}
