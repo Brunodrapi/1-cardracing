@@ -69,7 +69,7 @@
 
     <!-- Circuit : image plateau + overlay voitures/flèches -->
     <div class="track-outer">
-      
+      <div class="wall-strip" id="wall-strip"></div>
       <div class="board-wrap">
         <img class="board-img" src="1_card_board_3.png" alt="Circuit">
         <div class="board-overlay" id="board-overlay">
@@ -511,15 +511,19 @@ function computeGaugeDeltas(before){
   return d;
 }
 
+function showActionPanel(html){
+  const el=document.getElementById('phase-ui');
+  if(!el)return;
+  el.innerHTML=html;
+}
+
 // ── RIVAL MODALS ───────────────────────────────────────────────
 function showRivalModal(name,die,gaugeDeltas){
   const ps=S.speed;
   const cmp=die===ps?`=${ps} → ne bouge pas`:die<ps?`< ${ps} → recule`:die===6?`= 6 → avance/échange`:`> ${ps} → avance`;
   const efx=S.stepLogs.map(l=>`<div class="reff ${l.cls}">${l.txt}</div>`).join('');
-  const gd=Object.entries(gaugeDeltas).map(([k,v])=>
-    `<span class="gchip ${v>0?'pos':'neg'}">${GAUGE_ICONS[k]} ${v>0?'+':''}${v}</span>`
-  ).join('');
-  showModal(`
+
+  showActionPanel(`
     <div class="rival-die-row">
       <div class="rdie" style="background:${CAR_BG[name]};color:#fff">${die}</div>
       <div class="rdie-info">
@@ -527,15 +531,21 @@ function showRivalModal(name,die,gaugeDeltas){
         <div class="rdie-cmp">Dé ${cmp}</div>
       </div>
     </div>
+
     ${efx?`<div class="rival-effects">${efx}</div>`:'<div class="reff neu">Aucun effet</div>'}
-    ${gd?`<div class="gauge-summary">${gd}</div>`:''}
-    <div class="modal-btns">
+
+    <div class="btn-row">
       <button class="btn btn-p" onclick="continueRivals()">Continuer ▶</button>
-    </div>`,'choose rival-modal');
-  if(Object.keys(gaugeDeltas).length>0)setTimeout(()=>launchGaugeFlies(gaugeDeltas),100);
+    </div>
+  `);
 }
 
-function continueRivals(){closeModal();render();S.movedCar=null;if(S.gameOver){showEndModal();return;}processOneRival();}
+function continueRivals(){
+  render();
+  S.movedCar=null;
+  if(S.gameOver){showEndModal();return;}
+  processOneRival();
+}
 
 function showChoiceModal(){
   const{rivalName}=S.pendingChoice;
@@ -934,7 +944,6 @@ function renderGauges(){
           <div class="dash-cell-v">P${pos}</div>
           <div class="dash-cell-l">Classement</div>
           <div class="dash-standings-h">${standingsHtml}</div>
-          <div class="dash-class">P${pos}/${total}</div>
         </div>
       </div>
 

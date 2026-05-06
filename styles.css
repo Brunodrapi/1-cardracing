@@ -61,7 +61,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .lseg.cf{background:repeating-conic-gradient(#0f172a 0 25%,#fff 0 50%) 0/6px 6px}
 
 /* ─ GAME CONTENT (fills remaining height) ── */
-.game-content{flex:1;display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}
+.game-content{display:flex;flex-direction:column;gap:0;padding:0}
 
 /* ─ TRACK — plateau image ─────────────────── */
 .track-outer{display:flex;flex-direction:column;width:100%;border-radius:.6rem;overflow:hidden;box-shadow:0 3px 14px #0004}
@@ -102,7 +102,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .journal-btn:hover{background:rgba(255,255,255,.2);color:#fff}
 
 /* ─ TABLEAU DE BORD NASCAR ──────────────── */
-.gauges-bar{background:#080c10;padding:.35rem .6rem .45rem;width:100%}
+.gauges-bar{background:#080c10;padding:.7rem .9rem .8rem;width:100%}
 .dash-leds{display:flex;justify-content:center;gap:3px;margin-bottom:.3rem}
 .dash-led{width:12px;height:12px;border-radius:50%;transition:all .2s;flex-shrink:0}
 .dash-led.off{background:#111827}
@@ -113,43 +113,45 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .dash-led.spd5{background:#ef4444;box-shadow:0 0 7px #ef4444}
 @keyframes led-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.15;transform:scale(.75)}}
 .dash-led.pulse{animation:led-pulse .38s infinite}
-.dash-main{display:grid;grid-template-columns:42px 42px 1fr 42px;gap:.45rem;align-items:stretch;width:100%;max-width:none;min-height:90px}
+.dash-main{display:grid;grid-template-columns:56px 56px 1fr 56px;gap:.7rem;align-items:stretch;width:100%;min-height:140px}
 .dash-side{display:flex;flex-direction:column;gap:.2rem;width:42px;flex-shrink:0}
 .dash-vg{display:flex;flex-direction:column;align-items:center;gap:.05rem;min-width:0}
 .dash-vg-lbl{font-size:.38rem;text-transform:uppercase;color:#374151;letter-spacing:.06em;font-weight:800;line-height:1.1}
-.dash-seg-track{display:flex;flex-direction:column;gap:2px;flex:1;width:34px;min-height:52px}
+.dash-seg-track{display:flex;flex-direction:column;gap:2px;flex:1;width:48px;min-height:96px}
 .dash-seg{flex:1;border-radius:2px;min-height:6px;transition:background .3s}
 .dash-seg.filled{background:var(--sc,#22c55e)}
 .dash-seg.empty{background:#4c0519;opacity:.55}
 .dash-vg-val{font-size:.58rem;font-weight:700;color:#4b5563;line-height:1}
 .dash-center{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;gap:.5rem;width:100%;min-width:0}
 .dash-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.02rem;min-width:0}
-.dash-cell-v{font-size:2rem;font-weight:900;color:#2dd4bf;line-height:1.05}
+.dash-cell-v{font-size:3rem;font-weight:900;color:#2dd4bf;line-height:1.05}
 .dash-class{font-size:.72rem;font-weight:700;color:#6b7280;line-height:1;text-align:center}
 .dash-cell-v.hot{color:#f87171}
 .dash-cell-v.warn{color:#ef4444;animation:pulse-pip 1s infinite}
 .dash-cell-l{font-size:.38rem;text-transform:uppercase;letter-spacing:.09em;color:#374151;font-weight:700;line-height:1}
 .dash-spd{display:flex;flex-direction:column;align-items:center;gap:.03rem;flex:1;justify-content:center}
-.dash-spd-v{font-size:3.8rem;font-weight:900;color:#2dd4bf;line-height:1}
+.dash-spd-v{font-size:5.5rem;font-weight:900;color:#2dd4bf;line-height:1}
 .dash-spd-l{font-size:.42rem;text-transform:uppercase;letter-spacing:.12em;color:#374151;font-weight:700}
 .dash-dice-row{display:flex;gap:3px;justify-content:center;margin-top:.2rem}
 .dash-die{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:900;color:#fff}
 .dash-dice-empty{font-size:.6rem;color:#374151}
 .dash-standings-h{display:flex;gap:.15rem;justify-content:center;margin-top:.2rem;flex-wrap:wrap}
-.dash-rank-car-h{width:22px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:900;color:#fff}
+.dash-rank-car-h{width:30px;height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:900;color:#fff}
 .track-warning{position:absolute;z-index:10;font-size:.8rem;font-weight:900;border-radius:.35rem;padding:.35rem .4rem;pointer-events:none}
 .wall-warning{right:1rem;top:14%;background:rgba(30,58,138,.22);color:#dbeafe}
 .grass-warning{right:1rem;bottom:2%;background:rgba(20,83,45,.45);color:#dcfce7}
 
 /* ─ PANNEAU BAS (dashboard + action) ────── */
-.bottom-panel{position:sticky;bottom:0;background:#080c10;box-shadow:0 -4px 24px #0008;z-index:30;width:100%}
+.bottom-panel{position:sticky;bottom:0;background:#080c10;box-shadow:0 -4px 24px #0008;z-index:60;width:100%}
 
 /* ─ ACTION BAR ───────────────────────────── */
 .action-bar{
-  background:#080c10;
-  border-top:1px solid #1e293b;
-  padding:.6rem .9rem calc(.7rem + env(safe-area-inset-bottom));
-  display:flex;flex-direction:column;gap:.35rem;
+  background:#000;
+  border-top:1px solid #111827;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
 }
 .phase-title{font-size:.8rem;color:#2dd4bf;font-weight:700;margin-bottom:.05rem}
 .phase-desc{font-size:.75rem;color:#4b5563;margin-bottom:.25rem;line-height:1.4}
@@ -189,7 +191,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .rdie-info{display:flex;flex-direction:column;gap:.12rem}
 .rdie-name{font-weight:700;font-size:.85rem}
 .rdie-cmp{font-size:.7rem;color:#94a3b8}
-.rival-effects{display:flex;flex-direction:column;gap:.15rem}
+.rival-effects{display:flex;flex-direction:column;gap:.15rem  }
 .reff{font-size:.72rem;padding:.18rem .35rem;border-radius:.25rem;background:#f8fafc;color:#64748b;line-height:1.35}
 .reff.good{color:#16a34a}.reff.dan{color:#dc2626}.reff.imp{color:#d97706}.reff.neu{color:#94a3b8}
 .gauge-summary{display:flex;gap:.3rem;flex-wrap:wrap}
@@ -231,3 +233,79 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
   .tcell{min-height:100px}
 }
 
+/* contenu injecté dans #phase-ui */
+#phase-ui{
+  width:100%;
+  max-width:720px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:.45rem;
+}
+
+/* ligne rival centrée */
+#phase-ui .rival-die-row{
+  width:100%;
+  justify-content:center;
+  background:#111827;
+  border:1px solid #1f2937;
+  border-radius:.6rem;
+}
+
+/* effets centrés */
+#phase-ui .rival-effects{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.2rem;
+}
+
+#phase-ui .reff{
+  width:100%;
+  text-align:center;
+  background:#111827;
+  border-radius:.35rem;
+}
+
+/* boutons centrés */
+#phase-ui .btn-row{
+  justify-content:center;
+  width:100%;
+}
+
+/* fond global plus homogène */
+.bottom-panel{
+  background:#000;
+}
+
+.gauges-bar{
+  background:#000;
+}
+
+/* boutons vitesse ronds */
+.spd-slots{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:.35rem;
+}
+
+.spd-slot{
+  width:44px;
+  height:44px;
+  border-radius:50% !important;
+  flex:none !important;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  aspect-ratio:1/1;
+
+  font-size:1.2rem;
+  font-weight:900;
+  line-height:1;
+}
