@@ -233,6 +233,150 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
   .tcell{min-height:100px}
 }
 
+@media(max-width:700px){
+  body{
+    padding:0;
+    overflow:hidden;
+  }
+
+  #game{
+    height:100dvh;
+    min-height:100dvh;
+    overflow:hidden;
+  }
+
+  .hdr{
+    padding:.25rem .45rem;
+    min-height:48px;
+  }
+
+  .game-content{
+    flex:0 0 auto;
+    padding:0;
+    gap:0;
+  }
+
+  .track-outer{
+    border-radius:0;
+    box-shadow:none;
+  }
+
+  .board-img{
+    width:100%;
+    height:auto;
+  }
+
+  .bottom-panel{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+  }
+
+  .gauges-bar{
+    padding:.22rem .35rem .25rem;
+  }
+
+  .dash-leds{
+    gap:2px;
+    margin-bottom:.15rem;
+  }
+
+  .dash-led{
+    width:9px;
+    height:9px;
+  }
+
+  .dash-main{
+    grid-template-columns:28px 28px 1fr 28px;
+    gap:.25rem;
+    min-height:62px;
+  }
+
+  .dash-seg-track{
+    width:24px;
+    min-height:42px;
+  }
+
+  .dash-seg{
+    min-height:4px;
+  }
+
+  .dash-vg-val{
+    font-size:.48rem;
+  }
+
+  .dash-vg-lbl{
+    font-size:.32rem;
+  }
+
+  .dash-center{
+    gap:.2rem;
+  }
+
+  .dash-cell-v{
+    font-size:1.25rem;
+  }
+
+  .dash-spd-v{
+    font-size:2.4rem;
+  }
+
+  .dash-cell-l,
+  .dash-spd-l{
+    font-size:.32rem;
+  }
+
+  .dash-die{
+    width:15px;
+    height:15px;
+    font-size:.5rem;
+  }
+
+  .dash-rank-car-h{
+    width:18px;
+    height:13px;
+    font-size:.42rem;
+  }
+
+  .action-bar{
+    padding:.35rem .45rem calc(.45rem + env(safe-area-inset-bottom));
+  }
+
+  .phase-title{
+    font-size:.68rem;
+  }
+
+  .phase-desc{
+    font-size:.62rem;
+    margin-bottom:.12rem;
+  }
+
+  .btn{
+    padding:.42rem .55rem;
+    font-size:.68rem;
+  }
+
+  .modal{
+    padding:.8rem .8rem calc(.8rem + env(safe-area-inset-bottom));
+    gap:.45rem;
+  }
+
+  .rival-die-row{
+    padding:.35rem .45rem;
+  }
+
+  .rdie{
+    width:34px;
+    height:34px;
+  }
+
+  .reff{
+    font-size:.66rem;
+    padding:.14rem .28rem;
+  }
+}
+
 /* contenu injecté dans #phase-ui */
 #phase-ui{
   width:100%;
