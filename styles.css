@@ -125,7 +125,6 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .dash-center{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;gap:.5rem;width:100%;min-width:0}
 .dash-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.02rem;min-width:0}
 .dash-cell-v{font-size:3rem;font-weight:900;color:#2dd4bf;line-height:1.05}
-.dash-class{font-size:.72rem;font-weight:700;color:#6b7280;line-height:1;text-align:center}
 .dash-cell-v.hot{color:#f87171}
 .dash-cell-v.warn{color:#ef4444;animation:pulse-pip 1s infinite}
 .dash-cell-l{font-size:.38rem;text-transform:uppercase;letter-spacing:.09em;color:#374151;font-weight:700;line-height:1}
@@ -145,14 +144,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .bottom-panel{position:sticky;bottom:0;background:#080c10;box-shadow:0 -4px 24px #0008;z-index:60;width:100%}
 
 /* ─ ACTION BAR ───────────────────────────── */
-.action-bar{
-  background:#000;
-  border-top:1px solid #111827;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-}
+.action-bar{background:#000;border-top:1px solid #111827;padding:.7rem .9rem calc(.8rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem}
 .phase-title{font-size:.8rem;color:#2dd4bf;font-weight:700;margin-bottom:.05rem}
 .phase-desc{font-size:.75rem;color:#4b5563;margin-bottom:.25rem;line-height:1.4}
 .btn-row{display:flex;gap:.4rem;flex-wrap:wrap}
@@ -173,8 +165,8 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .spd-slot.spd-enabled:hover:not(.spd-active){background:#0d948820}
 .spd-slot.spd-disabled{opacity:.28}
 .spd-effects{font-size:.63rem;color:#94a3b8;text-align:center;min-height:.8rem}
-.spd-confirm{text-align:center;display:none}
-.spd-confirm button{padding:.4rem 1.2rem;border:none;border-radius:.4rem;background:#0d9488;color:#fff;font-size:.78rem;font-weight:700;cursor:pointer;width:100%}
+.spd-confirm{width:100%;text-align:center;display:none}
+.spd-confirm button{display:block;width:100%;min-height:64px;padding:.65rem 1.2rem;border:none;border-radius:.85rem;background:#0d9488;color:#fff;font-size:1.05rem;font-weight:900;cursor:pointer}
 .spd-confirm button:hover{background:#0f766e}
 
 /* ─ MODAL ────────────────────────────────── */
@@ -191,7 +183,7 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 .rdie-info{display:flex;flex-direction:column;gap:.12rem}
 .rdie-name{font-weight:700;font-size:.85rem}
 .rdie-cmp{font-size:.7rem;color:#94a3b8}
-.rival-effects{display:flex;flex-direction:column;gap:.15rem  }
+.rival-effects{display:flex;flex-direction:column;gap:.15rem}
 .reff{font-size:.72rem;padding:.18rem .35rem;border-radius:.25rem;background:#f8fafc;color:#64748b;line-height:1.35}
 .reff.good{color:#16a34a}.reff.dan{color:#dc2626}.reff.imp{color:#d97706}.reff.neu{color:#94a3b8}
 .gauge-summary{display:flex;gap:.3rem;flex-wrap:wrap}
@@ -232,376 +224,54 @@ body{background:#d4d8df;color:#1e293b;font-family:'Segoe UI',Arial,sans-serif;mi
 @media(min-width:640px){
   .tcell{min-height:100px}
 }
+/* ─ ACTIONS DANS L'HABITACLE ───────────────── */
+#phase-ui{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.7rem;margin:0 auto}
+#phase-ui .phase-title{color:#2dd4bf;font-size:1.25rem;line-height:1.25;font-weight:900}
+#phase-ui .phase-desc{color:#94a3b8;font-size:1rem;line-height:1.25;font-weight:600}
+#phase-ui .rival-die-row{width:100%;min-height:84px;justify-content:center;background:#111827;border:1px solid #1f2937;border-radius:.6rem;padding:.7rem .9rem}
+#phase-ui .rival-effects{width:100%;display:flex;flex-direction:column;align-items:center;gap:.2rem}
+#phase-ui .reff,#phase-ui .reff.good,#phase-ui .reff.neu,#phase-ui .reff.dan,#phase-ui .reff.imp{width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;text-align:center;background:#111827;border-radius:.6rem;padding:.45rem .7rem;font-size:1.15rem;line-height:1.2;font-weight:700}
+#phase-ui .rdie{width:58px;height:58px;font-size:2rem;font-weight:900}
+#phase-ui .rdie-name{font-size:1.45rem;font-weight:900}
+#phase-ui .rdie-cmp{font-size:1.05rem;font-weight:600}
+#phase-ui .btn-row{width:100%;justify-content:center}
+#phase-ui .btn,#phase-ui .spd-confirm button{width:100%;min-height:64px;font-size:1.05rem;font-weight:900;border-radius:.9rem}
 
+/* Dés de vitesse ronds */
+.spd-slots{display:flex;justify-content:center;align-items:center;gap:.35rem}
+.spd-slot{width:44px;height:44px;aspect-ratio:1/1;border-radius:50%!important;flex:none!important;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900;line-height:1}
+
+/* Dés dans l'habitacle : compacts comme le classement */
+.dash-dice-row{display:flex;justify-content:center;align-items:center;gap:2px;margin-top:.15rem;flex-wrap:nowrap}
+.dash-die{width:18px;height:18px;min-width:18px;min-height:18px;border-radius:4px;font-size:.58rem;font-weight:900;padding:0;display:flex;align-items:center;justify-content:center;line-height:1;color:#fff}
+
+/* ─ MOBILE ───────────────────────────────── */
 @media(max-width:700px){
-  body{
-    padding:0;
-    overflow:hidden;
-  }
-
-  #game{
-    height:100dvh;
-    min-height:100dvh;
-    overflow:hidden;
-  }
-
-  .hdr{
-    padding:.25rem .45rem;
-    min-height:48px;
-  }
-
-  .game-content{
-    flex:0 0 auto;
-    padding:0;
-    gap:0;
-  }
-
-  .track-outer{
-    border-radius:0;
-    box-shadow:none;
-  }
-
-  .board-img{
-    width:100%;
-    height:auto;
-  }
-
-  .bottom-panel{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-  }
-
-  .gauges-bar{
-    padding:.22rem .35rem .25rem;
-  }
-
-  .dash-leds{
-    gap:2px;
-    margin-bottom:.15rem;
-  }
-
-  .dash-led{
-    width:9px;
-    height:9px;
-  }
-
-  .dash-main{
-    grid-template-columns:28px 28px 1fr 28px;
-    gap:.25rem;
-    min-height:62px;
-  }
-
-  .dash-seg-track{
-    width:24px;
-    min-height:42px;
-  }
-
-  .dash-seg{
-    min-height:4px;
-  }
-
-  .dash-vg-val{
-    font-size:.48rem;
-  }
-
-  .dash-vg-lbl{
-    font-size:.32rem;
-  }
-
-  .dash-center{
-    gap:.2rem;
-  }
-
-  .dash-cell-v{
-    font-size:1.25rem;
-  }
-
-  .dash-spd-v{
-    font-size:2.4rem;
-  }
-
-  .dash-cell-l,
-  .dash-spd-l{
-    font-size:.32rem;
-  }
-
-  .dash-die{
-    width:15px;
-    height:15px;
-    font-size:.5rem;
-  }
-
-  .dash-rank-car-h{
-    width:18px;
-    height:13px;
-    font-size:.42rem;
-  }
-
-  .action-bar{
-    padding:.35rem .45rem calc(.45rem + env(safe-area-inset-bottom));
-  }
-
-  .phase-title{
-    font-size:.68rem;
-  }
-
-  .phase-desc{
-    font-size:.62rem;
-    margin-bottom:.12rem;
-  }
-
-  .btn{
-    padding:.42rem .55rem;
-    font-size:.68rem;
-  }
-
-  .modal{
-    padding:.8rem .8rem calc(.8rem + env(safe-area-inset-bottom));
-    gap:.45rem;
-  }
-
-  .rival-die-row{
-    padding:.35rem .45rem;
-  }
-
-  .rdie{
-    width:34px;
-    height:34px;
-  }
-
-  .reff{
-    font-size:.66rem;
-    padding:.14rem .28rem;
-  }
-}
-
-/* contenu injecté dans #phase-ui */
-#phase-ui{
-  width:100%;
-  max-width:720px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  gap:.45rem;
-}
-
-/* ligne rival centrée */
-#phase-ui .rival-die-row{
-  width:100%;
-  justify-content:center;
-  background:#111827;
-  border:1px solid #1f2937;
-  border-radius:.6rem;
-}
-
-/* effets centrés */
-#phase-ui .rival-effects{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:.2rem;
-}
-
-#phase-ui .reff{
-  width:100%;
-  text-align:center;
-  background:#111827;
-  border-radius:.35rem;
-}
-
-/* boutons centrés */
-#phase-ui .btn-row{
-  justify-content:center;
-  width:100%;
-}
-
-/* fond global plus homogène */
-.bottom-panel{
-  background:#000;
-}
-
-.gauges-bar{
-  background:#000;
-}
-
-/* boutons vitesse ronds */
-.spd-slots{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:.35rem;
-}
-
-.spd-slot{
-  width:44px;
-  height:44px;
-  border-radius:50% !important;
-  flex:none !important;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  aspect-ratio:1/1;
-
-  font-size:1.2rem;
-  font-weight:900;
-  line-height:1;
-}
-
-/* Ajustements mobile habitacle + actions */
-@media(max-width:700px){
-  body{
-    padding-top:env(safe-area-inset-top);
-  }
-
-  .hdr{
-    padding-top:calc(.35rem + env(safe-area-inset-top));
-    min-height:68px;
-  }
-
-  .gauges-bar{
-    padding:.75rem .65rem .85rem;
-  }
-
-  .dash-main{
-    grid-template-columns:54px 54px 1fr 54px;
-    min-height:135px;
-    gap:.45rem;
-  }
-
-  .dash-seg-track{
-    width:42px;
-    min-height:92px;
-  }
-
-  .dash-seg{
-    min-height:8px;
-  }
-
-  .dash-vg-val{
-    font-size:.8rem;
-  }
-
-  .dash-vg-lbl{
-    font-size:.45rem;
-  }
-
-  .dash-cell-v{
-    font-size:2rem;
-  }
-
-  .dash-spd-v{
-    font-size:4.2rem;
-  }
-
-  .dash-cell-l,
-  .dash-spd-l{
-    font-size:.48rem;
-  }
-
-  .dash-led{
-    width:13px;
-    height:13px;
-  }
-
-  .dash-die{
-    width:22px;
-    height:22px;
-    font-size:.72rem;
-  }
-
-  .dash-rank-car-h{
-    width:25px;
-    height:18px;
-    font-size:.58rem;
-  }
-
-  .action-bar{
-    padding:.7rem .8rem calc(.8rem + env(safe-area-inset-bottom));
-  }
-
-  .btn,
-  .spd-confirm button{
-    min-height:64px;
-    width:100%;
-    font-size:1rem;
-    border-radius:.85rem;
-  }
-
-  .spd-confirm{
-    width:100%;
-  }
-
-  .spd-confirm button{
-    display:block;
-  }
-
-  .btn-row{
-    width:100%;
-  }
-
-  .spd-slot{
-    width:58px;
-    height:58px;
-    font-size:1.45rem;
-  }
-}
-
-/* Uniformiser les textes d'actions */
-#phase-ui .reff,
-#phase-ui .reff.good,
-#phase-ui .reff.neu,
-#phase-ui .reff.dan{
-  font-size:1.15rem;
-  line-height:1.2;
-  font-weight:700;
-
-  min-height:52px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  padding:.45rem .7rem;
-
-  border-radius:.6rem;
-
-  text-align:center;
-}
-
-/* titre rival */
-#phase-ui .rdie-name{
-  font-size:1.45rem;
-  font-weight:900;
-}
-
-/* sous texte rival */
-#phase-ui .rdie-cmp{
-  font-size:1.05rem;
-  font-weight:600;
-}
-
-/* ligne rival */
-#phase-ui .rival-die-row{
-  min-height:84px;
-  padding:.7rem .9rem;
-}
-
-/* gros dé */
-#phase-ui .rdie{
-  width:58px;
-  height:58px;
-  font-size:2rem;
-  font-weight:900;
-}
-
-/* espace général */
-#phase-ui{
-  gap:.7rem;
+  body{padding-top:env(safe-area-inset-top);overflow:hidden}
+  #game{height:100dvh;min-height:100dvh;overflow:hidden}
+  .hdr{padding:.35rem .45rem .25rem;min-height:76px}
+  .game-content{flex:0 0 auto;padding:0;gap:0}
+  .track-outer{border-radius:0;box-shadow:none}
+  .board-img{width:100%;height:auto}
+  .bottom-panel{position:fixed;left:0;right:0;bottom:0;background:#000}
+  .gauges-bar{padding:.75rem .65rem .85rem;background:#000}
+  .dash-leds{gap:2px;margin-bottom:.25rem}
+  .dash-led{width:13px;height:13px}
+  .dash-main{grid-template-columns:54px 54px 1fr 54px;gap:.45rem;min-height:135px}
+  .dash-seg-track{width:42px;min-height:92px}
+  .dash-seg{min-height:8px}
+  .dash-vg-val{font-size:.8rem}
+  .dash-vg-lbl{font-size:.45rem}
+  .dash-center{gap:.25rem}
+  .dash-cell-v{font-size:2rem}
+  .dash-spd-v{font-size:4.2rem}
+  .dash-cell-l,.dash-spd-l{font-size:.48rem}
+  .dash-rank-car-h{width:25px;height:18px;font-size:.58rem}
+  .action-bar{padding:.75rem .8rem calc(.85rem + env(safe-area-inset-bottom));gap:.7rem}
+  .phase-title{font-size:1.25rem}
+  .phase-desc{font-size:1rem;margin-bottom:.12rem}
+  .btn,#phase-ui .btn,.spd-confirm button{min-height:64px;width:100%;font-size:1rem;border-radius:.85rem}
+  .btn-row,.spd-confirm{width:100%}
+  .spd-slot{width:58px;height:58px;font-size:1.45rem}
+  .modal{padding:.8rem .8rem calc(.8rem + env(safe-area-inset-bottom));gap:.45rem}
 }
