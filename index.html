@@ -999,6 +999,7 @@ function renderLap(){
   for(let i=0;i<20;i++){
     const d=document.createElement('div');
     d.className='lseg';
+    d.classList.add((i<5||(i>=10&&i<15))?'wall':'apron');
     if(i<S.lapStep)  d.classList.add('done');
     if(i===S.lapStep)d.classList.add('now');
     if(i===18)       d.classList.add('wf');

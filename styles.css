@@ -56,7 +56,10 @@ body:has(#game[style*="flex"]){padding:0}
 .arr-phase{font-size:.88rem;font-weight:700;padding:.15rem .4rem;border-radius:.3rem;background:#f0fdfb;color:#0d9488;text-align:right}
 .arr-phase.left{background:#eff6ff;color:#2563eb}
 .lseg{width:9px;height:5px;border-radius:1px;background:#e2e8f0;transition:background .3s}
-.lseg.done{background:#94a3b8}
+.lseg.wall{background:#dbeafe}
+.lseg.apron{background:#ffedd5}
+.lseg.done.wall{background:#93c5fd}
+.lseg.done.apron{background:#fdba74}
 .lseg.now{background:#0d9488}
 .lseg.wf{background:#fbbf24}
 .lseg.cf{background:repeating-conic-gradient(#0f172a 0 25%,#fff 0 50%) 0/6px 6px}
