@@ -175,9 +175,15 @@ const GAUGE_ICONS={tires:'🛞',fuel:'⛽',engine:'⚙️'};
 const JBIN_KEY='$2a$10$ZhGQjyGQdYCKWCXurwGeBu5QbQu8Y.O9DTGHsqiv6iDahS0mniad6';
 const JBIN_URL='https://api.jsonbin.io/v3/b/69fd946ac0954111d8f35774';
 
+function fetchTimeout(url,opts,ms=8000){
+  const ctrl=new AbortController();
+  const t=setTimeout(()=>ctrl.abort(),ms);
+  return fetch(url,{...opts,signal:ctrl.signal}).finally(()=>clearTimeout(t));
+}
+
 async function loadLB(){
   try{
-    const r=await fetch(JBIN_URL,{headers:{'X-Master-Key':JBIN_KEY,'X-Bin-Meta':'false'}});
+    const r=await fetchTimeout(JBIN_URL,{headers:{'X-Master-Key':JBIN_KEY,'X-Bin-Meta':'false'}});
     if(!r.ok)throw new Error(r.status);
     const data=await r.json();
     if(Array.isArray(data))return data;
@@ -188,12 +194,13 @@ async function loadLB(){
 
 async function saveLB(arr){
   try{
-    await fetch(JBIN_URL,{
+    const r=await fetchTimeout(JBIN_URL,{
       method:'PUT',
       headers:{'Content-Type':'application/json','X-Master-Key':JBIN_KEY},
       body:JSON.stringify(arr)
     });
-  }catch(e){console.warn('JSONBin save:',e);}
+    return r.ok;
+  }catch(e){console.warn('JSONBin save:',e);return false;}
 }
 
 async function renderLB(hi=-1){
@@ -212,21 +219,39 @@ async function renderLB(hi=-1){
     :'<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">Aucun score enregistré</td></tr>';
 }
 
+let _pendingSave=null;
+
 async function submitScore(){
   const btn=document.querySelector('[onclick="submitScore()"]');
+  const errEl=document.getElementById('save-error');
   if(btn){btn.disabled=true;btn.textContent='Sauvegarde…';}
+  if(errEl)errEl.style.display='none';
+
   const raw=document.getElementById('name-input');
   const name=(raw?raw.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6)||'ANON':'ANON');
   const score=Math.round(S.finalScore);
-  const lb=await loadLB();
-  const ne={name,score,date:new Date().toLocaleDateString('fr-FR'),car:CAR_LBL['player'],finalPos:S.finalPos,diff:S.diff};
-  lb.push(ne);lb.sort((a,b)=>b.score-a.score);
-  const rank=lb.findIndex(e=>e===ne);
-  await saveLB(lb.slice(0,20));
+
+  if(!_pendingSave){
+    const lb=await loadLB();
+    const ne={name,score,date:new Date().toLocaleDateString('fr-FR'),car:CAR_LBL['player'],finalPos:S.finalPos,diff:S.diff};
+    lb.push(ne);lb.sort((a,b)=>b.score-a.score);
+    const rank=lb.findIndex(e=>e===ne);
+    _pendingSave={data:lb.slice(0,20),rank:rank<20?rank:-1};
+  }
+
+  const ok=await saveLB(_pendingSave.data);
+  if(!ok){
+    if(btn){btn.disabled=false;btn.textContent='↺ Réessayer';}
+    if(errEl){errEl.textContent='⚠️ Sauvegarde échouée — vérifiez votre connexion';errEl.style.display='block';}
+    return;
+  }
+
+  const rank=_pendingSave.rank;
+  _pendingSave=null;
   closeModal();
   document.getElementById('game').style.display='none';
   document.getElementById('leaderboard').style.display='block';
-  renderLB(rank<20?rank:-1);
+  renderLB(rank);
 }
 
 // ── STATE ──────────────────────────────────────────────────────
@@ -768,6 +793,7 @@ function showEndModal(){
         placeholder="AAAAAA" autocomplete="off" autocorrect="off" spellcheck="false"
         oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6)">
       <button class="btn btn-p" onclick="submitScore()" style="width:100%">Valider et sauvegarder ✓</button>
+      <div id="save-error" style="display:none;color:#dc2626;font-size:.75rem;text-align:center;margin-top:.4rem"></div>
     </div>
     <div class="modal-btns">
       <button class="btn btn-s" onclick="backToSetup()">Rejouer sans sauver</button>
@@ -1134,6 +1160,7 @@ function startGame(){
   render();
 }
 function backToSetup(){
+  _pendingSave=null;
   closeModal();
   document.getElementById('game').style.display='none';
   document.getElementById('setup').style.display='none';
