@@ -13,10 +13,12 @@
 <div id="leaderboard">
   <div class="lb-title">🏁 1 Car-D Racing</div>
   <div class="lb-sub">Tableau des meilleurs pilotes</div>
-  <table class="lb-table">
-    <thead><tr><th>#</th><th>Nom</th><th>Voiture</th><th>Pos.</th><th>Diff.</th><th>Score</th><th>Date</th></tr></thead>
-    <tbody id="lb-body"></tbody>
-  </table>
+  <div class="lb-scroll">
+    <table class="lb-table">
+      <thead><tr><th>#</th><th>Nom</th><th>Voiture</th><th>Pos.</th><th>Diff.</th><th>Score</th><th>Date</th></tr></thead>
+      <tbody id="lb-body"></tbody>
+    </table>
+  </div>
   <button class="play-btn" onclick="showSetup()">DÉMARRER ▶</button>
 </div>
 
@@ -174,8 +176,16 @@ function loadLB(){
   if(s)return JSON.parse(s);
   const init=[];
   const allNums=[...SKINS_NASCAR,...SKINS_PIXAR].map(s=>s.num);
+  const rndNames=['SPEED ','TURBO ','FLASH ','NITRO ','BLAZE ','DRIFT ','STORM ','RAZOR ','COBRA ','GHOST ','TITAN ','ARROW ','VIPER ','ROUGE ','SONIC ','PILOT ','DELTA ','RACER ','THUNDER','BOOST '];
   const rnd=(n)=>Math.floor(Math.random()*n);
-  for(let i=0;i<20;i++)init.push({name:'COMPUT',score:3100,date:'2024-01-01',car:allNums[rnd(allNums.length)],finalPos:rnd(6)+1,diff:rnd(6)+1});
+  const used=new Set();
+  for(let i=0;i<20;i++){
+    let nm;do{nm=rndNames[rnd(rndNames.length)].trim();}while(used.has(nm)&&used.size<rndNames.length);
+    used.add(nm);
+    const base=800+rnd(2400);
+    init.push({name:nm,score:base,date:'2024-01-01',car:allNums[rnd(allNums.length)],finalPos:rnd(6)+1,diff:rnd(6)+1});
+  }
+  init.sort((a,b)=>b.score-a.score);
   saveLB(init);return init;
 }
 function saveLB(arr){localStorage.setItem(LB_KEY,JSON.stringify(arr));}
