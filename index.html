@@ -224,6 +224,8 @@ async function renderLB(hi=-1){
 }
 
 async function submitScore(){
+  const btn=document.querySelector('[onclick="submitScore()"]');
+  if(btn){btn.disabled=true;btn.textContent='Sauvegarde…';}
   const raw=document.getElementById('name-input');
   const name=(raw?raw.value.toUpperCase().replace(/[^A-Z]/g,'').padEnd(6,'A').slice(0,6):'ANON');
   const score=Math.round(S.finalScore);
