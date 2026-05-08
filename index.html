@@ -180,23 +180,10 @@ async function loadLB(){
     const r=await fetch(JBIN_URL,{headers:{'X-Master-Key':JBIN_KEY,'X-Bin-Meta':'false'}});
     if(!r.ok)throw new Error(r.status);
     const data=await r.json();
-    const arr=Array.isArray(data)?data:(Array.isArray(data?.record)?data.record:[]);
-    if(arr.length)return arr;
+    if(Array.isArray(data))return data;
+    if(Array.isArray(data?.record))return data.record;
   }catch(e){console.warn('JSONBin load:',e);}
-  // Bin vide ou erreur → génère des entrées par défaut
-  const allNums=[...SKINS_NASCAR,...SKINS_PIXAR].map(s=>s.num);
-  const rndNames=['SPEED','TURBO','FLASH','NITRO','BLAZE','DRIFT','STORM','RAZOR','COBRA','GHOST','TITAN','ARROW','VIPER','ROUGE','SONIC','PILOT','DELTA','RACER','THUNDER','BOOST'];
-  const rnd=(n)=>Math.floor(Math.random()*n);
-  const used=new Set();
-  const init=[];
-  for(let i=0;i<20;i++){
-    let nm;do{nm=rndNames[rnd(rndNames.length)];}while(used.has(nm)&&used.size<rndNames.length);
-    used.add(nm);
-    init.push({name:nm,score:800+rnd(2400),date:'2024-01-01',car:allNums[rnd(allNums.length)],finalPos:rnd(6)+1,diff:rnd(6)+1});
-  }
-  init.sort((a,b)=>b.score-a.score);
-  await saveLB(init);
-  return init;
+  return [];
 }
 
 async function saveLB(arr){
@@ -213,21 +200,23 @@ async function renderLB(hi=-1){
   const tbody=document.getElementById('lb-body');
   tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">Chargement…</td></tr>';
   const lb=await loadLB();
-  tbody.innerHTML=lb.map((e,i)=>
-    `<tr${i===hi?' class="hi"':''}>`+
-    `<td class="rank">${i+1}</td><td>${e.name}</td>`+
-    `<td>${e.car??'—'}</td>`+
-    `<td>P${e.finalPos??'?'}</td>`+
-    `<td>${e.diff??'?'}</td>`+
-    `<td>${e.score.toLocaleString('fr-FR')}</td><td>${e.date}</td></tr>`
-  ).join('');
+  tbody.innerHTML=lb.length
+    ?lb.map((e,i)=>
+      `<tr${i===hi?' class="hi"':''}>`+
+      `<td class="rank">${i+1}</td><td>${e.name}</td>`+
+      `<td>${e.car??'—'}</td>`+
+      `<td>P${e.finalPos??'?'}</td>`+
+      `<td>${e.diff??'?'}</td>`+
+      `<td>${e.score.toLocaleString('fr-FR')}</td><td>${e.date}</td></tr>`
+    ).join('')
+    :'<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">Aucun score enregistré</td></tr>';
 }
 
 async function submitScore(){
   const btn=document.querySelector('[onclick="submitScore()"]');
   if(btn){btn.disabled=true;btn.textContent='Sauvegarde…';}
   const raw=document.getElementById('name-input');
-  const name=(raw?raw.value.toUpperCase().replace(/[^A-Z]/g,'').padEnd(6,'A').slice(0,6):'ANON');
+  const name=(raw?raw.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6)||'ANON':'ANON');
   const score=Math.round(S.finalScore);
   const lb=await loadLB();
   const ne={name,score,date:new Date().toLocaleDateString('fr-FR'),car:CAR_LBL['player'],finalPos:S.finalPos,diff:S.diff};
