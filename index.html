@@ -173,7 +173,9 @@ function loadLB(){
   const s=localStorage.getItem(LB_KEY);
   if(s)return JSON.parse(s);
   const init=[];
-  for(let i=0;i<20;i++)init.push({name:'COMPUT',score:3100,date:'2024-01-01',car:'??',finalPos:1,diff:6});
+  const allNums=[...SKINS_NASCAR,...SKINS_PIXAR].map(s=>s.num);
+  const rnd=(n)=>Math.floor(Math.random()*n);
+  for(let i=0;i<20;i++)init.push({name:'COMPUT',score:3100,date:'2024-01-01',car:allNums[rnd(allNums.length)],finalPos:rnd(6)+1,diff:rnd(6)+1});
   saveLB(init);return init;
 }
 function saveLB(arr){localStorage.setItem(LB_KEY,JSON.stringify(arr));}
