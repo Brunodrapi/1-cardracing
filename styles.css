@@ -145,9 +145,9 @@ body:has(#game[style*="flex"]){padding:0}
 .dash-dice-empty{font-size:.6rem;color:#374151}
 .dash-standings-h{display:flex;gap:.15rem;justify-content:center;margin-top:.2rem;flex-wrap:wrap}
 .dash-rank-car-h{width:30px;height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:900;color:#fff}
-.track-warning{position:absolute;z-index:10;font-size:.8rem;font-weight:900;border-radius:.35rem;padding:.35rem .4rem;pointer-events:none}
-.wall-warning{right:1rem;top:14%;background:rgba(30,58,138,.22);color:#dbeafe}
-.grass-warning{right:1rem;bottom:2%;background:rgba(20,83,45,.45);color:#dcfce7}
+.track-warning{position:absolute;z-index:10;font-weight:900;border-radius:.25rem;pointer-events:none;left:0;right:0;text-align:center}
+.wall-warning{top:0;padding:.3rem .5rem;font-size:.75rem;background:#fff;color:#1e293b;border-radius:0 0 .25rem .25rem}
+.grass-warning{bottom:0;padding:.15rem .4rem;font-size:.62rem;background:#fbbf24;color:#78350f;border-radius:.25rem .25rem 0 0}
 
 .track-bg-fill{flex:1;background:url('IMG_1950.jpeg') top center/cover no-repeat;min-height:0}
 
