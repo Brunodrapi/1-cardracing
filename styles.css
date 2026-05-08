@@ -150,7 +150,7 @@ body:has(#game[style*="flex"]){padding:0}
 .track-bg-fill{flex:1;background:url('IMG_1950.jpeg') top center/cover no-repeat;min-height:0}
 
 /* ─ PANNEAU BAS (dashboard + action) ────── */
-.bottom-panel{flex-shrink:0;background:linear-gradient(rgba(8,12,16,.9),rgba(8,12,16,.97)) url('IMG_1950.jpeg') bottom center/cover no-repeat;box-shadow:0 -4px 24px #0008;z-index:60;width:100%}
+.bottom-panel{flex-shrink:0;background:linear-gradient(rgba(8,12,16,.92),rgba(8,12,16,.97)) url('IMG_1950.jpeg') top center/cover no-repeat;box-shadow:0 -4px 24px #0008;z-index:60;width:100%}
 
 /* ─ ACTION BAR ───────────────────────────── */
 .action-bar{background:#000;border-top:1px solid #111827;padding:.7rem .9rem calc(.8rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem}
@@ -256,8 +256,8 @@ body:has(#game[style*="flex"]){padding:0}
 
 /* ─ MOBILE ───────────────────────────────── */
 @media(max-width:700px){
-  body{padding:env(safe-area-inset-top) 0 0;overflow:hidden}
-  #game{height:100dvh;overflow:hidden}
+  body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  #game{position:fixed;inset:0;height:100dvh;overflow:hidden}
   .hdr{padding:.35rem .45rem .25rem;min-height:76px}
   .game-content{flex:1;min-height:0;overflow-y:auto;padding:0;gap:0}
   .track-outer{border-radius:0;box-shadow:none}
