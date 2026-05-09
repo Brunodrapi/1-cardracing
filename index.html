@@ -9,35 +9,41 @@
 </head>
 <body>
 
+<div class="lang-sel">
+  <button class="lang-btn sel" data-lang="fr" onclick="setLang('fr')">FR</button>
+  <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" data-lang="it" onclick="setLang('it')">IT</button>
+</div>
+
 <!-- LEADERBOARD -->
 <div id="leaderboard">
   <img src="IMG_1951.png" class="lb-logo" alt="1 Car-D Racing">
-  <div class="lb-credit-game">un jeu par Mateo Gaccone</div>
-  <div class="lb-credit-fan">Web app réalisé par un fan &mdash; <a href="https://boardgamegeek.com/profile/apiiii" target="_blank" rel="noopener">mon profil BGG</a> &mdash; non affilié à Mateo Gaccone</div>
-  <div class="lb-sub">Tableau des meilleurs pilotes</div>
+  <div class="lb-credit-game" data-i18n="lb_credit_game">un jeu par Mateo Gaccone</div>
+  <div class="lb-credit-fan"><span data-i18n="lb_credit_fan">Web app réalisée par un fan</span> &mdash; <a href="https://boardgamegeek.com/profile/apiiii" target="_blank" rel="noopener" data-i18n="lb_bgg">mon profil BGG</a> &mdash; <span data-i18n="lb_non_aff">non affilié à Mateo Gaccone</span></div>
+  <div class="lb-sub" data-i18n="lb_sub">Tableau des meilleurs pilotes</div>
   <div class="lb-scroll">
     <table class="lb-table">
-      <thead><tr><th>#</th><th>Nom</th><th>Voiture</th><th>Pos.</th><th>Diff.</th><th>Score</th><th>Date</th></tr></thead>
+      <thead><tr><th>#</th><th data-i18n="th_name">Nom</th><th data-i18n="th_car">Voiture</th><th data-i18n="th_pos">Pos.</th><th data-i18n="th_diff">Diff.</th><th data-i18n="th_score">Score</th><th data-i18n="th_date">Date</th></tr></thead>
       <tbody id="lb-body"></tbody>
     </table>
   </div>
-  <button class="play-btn" onclick="showSetup()">DÉMARRER ▶</button>
+  <button class="play-btn" onclick="showSetup()" data-i18n="lb_start">DÉMARRER ▶</button>
 </div>
 
 <!-- SETUP -->
 <div id="setup">
-  <h3>Univers</h3>
+  <h3 data-i18n="setup_universe">Univers</h3>
   <div class="theme-toggle" id="theme-toggle">
     <button class="theme-btn sel" onclick="selectTheme('nascar')">🏁 NASCAR</button>
     <button class="theme-btn" onclick="selectTheme('pixar')">🚗 Pixar Cars</button>
   </div>
-  <h3>Choisissez votre voiture</h3>
+  <h3 data-i18n="setup_car">Choisissez votre voiture</h3>
   <div class="car-pick-grid" id="car-pick-grid"></div>
-  <h3 style="margin-top:.7rem">Position de départ</h3>
-  <p>1 = Pôle (facile) &nbsp;·&nbsp; 6 = Dernier (difficile)</p>
+  <h3 style="margin-top:.7rem" data-i18n="setup_pos">Position de départ</h3>
+  <p data-i18n="setup_hint">1 = Pôle (facile) &nbsp;·&nbsp; 6 = Dernier (difficile)</p>
   <div class="diff-grid" id="diff-grid"></div>
-  <button class="start-btn" onclick="startGame()">DÉMARRER LA COURSE</button>
-  <div class="rules">
+  <button class="start-btn" onclick="startGame()" data-i18n="setup_go">DÉMARRER LA COURSE</button>
+  <div class="rules" data-i18n="rules">
     <b>Tour :</b> ① Stands? ② Vitesse (±2) ③ Changer voie? ④ Dés → Rivaux → Avancer<br>
     <b>Pneus :</b> -1/voie changée &nbsp;|&nbsp; <b>Carbu :</b> -1 à vitesse 4–5<br>
     <b>Moteur :</b> +1 à vit.1, -1 à vit.5 &nbsp;|&nbsp; <b>Défaite :</b> une jauge à 0<br>
@@ -50,19 +56,19 @@
 
   <div class="hdr">
     <div class="hdr-left">
-      <div class="hdr-lbl">Tour</div>
+      <div class="hdr-lbl" data-i18n="hdr_lap">Tour</div>
       <div class="lap-row"><span class="lap-val" id="lap-num">10</span></div>
       <div class="lap-bar" id="lap-bar"></div>
     </div>
     <div class="hdr-center">
-      <div class="hdr-lbl">Score</div>
+      <div class="hdr-lbl" data-i18n="hdr_score">Score</div>
       <div class="score-val" id="score-val">0</div>
     </div>
     <div class="hdr-right">
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:.5rem;flex-wrap:wrap">
-        <button class="journal-btn" onclick="showJournalModal()">📡 Journal</button>
+        <button class="journal-btn" onclick="showJournalModal()" data-i18n="journal_btn">📡 Journal</button>
         <div>
-          <div class="hdr-lbl">Flèches</div>
+          <div class="hdr-lbl" data-i18n="hdr_arrows">Flèches</div>
           <div class="arr-phase" id="arr-phase">↑ Mur</div>
         </div>
       </div>
@@ -73,12 +79,12 @@
 
     <!-- Circuit : image plateau + overlay voitures/flèches -->
     <div class="track-outer">
-      <div class="wall-strip">1× reculez ➡️ &nbsp;·&nbsp; −1 pneu 🛞 &nbsp;·&nbsp; −1 moteur ⚙️</div>
+      <div class="wall-strip" data-i18n="wall_strip">1× reculez ➡️ &nbsp;·&nbsp; −1 pneu 🛞 &nbsp;·&nbsp; −1 moteur ⚙️</div>
       <div class="board-wrap">
         <img class="board-img" src="1_card_board_3.png" alt="Circuit">
         <div class="board-overlay" id="board-overlay"></div>
       </div>
-      <div class="apron-strip">1× reculez ➡️ &nbsp;·&nbsp; −1 pneu 🛞</div>
+      <div class="apron-strip" data-i18n="apron_strip">1× reculez ➡️ &nbsp;·&nbsp; −1 pneu 🛞</div>
     </div>
 
     <div class="track-bg-fill"></div>
@@ -93,7 +99,7 @@
         <div class="spd-slots" id="spd-slots"></div>
         <div class="spd-effects" id="spd-effects"></div>
         <div class="spd-confirm" id="spd-confirm">
-          <button onclick="confirmSpeed()">Confirmer ✓</button>
+          <button onclick="confirmSpeed()" data-i18n="spd_confirm">Confirmer ✓</button>
         </div>
       </div>
     </div>
@@ -109,6 +115,164 @@
 
 <script>
 'use strict';
+
+// ── I18N ───────────────────────────────────────────────────────
+let lang=localStorage.getItem('lang')||'fr';
+const T={
+  fr:{
+    lb_credit_game:'un jeu par Mateo Gaccone',lb_credit_fan:'Web app réalisée par un fan',
+    lb_bgg:'mon profil BGG',lb_non_aff:'non affilié à Mateo Gaccone',
+    lb_sub:'Tableau des meilleurs pilotes',lb_start:'DÉMARRER ▶',
+    lb_loading:'Chargement…',lb_empty:'Aucun score enregistré',
+    th_name:'Nom',th_car:'Voiture',th_pos:'Pos.',th_diff:'Diff.',th_score:'Score',th_date:'Date',
+    setup_universe:'Univers',setup_car:'Choisissez votre voiture',
+    setup_pos:'Position de départ',setup_hint:'1 = Pôle (facile) &nbsp;·&nbsp; 6 = Dernier (difficile)',
+    setup_go:'DÉMARRER LA COURSE',
+    rules:'<b>Tour :</b> ① Stands? ② Vitesse (±2) ③ Changer voie? ④ Dés → Rivaux → Avancer<br><b>Pneus :</b> -1/voie changée &nbsp;|&nbsp; <b>Carbu :</b> -1 à vitesse 4–5<br><b>Moteur :</b> +1 à vit.1, -1 à vit.5 &nbsp;|&nbsp; <b>Défaite :</b> une jauge à 0<br><b>Drapeau jaune :</b> 4+ dés identiques → réinitialisation',
+    hdr_lap:'Tour',hdr_score:'Score',hdr_arrows:'Flèches',
+    arr_wall:'↑ Mur',arr_apron:'↓ Apron',journal_btn:'📡 Journal',
+    wall_strip:'1× reculez ➡️ &nbsp;·&nbsp; −1 pneu 🛞 &nbsp;·&nbsp; −1 moteur ⚙️',
+    apron_strip:'1× reculez ➡️ &nbsp;·&nbsp; −1 pneu 🛞',
+    spd_confirm:'Confirmer ✓',
+    p1_title:'① Stands (optionnel)',p1_desc:'Restaurer pneus/carbu à 6. Coût : -1 pos + 1 tour avancé par jauge.',p1_pit:'🔧 Stands',p1_skip:'Passer →',
+    p2_title:'② Régler la vitesse',p2_desc:'Cliquez votre vitesse (max ±2). Effets au lancer des dés.',
+    p3_title:'③ Changer de voie (optionnel)',p3_desc:'1 ou 2 voies. Chaque voie coûte 1 pneu.',p3_skip:'Passer →',
+    p4_title:'④ Lancer les dés',p4_desc:'4+ dés identiques = 🚨 Drapeau Jaune !',p4_roll:'🎲 Lancer !',
+    p5_title:'⑤ Rivaux en mouvement…',p5_desc:'Résolution un par un.',
+    p6_title:'⑥ Avancer le compteur',p6_next:'Tour suivant →',
+    white_flag:'🏳️ DRAPEAU BLANC — Dernier tour !',
+    rival_no_effect:'Aucun effet',rival_continue:'Continuer ▶',rival_die_lbl:'Dé',
+    rival_cmp:(d,ps)=>d===ps?`= ${ps} → ne bouge pas`:d<ps?`< ${ps} → recule`:d===6?`= 6 → avance/échange`:`> ${ps} → avance`,
+    choice_title:'Choisir la voie',choice_desc:'est bloqué vers l\'avant. Quelle voie ?',choice_wall:'↑ Mur',choice_apron:'↓ Apron',
+    yellow_title:'🚨 Drapeau Jaune !',yellow_body:'4+ dés identiques !<br>• Positions réinitialisées selon le classement<br>• Toutes les jauges → 6<br>• Vitesse → 3',yellow_continue:'Continuer',
+    pit_title:'🔧 Arrêt aux Stands',pit_body:'Restaurer à 6. Chaque restauration = -1 position + 1 tour avancé.',
+    pit_tires:'🛞 Pneus seulement (-1 pos)',pit_fuel:'⛽ Carbu seulement (-1 pos)',pit_both:'🛞⛽ Les deux (-2 pos)',pit_cancel:'Annuler',
+    journal_title:'📡 Journal de course',journal_close:'Fermer ✕',
+    end_win:'🏆 Victoire !',end_lose:'💥 Fin de course',
+    end_pos_lbl:'Position',end_score_lbl:'Score',end_name_lbl:'Votre nom (6 lettres)',end_name_ph:'AAAAAA',
+    end_submit:'Valider et sauvegarder ✓',end_replay:'Rejouer sans sauver',
+    saving:'Sauvegarde…',retry:'↺ Réessayer',save_error:'⚠️ Sauvegarde échouée — vérifiez votre connexion',
+    g_tires:'Pneus',g_fuel:'Carbu',g_engine:'Moteur',g_lap:'Tour',g_speed:'Vitesse',g_rank:'Classement',
+    gn_tires:'Pneus',gn_fuel:'Carburant',gn_engine:'Moteur',
+    log_start:'Course démarrée ! Bonne chance !',
+    log_pit_tires:'Stands : Pneus → 6',log_pit_fuel:'Stands : Carbu → 6',
+    log_pit_done:(l)=>`Arrêt terminé. Vitesse→3, tour→${l}`,
+    log_spd1:'Vitesse 1 : Moteur +1',log_spd4:(v)=>`Vitesse ${v} : Carbu -1`,log_spd5:'Vitesse 5 : Moteur -1',
+    log_apron:'Vous touchez l\'apron ! Pneus -1',log_wall:'Vous touchez le mur ! Pneus -1, Moteur -1',
+    log_lose:(g)=>`💥 ${g} à 0 — PERDU !`,log_end:(p)=>`Course terminée ! P${p}.`,
+    log_yellow:'🚨 DRAPEAU JAUNE !',log_yellow_lap:(l)=>`Neutralisation — tour → ${l}`,
+    log_lane:(s,d)=>`Changement voie ${s} ${d} · Pneus -${s}`,
+    log_oob:'Impossible : hors piste',log_blocked:'Impossible : bloqué',
+    log_full:'Jauges pleines — stands non nécessaire',
+    log_lap_done:(l)=>`Tour ${l} terminé`,
+  },
+  en:{
+    lb_credit_game:'a game by Mateo Gaccone',lb_credit_fan:'Web app made by a fan',
+    lb_bgg:'my BGG profile',lb_non_aff:'not affiliated with Mateo Gaccone',
+    lb_sub:'Best drivers leaderboard',lb_start:'START ▶',
+    lb_loading:'Loading…',lb_empty:'No scores recorded',
+    th_name:'Name',th_car:'Car',th_pos:'Pos.',th_diff:'Diff.',th_score:'Score',th_date:'Date',
+    setup_universe:'Theme',setup_car:'Choose your car',
+    setup_pos:'Starting position',setup_hint:'1 = Pole (easy) &nbsp;·&nbsp; 6 = Last (hard)',
+    setup_go:'START THE RACE',
+    rules:'<b>Turn:</b> ① Pit? ② Speed (±2) ③ Change lane? ④ Dice → Rivals → Advance<br><b>Tires:</b> -1/lane &nbsp;|&nbsp; <b>Fuel:</b> -1 at speed 4–5<br><b>Engine:</b> +1 at spd 1, -1 at spd 5 &nbsp;|&nbsp; <b>Defeat:</b> a gauge at 0<br><b>Yellow flag:</b> 4+ identical dice → reset',
+    hdr_lap:'Lap',hdr_score:'Score',hdr_arrows:'Arrows',
+    arr_wall:'↑ Wall',arr_apron:'↓ Apron',journal_btn:'📡 Log',
+    wall_strip:'1× move back ➡️ &nbsp;·&nbsp; −1 tire 🛞 &nbsp;·&nbsp; −1 engine ⚙️',
+    apron_strip:'1× move back ➡️ &nbsp;·&nbsp; −1 tire 🛞',
+    spd_confirm:'Confirm ✓',
+    p1_title:'① Pit stop (optional)',p1_desc:'Restore tires/fuel to 6. Cost: -1 pos + 1 lap per gauge.',p1_pit:'🔧 Pit',p1_skip:'Skip →',
+    p2_title:'② Set speed',p2_desc:'Click your speed (max ±2). Effects when rolling.',
+    p3_title:'③ Change lane (optional)',p3_desc:'1 or 2 lanes. Each lane costs 1 tire.',p3_skip:'Skip →',
+    p4_title:'④ Roll dice',p4_desc:'4+ identical dice = 🚨 Yellow Flag!',p4_roll:'🎲 Roll!',
+    p5_title:'⑤ Rivals moving…',p5_desc:'Resolved one by one.',
+    p6_title:'⑥ Advance lap counter',p6_next:'Next lap →',
+    white_flag:'🏳️ WHITE FLAG — Final lap!',
+    rival_no_effect:'No effect',rival_continue:'Continue ▶',rival_die_lbl:'Die',
+    rival_cmp:(d,ps)=>d===ps?`= ${ps} → doesn't move`:d<ps?`< ${ps} → moves back`:d===6?`= 6 → advances/swaps`:`> ${ps} → advances`,
+    choice_title:'Choose lane',choice_desc:'is blocked forward. Which lane?',choice_wall:'↑ Wall',choice_apron:'↓ Apron',
+    yellow_title:'🚨 Yellow Flag!',yellow_body:'4+ identical dice!<br>• Positions reset by standings<br>• All gauges → 6<br>• Speed → 3',yellow_continue:'Continue',
+    pit_title:'🔧 Pit Stop',pit_body:'Restore to 6. Each restore = -1 position + 1 lap advanced.',
+    pit_tires:'🛞 Tires only (-1 pos)',pit_fuel:'⛽ Fuel only (-1 pos)',pit_both:'🛞⛽ Both (-2 pos)',pit_cancel:'Cancel',
+    journal_title:'📡 Race Log',journal_close:'Close ✕',
+    end_win:'🏆 Victory!',end_lose:'💥 End of race',
+    end_pos_lbl:'Position',end_score_lbl:'Score',end_name_lbl:'Your name (6 letters)',end_name_ph:'AAAAAA',
+    end_submit:'Submit & save ✓',end_replay:'Play again without saving',
+    saving:'Saving…',retry:'↺ Retry',save_error:'⚠️ Save failed — check your connection',
+    g_tires:'Tires',g_fuel:'Fuel',g_engine:'Engine',g_lap:'Lap',g_speed:'Speed',g_rank:'Rank',
+    gn_tires:'Tires',gn_fuel:'Fuel',gn_engine:'Engine',
+    log_start:'Race started! Good luck!',
+    log_pit_tires:'Pit: Tires → 6',log_pit_fuel:'Pit: Fuel → 6',
+    log_pit_done:(l)=>`Pit done. Speed→3, lap→${l}`,
+    log_spd1:'Speed 1: Engine +1',log_spd4:(v)=>`Speed ${v}: Fuel -1`,log_spd5:'Speed 5: Engine -1',
+    log_apron:'Hit the apron! Tires -1',log_wall:'Hit the wall! Tires -1, Engine -1',
+    log_lose:(g)=>`💥 ${g} at 0 — LOST!`,log_end:(p)=>`Race over! P${p}.`,
+    log_yellow:'🚨 YELLOW FLAG!',log_yellow_lap:(l)=>`Neutralization — lap → ${l}`,
+    log_lane:(s,d)=>`Lane change ${s} ${d} · Tires -${s}`,
+    log_oob:'Impossible: out of bounds',log_blocked:'Impossible: blocked',
+    log_full:'Gauges full — pit not needed',
+    log_lap_done:(l)=>`Lap ${l} done`,
+  },
+  it:{
+    lb_credit_game:'un gioco di Mateo Gaccone',lb_credit_fan:'Web app realizzata da un fan',
+    lb_bgg:'il mio profilo BGG',lb_non_aff:'non affiliato a Mateo Gaccone',
+    lb_sub:'Classifica migliori piloti',lb_start:'INIZIA ▶',
+    lb_loading:'Caricamento…',lb_empty:'Nessun punteggio registrato',
+    th_name:'Nome',th_car:'Auto',th_pos:'Pos.',th_diff:'Diff.',th_score:'Punti',th_date:'Data',
+    setup_universe:'Universo',setup_car:'Scegli la tua auto',
+    setup_pos:'Posizione di partenza',setup_hint:'1 = Pole (facile) &nbsp;·&nbsp; 6 = Ultimo (difficile)',
+    setup_go:'INIZIA LA GARA',
+    rules:'<b>Turno:</b> ① Box? ② Velocità (±2) ③ Corsia? ④ Dadi → Rivali → Avanza<br><b>Gomme:</b> -1/corsia &nbsp;|&nbsp; <b>Carb:</b> -1 a vel. 4–5<br><b>Motore:</b> +1 a vel.1, -1 a vel.5 &nbsp;|&nbsp; <b>Sconfitta:</b> indicatore a 0<br><b>Bandiera gialla:</b> 4+ dadi uguali → reset',
+    hdr_lap:'Giro',hdr_score:'Punti',hdr_arrows:'Frecce',
+    arr_wall:'↑ Muro',arr_apron:'↓ Apron',journal_btn:'📡 Log',
+    wall_strip:'1× indietreggia ➡️ &nbsp;·&nbsp; −1 gomma 🛞 &nbsp;·&nbsp; −1 motore ⚙️',
+    apron_strip:'1× indietreggia ➡️ &nbsp;·&nbsp; −1 gomma 🛞',
+    spd_confirm:'Conferma ✓',
+    p1_title:'① Box (opzionale)',p1_desc:'Ripristina gomme/carb a 6. Costo: -1 pos + 1 giro per indicatore.',p1_pit:'🔧 Box',p1_skip:'Salta →',
+    p2_title:'② Imposta velocità',p2_desc:'Clicca la velocità (max ±2). Effetti al lancio.',
+    p3_title:'③ Cambia corsia (opzionale)',p3_desc:'1 o 2 corsie. Ogni corsia costa 1 gomma.',p3_skip:'Salta →',
+    p4_title:'④ Lancia i dadi',p4_desc:'4+ dadi uguali = 🚨 Bandiera Gialla!',p4_roll:'🎲 Lancia!',
+    p5_title:'⑤ Rivali in movimento…',p5_desc:'Risoluzione uno per uno.',
+    p6_title:'⑥ Avanza il contatore',p6_next:'Giro successivo →',
+    white_flag:'🏳️ BANDIERA BIANCA — Ultimo giro!',
+    rival_no_effect:'Nessun effetto',rival_continue:'Continua ▶',rival_die_lbl:'Dado',
+    rival_cmp:(d,ps)=>d===ps?`= ${ps} → non si muove`:d<ps?`< ${ps} → indietreggia`:d===6?`= 6 → avanza/scambia`:`> ${ps} → avanza`,
+    choice_title:'Scegli la corsia',choice_desc:'è bloccato in avanti. Quale corsia?',choice_wall:'↑ Muro',choice_apron:'↓ Apron',
+    yellow_title:'🚨 Bandiera Gialla!',yellow_body:'4+ dadi uguali!<br>• Posizioni azzerate per classifica<br>• Tutti gli indicatori → 6<br>• Velocità → 3',yellow_continue:'Continua',
+    pit_title:'🔧 Pit Stop',pit_body:'Ripristina a 6. Ogni ripristino = -1 posizione + 1 giro.',
+    pit_tires:'🛞 Solo gomme (-1 pos)',pit_fuel:'⛽ Solo carb (-1 pos)',pit_both:'🛞⛽ Entrambi (-2 pos)',pit_cancel:'Annulla',
+    journal_title:'📡 Log di gara',journal_close:'Chiudi ✕',
+    end_win:'🏆 Vittoria!',end_lose:'💥 Fine gara',
+    end_pos_lbl:'Posizione',end_score_lbl:'Punti',end_name_lbl:'Il tuo nome (6 lettere)',end_name_ph:'AAAAAA',
+    end_submit:'Salva e invia ✓',end_replay:'Rigioca senza salvare',
+    saving:'Salvataggio…',retry:'↺ Riprova',save_error:'⚠️ Salvataggio fallito — controlla la connessione',
+    g_tires:'Gomme',g_fuel:'Carb',g_engine:'Motore',g_lap:'Giro',g_speed:'Velocità',g_rank:'Class.',
+    gn_tires:'Gomme',gn_fuel:'Carburante',gn_engine:'Motore',
+    log_start:'Gara iniziata! Buona fortuna!',
+    log_pit_tires:'Box: Gomme → 6',log_pit_fuel:'Box: Carb → 6',
+    log_pit_done:(l)=>`Pit fatto. Velocità→3, giro→${l}`,
+    log_spd1:'Velocità 1: Motore +1',log_spd4:(v)=>`Velocità ${v}: Carb -1`,log_spd5:'Velocità 5: Motore -1',
+    log_apron:'Tocchi l\'apron! Gomme -1',log_wall:'Tocchi il muro! Gomme -1, Motore -1',
+    log_lose:(g)=>`💥 ${g} a 0 — PERSO!`,log_end:(p)=>`Gara finita! P${p}.`,
+    log_yellow:'🚨 BANDIERA GIALLA!',log_yellow_lap:(l)=>`Neutralizzazione — giro → ${l}`,
+    log_lane:(s,d)=>`Cambio corsia ${s} ${d} · Gomme -${s}`,
+    log_oob:'Impossibile: fuori pista',log_blocked:'Impossibile: bloccato',
+    log_full:'Indicatori pieni — box non necessario',
+    log_lap_done:(l)=>`Giro ${l} finito`,
+  }
+};
+function t(k,...a){const v=T[lang][k];return typeof v==='function'?v(...a):v??k;}
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const v=T[lang][el.dataset.i18n];if(v!==undefined)el.innerHTML=typeof v==='function'?v():v;});
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('sel',b.dataset.lang===lang));
+  document.documentElement.lang=lang;
+}
+function setLang(l){
+  lang=l;localStorage.setItem('lang',l);applyI18n();
+  const g=document.getElementById('game');
+  if(g&&g.style.display!=='none'&&S.phase)render();
+  renderLB();
+}
 
 // ── CONSTANTS ──────────────────────────────────────────────────
 // Circuit paysage : 3 voies × 5 positions
@@ -205,7 +369,7 @@ async function saveLB(arr){
 
 async function renderLB(hi=-1){
   const tbody=document.getElementById('lb-body');
-  tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">Chargement…</td></tr>';
+  tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">${t('lb_loading')}</td></tr>`;
   const lb=await loadLB();
   tbody.innerHTML=lb.length
     ?lb.map((e,i)=>
@@ -216,7 +380,7 @@ async function renderLB(hi=-1){
       `<td>${e.diff??'?'}</td>`+
       `<td>${e.score.toLocaleString('fr-FR')}</td><td>${e.date}</td></tr>`
     ).join('')
-    :'<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">Aucun score enregistré</td></tr>';
+    :`<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">${t('lb_empty')}</td></tr>`;
 }
 
 let _pendingSave=null;
@@ -224,7 +388,7 @@ let _pendingSave=null;
 async function submitScore(){
   const btn=document.querySelector('[onclick="submitScore()"]');
   const errEl=document.getElementById('save-error');
-  if(btn){btn.disabled=true;btn.textContent='Sauvegarde…';}
+  if(btn){btn.disabled=true;btn.textContent=t('saving');}
   if(errEl)errEl.style.display='none';
 
   const raw=document.getElementById('name-input');
@@ -241,8 +405,8 @@ async function submitScore(){
 
   const ok=await saveLB(_pendingSave.data);
   if(!ok){
-    if(btn){btn.disabled=false;btn.textContent='↺ Réessayer';}
-    if(errEl){errEl.textContent='⚠️ Sauvegarde échouée — vérifiez votre connexion';errEl.style.display='block';}
+    if(btn){btn.disabled=false;btn.textContent=t('retry');}
+    if(errEl){errEl.textContent=t('save_error');errEl.style.display='block';}
     return;
   }
 
@@ -277,7 +441,7 @@ function newState(diff){
     dice:[],diceUsed:Array(5).fill(false),diceJustRolled:false,
     rivalQueue:[],rivalIdx:0,
     pendingChoice:null,stepLogs:[],movedCar:null,
-    log:[{msg:'Course démarrée ! Bonne chance !',cls:'good'}],
+    log:[{msg:t('log_start'),cls:'good'}],
     gameOver:false,won:false,finalPos:null,
     pitTurn:false,diff,
     turnScore:0,finalScore:0,
@@ -342,11 +506,11 @@ function applyPushAgainstEdge(id,sideRow){
   if(id==='player'){
     if(sideRow===ROWS-1){
       S.gauges.tires=Math.max(0,S.gauges.tires-1);
-      stepLog('Vous touchez l\'apron ! Pneus -1','dan');
+      stepLog(t('log_apron'),'dan');
     }else{
       S.gauges.tires=Math.max(0,S.gauges.tires-1);
       S.gauges.engine=Math.max(0,S.gauges.engine-1);
-      stepLog('Vous touchez le mur ! Pneus -1, Moteur -1','dan');
+      stepLog(t('log_wall'),'dan');
     }
     checkLose();
     return tryPushBack(id);
@@ -414,7 +578,7 @@ function isYellowFlag(){
   return Object.values(cnt).some(v=>v>=4);
 }
 function processYellowFlag(){
-  glog('🚨 DRAPEAU JAUNE !','imp');
+  glog(t('log_yellow'),'imp');
   S.gauges={tires:6,fuel:6,engine:6};S.speed=3;S._baseSpeed=3;
   const order=standings();
   const pos=[...ALL_STARTS].reverse();
@@ -422,7 +586,7 @@ function processYellowFlag(){
   order.forEach((id,i)=>{if(i<pos.length)S.cars[id]={row:pos[i][0],col:pos[i][1]};});
   for(const id of allCars())if(S.cars[id])S.grid[S.cars[id].row][S.cars[id].col]=id;
   S.lapStep=Math.min(S.lapStep+1,19);
-  glog(`Neutralisation — tour → ${(S.lapStep+1)*10}`,'imp');
+  glog(t('log_yellow_lap',(S.lapStep+1)*10),'imp');
   S.diceUsed=Array(5).fill(false);S.phase='start';
   showYellowFlagModal();
 }
@@ -574,22 +738,22 @@ function showActionPanel(html){
 // ── RIVAL MODALS ───────────────────────────────────────────────
 function showRivalModal(name,die,gaugeDeltas){
   const ps=S.speed;
-  const cmp=die===ps?`=${ps} → ne bouge pas`:die<ps?`< ${ps} → recule`:die===6?`= 6 → avance/échange`:`> ${ps} → avance`;
+  const cmp=t('rival_cmp',die,ps);
   const efx=S.stepLogs.map(l=>`<div class="reff ${l.cls}">${l.txt}</div>`).join('');
 
   showActionPanel(`
     <div class="rival-die-row">
       <div class="rdie" style="background:${CAR_BG[name]};color:#fff">${die}</div>
       <div class="rdie-info">
-        <div class="rdie-name" style="color:${CAR_BG[name]}">Dé ${CAR_FNAME[name]} #${CAR_LBL[name]}</div>
-        <div class="rdie-cmp">Dé ${cmp}</div>
+        <div class="rdie-name" style="color:${CAR_BG[name]}">${t('rival_die_lbl')} ${CAR_FNAME[name]} #${CAR_LBL[name]}</div>
+        <div class="rdie-cmp">${t('rival_die_lbl')} ${cmp}</div>
       </div>
     </div>
 
-    ${efx?`<div class="rival-effects">${efx}</div>`:'<div class="reff neu">Aucun effet</div>'}
+    ${efx?`<div class="rival-effects">${efx}</div>`:`<div class="reff neu">${t('rival_no_effect')}</div>`}
 
     <div class="btn-row">
-      <button class="btn btn-p" onclick="continueRivals()">Continuer ▶</button>
+      <button class="btn btn-p" onclick="continueRivals()">${t('rival_continue')}</button>
     </div>
   `);
 }
@@ -604,11 +768,11 @@ function continueRivals(){
 function showChoiceModal(){
   const{rivalName}=S.pendingChoice;
   showModal(`
-    <div class="modal-title" style="color:#2563eb">Choisir la voie</div>
-    <div class="modal-body"><b>${CAR_LBL[rivalName]}</b> est bloqué vers l'avant. Quelle voie ?</div>
+    <div class="modal-title" style="color:#2563eb">${t('choice_title')}</div>
+    <div class="modal-body"><b>${CAR_LBL[rivalName]}</b> ${t('choice_desc')}</div>
     <div class="modal-btns">
-      <button class="btn btn-s" onclick="resolveChoice(-1)">↑ Mur</button>
-      <button class="btn btn-s" onclick="resolveChoice(1)">↓ Apron</button>
+      <button class="btn btn-s" onclick="resolveChoice(-1)">${t('choice_wall')}</button>
+      <button class="btn btn-s" onclick="resolveChoice(1)">${t('choice_apron')}</button>
     </div>`,'choose');
 }
 
@@ -628,17 +792,17 @@ function resolveChoice(dir){
 
 function showYellowFlagModal(){
   showModal(`
-    <div class="modal-title">🚨 Drapeau Jaune !</div>
-    <div class="modal-body">4+ dés identiques !<br>• Positions réinitialisées selon le classement<br>• Toutes les jauges → 6<br>• Vitesse → 3</div>
-    <div class="modal-btns"><button class="btn btn-p" onclick="closeModal();render()">Continuer</button></div>`,'');
+    <div class="modal-title">${t('yellow_title')}</div>
+    <div class="modal-body">${t('yellow_body')}</div>
+    <div class="modal-btns"><button class="btn btn-p" onclick="closeModal();render()">${t('yellow_continue')}</button></div>`,'');
 }
 
 // ── ACTIONS ────────────────────────────────────────────────────
 function doPits(restT,restF){
   const before={...S.gauges};
   let drops=0;
-  if(restT){S.gauges.tires=6;drops++;glog('Stands : Pneus → 6','good');}
-  if(restF){S.gauges.fuel=6; drops++;glog('Stands : Carbu → 6','good');}
+  if(restT){S.gauges.tires=6;drops++;glog(t('log_pit_tires'),'good');}
+  if(restF){S.gauges.fuel=6; drops++;glog(t('log_pit_fuel'),'good');}
   for(let i=0;i<drops;i++){
     const {row,col}=S.cars.player;
 
@@ -654,7 +818,7 @@ function doPits(restT,restF){
   }
   S.speed=3;S._baseSpeed=3;
   S.lapStep=Math.min(S.lapStep+1,19);
-  glog(`Arrêt terminé. Vitesse→3, tour→${(S.lapStep+1)*10}`);
+  glog(t('log_pit_done',(S.lapStep+1)*10));
   S.pitTurn=true;S.phase='speed';
   closeModal();render();
   const deltas={};
@@ -665,9 +829,9 @@ function doPits(restT,restF){
 
 function applySpeedEffects(spd){
   S.speed=spd;
-  if(spd===1){S.gauges.engine=Math.min(6,S.gauges.engine+1);glog('Vitesse 1 : Moteur +1','good');}
-  if(spd>=4) {S.gauges.fuel  =Math.max(0,S.gauges.fuel-1);  glog(`Vitesse ${spd} : Carbu -1`,'dan');}
-  if(spd===5){S.gauges.engine=Math.max(0,S.gauges.engine-1);glog('Vitesse 5 : Moteur -1','dan');}
+  if(spd===1){S.gauges.engine=Math.min(6,S.gauges.engine+1);glog(t('log_spd1'),'good');}
+  if(spd>=4) {S.gauges.fuel  =Math.max(0,S.gauges.fuel-1);  glog(t('log_spd4',spd),'dan');}
+  if(spd===5){S.gauges.engine=Math.max(0,S.gauges.engine-1);glog(t('log_spd5'),'dan');}
   checkLose();
 }
 
@@ -677,13 +841,13 @@ function doLateral(dRow){
   const steps=Math.abs(dRow),dir=Math.sign(dRow);
   for(let s=1;s<=steps;s++){
     const nr=row+dir*s;
-    if(!inBounds(nr,col)){glog('Impossible : hors piste');return;}
-    if(getCar(nr,col)){glog('Impossible : bloqué');return;}
+    if(!inBounds(nr,col)){glog(t('log_oob'));return;}
+    if(getCar(nr,col)){glog(t('log_blocked'));return;}
   }
   movePiece('player',row+dRow,col);
   const before=S.gauges.tires;
   S.gauges.tires=Math.max(0,S.gauges.tires-steps);
-  glog(`Changement voie ${steps} ${dRow>0?'↓ Apron':'↑ Mur'} · Pneus -${steps}`);
+  glog(t('log_lane',steps,dRow>0?t('arr_apron'):t('arr_wall')));
   checkLose();
   if(S.gauges.tires<before)setTimeout(()=>launchGaugeFlies({tires:S.gauges.tires-before}),100);
   S.phase='dice';render();
@@ -716,7 +880,7 @@ function advanceLap(){
   S.movedCar=null;
   addTurnScore();
   if(!S.pitTurn)S.lapStep=Math.min(S.lapStep+1,19);
-  glog(`Tour ${(S.lapStep+1)*10} terminé`);
+  glog(t('log_lap_done',(S.lapStep+1)*10));
   if(S.lapStep>=19){endGame();return;}
   S.phase='start';S.pitTurn=false;S._baseSpeed=S.speed;
   render();
@@ -725,8 +889,8 @@ function advanceLap(){
 function checkLose(){
   const{tires,fuel,engine}=S.gauges;
   if(tires>0&&fuel>0&&engine>0)return;
-  const which=tires<=0?'Pneus':fuel<=0?'Carburant':'Moteur';
-  glog(`💥 ${which} à 0 — PERDU !`,'dan');
+  const which=tires<=0?t('gn_tires'):fuel<=0?t('gn_fuel'):t('gn_engine');
+  glog(t('log_lose',which),'dan');
   S.gameOver=true;S.won=false;
   S.finalPos  =standings().indexOf('player')+1;
   S.finalScore=S.turnScore;
@@ -741,7 +905,7 @@ function endGame(){
   S.turnScore+=S.diff*200*(1/S.finalPos);
   S.turnScore+=S.diff*1000*(1/S.finalPos);
   S.finalScore=S.turnScore;
-  glog(`Course terminée ! P${S.finalPos}.`,S.won?'good':'imp');
+  glog(t('log_end',S.finalPos),S.won?'good':'imp');
   S.phase='gameover';render();showEndModal();
 }
 
@@ -758,15 +922,15 @@ function skipLateral(){S.phase='dice';render();}
 // ── PIT MODAL ──────────────────────────────────────────────────
 function pitModal(){
   const g=S.gauges;
-  if(g.tires>=6&&g.fuel>=6){glog('Jauges pleines — stands non nécessaire');return;}
+  if(g.tires>=6&&g.fuel>=6){glog(t('log_full'));return;}
   showModal(`
-    <div class="modal-title" style="color:#16a34a">🔧 Arrêt aux Stands</div>
-    <div class="modal-body">Restaurer à 6. Chaque restauration = -1 position + 1 tour avancé.</div>
+    <div class="modal-title" style="color:#16a34a">${t('pit_title')}</div>
+    <div class="modal-body">${t('pit_body')}</div>
     <div class="modal-btns" style="flex-direction:column;gap:.3rem">
-      ${g.tires<6?`<button class="btn btn-g" onclick="doPits(true,false)">🛞 Pneus seulement (-1 pos)</button>`:''}
-      ${g.fuel<6 ?`<button class="btn btn-g" onclick="doPits(false,true)">⛽ Carbu seulement (-1 pos)</button>`:''}
-      ${g.tires<6&&g.fuel<6?`<button class="btn btn-g" onclick="doPits(true,true)">🛞⛽ Les deux (-2 pos)</button>`:''}
-      <button class="btn btn-s" onclick="closeModal()">Annuler</button>
+      ${g.tires<6?`<button class="btn btn-g" onclick="doPits(true,false)">${t('pit_tires')}</button>`:''}
+      ${g.fuel<6 ?`<button class="btn btn-g" onclick="doPits(false,true)">${t('pit_fuel')}</button>`:''}
+      ${g.tires<6&&g.fuel<6?`<button class="btn btn-g" onclick="doPits(true,true)">${t('pit_both')}</button>`:''}
+      <button class="btn btn-s" onclick="closeModal()">${t('pit_cancel')}</button>
     </div>`,'choose');
 }
 
@@ -783,20 +947,20 @@ function showEndModal(){
   const ico=S.won?'🏆':'💥';
   const scoreStr=Math.round(S.finalScore).toLocaleString('fr-FR');
   showModal(`
-    <div class="modal-title">${ico} ${S.won?'Victoire !':'Fin de course'}</div>
+    <div class="modal-title">${S.won?t('end_win'):t('end_lose')}</div>
     <div class="modal-body" style="text-align:center">
-      Position : <b>P${S.finalPos}</b> &nbsp;·&nbsp; Score : <b>${scoreStr}</b>
+      ${t('end_pos_lbl')} : <b>P${S.finalPos}</b> &nbsp;·&nbsp; ${t('end_score_lbl')} : <b>${scoreStr}</b>
     </div>
     <div class="name-entry">
-      <label class="name-lbl">Votre nom (6 lettres)</label>
+      <label class="name-lbl">${t('end_name_lbl')}</label>
       <input id="name-input" type="text" class="name-input" maxlength="6"
-        placeholder="AAAAAA" autocomplete="off" autocorrect="off" spellcheck="false"
+        placeholder="${t('end_name_ph')}" autocomplete="off" autocorrect="off" spellcheck="false"
         oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6)">
-      <button class="btn btn-p" onclick="submitScore()" style="width:100%">Valider et sauvegarder ✓</button>
+      <button class="btn btn-p" onclick="submitScore()" style="width:100%">${t('end_submit')}</button>
       <div id="save-error" style="display:none;color:#dc2626;font-size:.75rem;text-align:center;margin-top:.4rem"></div>
     </div>
     <div class="modal-btns">
-      <button class="btn btn-s" onclick="backToSetup()">Rejouer sans sauver</button>
+      <button class="btn btn-s" onclick="backToSetup()">${t('end_replay')}</button>
     </div>`,cls);
   setTimeout(()=>{const el=document.getElementById('name-input');if(el)el.focus();},80);
 }
@@ -835,9 +999,9 @@ function glogAll(carId=''){
 function showJournalModal(){
   const entries=S.log.slice(0,50).map(l=>`<div class="le ${l.cls}">${l.msg}</div>`).join('');
   showModal(`
-    <div class="modal-title">📡 Journal de course</div>
+    <div class="modal-title">${t('journal_title')}</div>
     <div class="log-modal-bg">${entries||'<div class="le neu">—</div>'}</div>
-    <div class="modal-btns"><button class="btn btn-s" onclick="closeModal()">Fermer ✕</button></div>
+    <div class="modal-btns"><button class="btn btn-s" onclick="closeModal()">${t('journal_close')}</button></div>
   `,'');
 }
 
@@ -874,7 +1038,7 @@ function renderArrowPhase(){
   const el=document.getElementById('arr-phase');
   if(!el)return;
   const phaseA=isPhaseA();
-  el.textContent=phaseA?'↑ Mur':'↓ Apron';
+  el.textContent=phaseA?t('arr_wall'):t('arr_apron');
   el.className='arr-phase'+(phaseA?'':' left');
 }
 
@@ -884,10 +1048,6 @@ function renderTrack(){
 
   if(!overlay)return;
   overlay.innerHTML='';
-  overlay.innerHTML=`
-  <div class="track-warning wall-warning">➡ 🛞-1 ⚙️-1</div>
-  <div class="track-warning grass-warning">➡ 🛞-1</div>
-`;
   for(let r=0;r<ROWS;r++){
     for(let c=0;c<COLS;c++){
       const lx=CELL_X[c]+'%';
@@ -980,29 +1140,29 @@ function renderGauges(){
     <div class="dash-leds">${leds}</div>
 
     <div class="dash-main">
-      ${segGauge('gauge-tires',g.tires,6,'#22c55e','🛞','Pneus')}
-      ${segGauge('gauge-fuel',g.fuel,6,'#3b82f6','⛽','Carbu')}
+      ${segGauge('gauge-tires',g.tires,6,'#22c55e','🛞',t('g_tires'))}
+      ${segGauge('gauge-fuel',g.fuel,6,'#3b82f6','⛽',t('g_fuel'))}
 
       <div class="dash-center">
         <div class="dash-cell">
           <div class="dash-cell-v">${(S.lapStep+1)*10}</div>
-          <div class="dash-cell-l">Tour</div>
+          <div class="dash-cell-l">${t('g_lap')}</div>
           <div class="dash-dice-row">${diceHtml}</div>
         </div>
 
         <div class="dash-cell">
           <div class="dash-spd-v">${spd}</div>
-          <div class="dash-spd-l">Vitesse</div>
+          <div class="dash-spd-l">${t('g_speed')}</div>
         </div>
 
         <div class="dash-cell">
           <div class="dash-cell-v">P${pos}</div>
-          <div class="dash-cell-l">Classement</div>
+          <div class="dash-cell-l">${t('g_rank')}</div>
           <div class="dash-standings-h">${standingsHtml}</div>
         </div>
       </div>
 
-      ${segGauge('gauge-engine',g.engine,6,'#ef4444','⚙️','Moteur')}
+      ${segGauge('gauge-engine',g.engine,6,'#ef4444','⚙️',t('g_engine'))}
     </div>`;
 }
 
@@ -1075,44 +1235,44 @@ function renderLog(){
 function renderPhase(){
   const el  =document.getElementById('phase-ui');
   const last=S.lapStep>=18;
-  let html  =last&&S.phase!=='gameover'?'<div class="flag-w">🏳️ DRAPEAU BLANC — Dernier tour !</div>':'';
+  let html  =last&&S.phase!=='gameover'?`<div class="flag-w">${t('white_flag')}</div>`:'';
   const pr  =S.cars.player?S.cars.player.row:1;
 
   switch(S.phase){
     case'start':
-      html+=`<div class="phase-title">① Stands (optionnel)</div>
-      <div class="phase-desc">Restaurer pneus/carbu à 6. Coût : -1 pos + 1 tour avancé par jauge.</div>
+      html+=`<div class="phase-title">${t('p1_title')}</div>
+      <div class="phase-desc">${t('p1_desc')}</div>
       <div class="btn-row">
-        <button class="btn btn-g" onclick="pitModal()">🔧 Stands</button>
-        <button class="btn btn-p" onclick="skipPits()">Passer →</button>
+        <button class="btn btn-g" onclick="pitModal()">${t('p1_pit')}</button>
+        <button class="btn btn-p" onclick="skipPits()">${t('p1_skip')}</button>
       </div>`;break;
     case'speed':
-      html+=`<div class="phase-title">② Régler la vitesse</div>
-      <div class="phase-desc">Cliquez votre vitesse (max ±2). Effets au lancer des dés.</div>`;break;
+      html+=`<div class="phase-title">${t('p2_title')}</div>
+      <div class="phase-desc">${t('p2_desc')}</div>`;break;
     case'lateral':
-      html+=`<div class="phase-title">③ Changer de voie (optionnel)</div>
-      <div class="phase-desc">1 ou 2 voies. Chaque voie coûte 1 pneu.</div>
+      html+=`<div class="phase-title">${t('p3_title')}</div>
+      <div class="phase-desc">${t('p3_desc')}</div>
       <div class="btn-row">
         <button class="btn btn-s" onclick="doLateral(-2)" ${pr>=2?'':'disabled'}>↑ 2</button>
         <button class="btn btn-s" onclick="doLateral(-1)" ${pr>=1?'':'disabled'}>↑ 1</button>
-        <button class="btn btn-p" onclick="skipLateral()">Passer →</button>
+        <button class="btn btn-p" onclick="skipLateral()">${t('p3_skip')}</button>
         <button class="btn btn-s" onclick="doLateral(1)"  ${pr<=ROWS-2?'':'disabled'}>↓ 1</button>
         <button class="btn btn-s" onclick="doLateral(2)"  ${pr<=ROWS-3?'':'disabled'}>↓ 2</button>
       </div>`;break;
     case'dice':
-      html+=`<div class="phase-title">④ Lancer les dés</div>
-      <div class="phase-desc">4+ dés identiques = 🚨 Drapeau Jaune !</div>
-      <div class="btn-row"><button class="btn btn-p" onclick="doRoll()">🎲 Lancer !</button></div>`;break;
+      html+=`<div class="phase-title">${t('p4_title')}</div>
+      <div class="phase-desc">${t('p4_desc')}</div>
+      <div class="btn-row"><button class="btn btn-p" onclick="doRoll()">${t('p4_roll')}</button></div>`;break;
     case'rivals':
-      html+=`<div class="phase-title">⑤ Rivaux en mouvement…</div>
-      <div class="phase-desc">Résolution un par un.</div>`;break;
+      html+=`<div class="phase-title">${t('p5_title')}</div>
+      <div class="phase-desc">${t('p5_desc')}</div>`;break;
     case'lap':
-      html+=`<div class="phase-title">⑥ Avancer le compteur</div>
-      <div class="phase-desc">Tour <b>${(S.lapStep+1)*10}</b> → <b>${Math.min((S.lapStep+2)*10,200)}</b></div>
-      <div class="btn-row"><button class="btn btn-p" onclick="advanceLap()">Tour suivant →</button></div>`;break;
+      html+=`<div class="phase-title">${t('p6_title')}</div>
+      <div class="phase-desc">${t('g_lap')} <b>${(S.lapStep+1)*10}</b> → <b>${Math.min((S.lapStep+2)*10,200)}</b></div>
+      <div class="btn-row"><button class="btn btn-p" onclick="advanceLap()">${t('p6_next')}</button></div>`;break;
     case'gameover':
-      html+=`<div class="phase-title">${S.won?'🏆 Victoire !':'💥 Fin de course'}</div>
-      <div class="phase-desc">P${S.finalPos} — Score : ${Math.round(S.finalScore).toLocaleString('fr-FR')}</div>`;break;
+      html+=`<div class="phase-title">${S.won?t('end_win'):t('end_lose')}</div>
+      <div class="phase-desc">P${S.finalPos} — ${t('end_score_lbl')} : ${Math.round(S.finalScore).toLocaleString('fr-FR')}</div>`;break;
   }
   el.innerHTML=html;
 }
@@ -1169,6 +1329,7 @@ function backToSetup(){
 }
 
 // ── INIT ───────────────────────────────────────────────────────
+applyI18n();
 renderLB();
 </script>
 </body>
