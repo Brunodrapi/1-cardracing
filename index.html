@@ -92,6 +92,7 @@
 
   <!-- Panneau bas collé : tableau de bord + boutons d'action -->
   <div class="bottom-panel">
+    <button class="dash-toggle" id="dash-toggle" onclick="toggleDash()">▼</button>
     <div class="gauges-bar" id="gauges"></div>
     <div class="action-bar" id="action-box">
       <div id="phase-ui"></div>
@@ -140,7 +141,7 @@ const T={
     p4_title:'④ Lancer les dés',p4_desc:'4+ dés identiques = 🚨 Drapeau Jaune !',p4_roll:'🎲 Lancer !',
     p5_title:'⑤ Rivaux en mouvement…',p5_desc:'Résolution un par un.',
     p6_title:'⑥ Avancer le compteur',p6_next:'Tour suivant →',
-    white_flag:'🏳️ DRAPEAU BLANC — Dernier tour !',
+    white_flag:'🏁 DRAPEAU DAMIER — Dernier tour !',
     rival_no_effect:'Aucun effet',rival_continue:'Continuer ▶',rival_die_lbl:'Dé',
     rival_cmp:(d,ps)=>d===ps?`= ${ps} → ne bouge pas`:d<ps?`< ${ps} → recule`:d===6?`= 6 → avance/échange`:`> ${ps} → avance`,
     choice_title:'Choisir la voie',choice_desc:'est bloqué vers l\'avant. Quelle voie ?',choice_wall:'↑ Mur',choice_apron:'↓ Apron',
@@ -187,7 +188,7 @@ const T={
     p4_title:'④ Roll dice',p4_desc:'4+ identical dice = 🚨 Yellow Flag!',p4_roll:'🎲 Roll!',
     p5_title:'⑤ Rivals moving…',p5_desc:'Resolved one by one.',
     p6_title:'⑥ Advance lap counter',p6_next:'Next lap →',
-    white_flag:'🏳️ WHITE FLAG — Final lap!',
+    white_flag:'🏁 CHECKERED FLAG — Final lap!',
     rival_no_effect:'No effect',rival_continue:'Continue ▶',rival_die_lbl:'Die',
     rival_cmp:(d,ps)=>d===ps?`= ${ps} → doesn't move`:d<ps?`< ${ps} → moves back`:d===6?`= 6 → advances/swaps`:`> ${ps} → advances`,
     choice_title:'Choose lane',choice_desc:'is blocked forward. Which lane?',choice_wall:'↑ Wall',choice_apron:'↓ Apron',
@@ -234,7 +235,7 @@ const T={
     p4_title:'④ Lancia i dadi',p4_desc:'4+ dadi uguali = 🚨 Bandiera Gialla!',p4_roll:'🎲 Lancia!',
     p5_title:'⑤ Rivali in movimento…',p5_desc:'Risoluzione uno per uno.',
     p6_title:'⑥ Avanza il contatore',p6_next:'Giro successivo →',
-    white_flag:'🏳️ BANDIERA BIANCA — Ultimo giro!',
+    white_flag:'🏁 BANDIERA A SCACCHI — Ultimo giro!',
     rival_no_effect:'Nessun effetto',rival_continue:'Continua ▶',rival_die_lbl:'Dado',
     rival_cmp:(d,ps)=>d===ps?`= ${ps} → non si muove`:d<ps?`< ${ps} → indietreggia`:d===6?`= 6 → avanza/scambia`:`> ${ps} → avanza`,
     choice_title:'Scegli la corsia',choice_desc:'è bloccato in avanti. Quale corsia?',choice_wall:'↑ Muro',choice_apron:'↓ Apron',
@@ -1326,6 +1327,14 @@ function backToSetup(){
   document.getElementById('setup').style.display='none';
   document.getElementById('leaderboard').style.display='block';
   renderLB();
+}
+
+// ── DASHBOARD TOGGLE ───────────────────────────────────────────
+let _dashOpen=true;
+function toggleDash(){
+  _dashOpen=!_dashOpen;
+  document.getElementById('gauges').style.display=_dashOpen?'':'none';
+  document.getElementById('dash-toggle').textContent=_dashOpen?'▼':'▲';
 }
 
 // ── INIT ───────────────────────────────────────────────────────
