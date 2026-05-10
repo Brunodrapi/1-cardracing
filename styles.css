@@ -163,8 +163,8 @@ body:has(#game[style*="flex"]){padding:0}
 
 /* ─ PANNEAU BAS (dashboard + action) ────── */
 .bottom-panel{position:relative;flex-shrink:0;background:linear-gradient(rgba(8,12,16,.92),rgba(8,12,16,.97)) url('IMG_1950.jpeg') top center/cover no-repeat;box-shadow:0 -4px 24px #0008;z-index:60;width:100%}
-.dash-toggle{position:absolute;top:-18px;right:10px;z-index:70;border:none;background:#1e293b;color:#6b7280;font-size:.65rem;font-weight:900;padding:.22rem .55rem;border-radius:1rem;cursor:pointer;box-shadow:0 -2px 6px #0005;line-height:1;letter-spacing:.04em}
-.dash-toggle:hover{color:#e2e8f0}
+.dash-toggle{position:absolute;top:-18px;left:50%;transform:translateX(-50%);z-index:70;border:none;background:#1e293b;color:#cbd5e1;font-size:.75rem;font-weight:900;padding:.22rem .9rem;border-radius:1rem;cursor:pointer;box-shadow:0 -2px 6px #0005;line-height:1}
+.dash-toggle:hover{color:#fff}
 
 /* ─ ACTION BAR ───────────────────────────── */
 .action-bar{background:#000;border-top:1px solid #111827;padding:.7rem .9rem calc(.8rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem}
