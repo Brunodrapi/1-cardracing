@@ -384,7 +384,7 @@ async function renderLB(hi=-1){
     :`<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">${t('lb_empty')}</td></tr>`;
 }
 
-let _pendingSave=null;
+let _pendingSave=null; // caches only the new entry, not the full lb
 
 async function submitScore(){
   const btn=document.querySelector('[onclick="submitScore()"]');
@@ -396,27 +396,31 @@ async function submitScore(){
   const name=(raw?raw.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6)||'ANON':'ANON');
   const score=Math.round(S.finalScore);
 
+  // Cache only the new entry (not the full lb) so retries stay idempotent
   if(!_pendingSave){
-    const lb=await loadLB();
-    const ne={name,score,date:new Date().toLocaleDateString('fr-FR'),car:CAR_LBL['player'],finalPos:S.finalPos,diff:S.diff};
-    lb.push(ne);lb.sort((a,b)=>b.score-a.score);
-    const rank=lb.findIndex(e=>e===ne);
-    _pendingSave={data:lb.slice(0,20),rank:rank<20?rank:-1};
+    _pendingSave={name,score,date:new Date().toLocaleDateString('fr-FR'),car:CAR_LBL['player'],finalPos:S.finalPos,diff:S.diff};
   }
 
-  const ok=await saveLB(_pendingSave.data);
+  // Always fetch fresh data so we never overwrite concurrent submissions
+  const lb=await loadLB();
+  const ne=_pendingSave;
+  // Skip adding if already present (handles retry after silent success)
+  const alreadyIn=lb.some(e=>e.name===ne.name&&e.score===ne.score&&e.date===ne.date);
+  if(!alreadyIn)lb.push(ne);
+  lb.sort((a,b)=>b.score-a.score);
+  const rank=lb.findIndex(e=>e.name===ne.name&&e.score===ne.score&&e.date===ne.date);
+
+  const ok=await saveLB(lb.slice(0,20));
   if(!ok){
     if(btn){btn.disabled=false;btn.textContent=t('retry');}
     if(errEl){errEl.textContent=t('save_error');errEl.style.display='block';}
     return;
   }
 
-  const rank=_pendingSave.rank;
   _pendingSave=null;
-  closeModal();
   document.getElementById('game').style.display='none';
   document.getElementById('leaderboard').style.display='block';
-  renderLB(rank);
+  renderLB(rank<20?rank:-1);
 }
 
 // ── STATE ──────────────────────────────────────────────────────
