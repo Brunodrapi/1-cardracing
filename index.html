@@ -353,8 +353,9 @@ async function loadLB(){
     const data=await r.json();
     if(Array.isArray(data))return data;
     if(Array.isArray(data?.record))return data.record;
+    return [];
   }catch(e){console.warn('JSONBin load:',e);}
-  return [];
+  return null; // null = network/parse error (distinct from empty list)
 }
 
 async function saveLB(arr){
@@ -372,7 +373,7 @@ async function renderLB(hi=-1){
   const tbody=document.getElementById('lb-body');
   tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:.8rem">${t('lb_loading')}</td></tr>`;
   const lb=await loadLB();
-  tbody.innerHTML=lb.length
+  tbody.innerHTML=(lb&&lb.length)
     ?lb.map((e,i)=>
       `<tr${i===hi?' class="hi"':''}>`+
       `<td class="rank">${i+1}</td><td>${e.name}</td>`+
@@ -403,6 +404,12 @@ async function submitScore(){
 
   // Always fetch fresh data so we never overwrite concurrent submissions
   const lb=await loadLB();
+  if(lb===null){
+    // Load failed — abort to avoid overwriting the bin with only 1 entry
+    if(btn){btn.disabled=false;btn.textContent=t('retry');}
+    if(errEl){errEl.textContent=t('save_error');errEl.style.display='block';}
+    return;
+  }
   const ne=_pendingSave;
   // Skip adding if already present (handles retry after silent success)
   const alreadyIn=lb.some(e=>e.name===ne.name&&e.score===ne.score&&e.date===ne.date);
