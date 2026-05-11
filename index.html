@@ -944,25 +944,23 @@ function showModal(html,cls=''){
 function closeModal(){document.getElementById('ov').style.display='none';}
 
 function showEndModal(){
-  const cls=S.won?'win':'lose';
-  const ico=S.won?'🏆':'💥';
   const scoreStr=Math.round(S.finalScore).toLocaleString('fr-FR');
-  showModal(`
-    <div class="modal-title">${S.won?t('end_win'):t('end_lose')}</div>
-    <div class="modal-body" style="text-align:center">
-      ${t('end_pos_lbl')} : <b>P${S.finalPos}</b> &nbsp;·&nbsp; ${t('end_score_lbl')} : <b>${scoreStr}</b>
+  // Collapse dashboard to reveal the board with final positions
+  if(_dashOpen)toggleDash();
+  showActionPanel(`
+    <div class="phase-title" style="color:${S.won?'#0d9488':'#ef4444'}">${S.won?t('end_win'):t('end_lose')}</div>
+    <div style="color:#94a3b8;font-size:.85rem;font-weight:600">
+      ${t('end_pos_lbl')} : <b style="color:#e2e8f0">P${S.finalPos}</b> &nbsp;·&nbsp; ${t('end_score_lbl')} : <b style="color:#0d9488">${scoreStr}</b>
     </div>
-    <div class="name-entry">
-      <label class="name-lbl">${t('end_name_lbl')}</label>
-      <input id="name-input" type="text" class="name-input" maxlength="6"
+    <div class="end-name-row">
+      <input id="name-input" type="text" class="name-input end-name-input" maxlength="6"
         placeholder="${t('end_name_ph')}" autocomplete="off" autocorrect="off" spellcheck="false"
         oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6)">
-      <button class="btn btn-p" onclick="submitScore()" style="width:100%">${t('end_submit')}</button>
-      <div id="save-error" style="display:none;color:#dc2626;font-size:.75rem;text-align:center;margin-top:.4rem"></div>
+      <button class="btn btn-p end-submit-btn" onclick="submitScore()">${t('end_submit')}</button>
     </div>
-    <div class="modal-btns">
-      <button class="btn btn-s" onclick="backToSetup()">${t('end_replay')}</button>
-    </div>`,cls);
+    <div id="save-error" style="display:none;color:#ef4444;font-size:.72rem;text-align:center"></div>
+    <button class="btn btn-s" style="width:100%" onclick="backToSetup()">${t('end_replay')}</button>
+  `);
   setTimeout(()=>{const el=document.getElementById('name-input');if(el)el.focus();},80);
 }
 

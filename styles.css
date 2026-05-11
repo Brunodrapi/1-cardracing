@@ -167,7 +167,7 @@ body:has(#game[style*="flex"]){padding:0}
 .dash-toggle:hover{color:#fff}
 
 /* ─ ACTION BAR ───────────────────────────── */
-.action-bar{background:#000;border-top:1px solid #111827;padding:.7rem .9rem calc(.8rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem}
+.action-bar{background:#000;border-top:1px solid #111827;padding:.7rem .9rem calc(.8rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;overflow-y:auto}
 .phase-title{font-size:.8rem;color:#2dd4bf;font-weight:700;margin-bottom:.05rem}
 .phase-desc{font-size:.75rem;color:#4b5563;margin-bottom:.25rem;line-height:1.4}
 .btn-row{display:flex;gap:.4rem;flex-wrap:wrap}
@@ -216,6 +216,9 @@ body:has(#game[style*="flex"]){padding:0}
 /* ─ NAME ENTRY ───────────────────────────── */
 .name-entry{display:flex;flex-direction:column;gap:.4rem}
 .name-lbl{font-size:.68rem;color:#94a3b8;text-align:center}
+.end-name-row{display:flex;gap:.4rem;width:100%;align-items:center}
+.end-name-input{flex:1;min-width:0;padding:.45rem .6rem;font-size:1.1rem;letter-spacing:.2em}
+.end-submit-btn{flex-shrink:0;white-space:nowrap;min-height:48px}
 .name-input{
   width:100%;padding:.55rem .7rem;
   border:2px solid #e2e8f0;border-radius:.4rem;
