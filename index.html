@@ -1325,6 +1325,12 @@ function showSetup(){
 function startGame(){
   applySkins(selSkin);
   S=newState(selDiff);
+  // Always restore dashboard at game start (it may have been collapsed at end of previous game)
+  if(!_dashOpen){
+    _dashOpen=true;
+    document.getElementById('gauges').style.display='';
+    document.getElementById('dash-toggle').textContent='▼';
+  }
   document.getElementById('setup').style.display='none';
   document.getElementById('game').style.display='flex';
   render();
