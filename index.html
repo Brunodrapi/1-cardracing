@@ -12,6 +12,7 @@
 <div class="lang-sel">
   <button class="lang-btn sel" data-lang="fr" onclick="setLang('fr')">FR</button>
   <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
   <button class="lang-btn" data-lang="it" onclick="setLang('it')">IT</button>
 </div>
 
@@ -260,6 +261,53 @@ const T={
     log_oob:'Impossibile: fuori pista',log_blocked:'Impossibile: bloccato',
     log_full:'Indicatori pieni — box non necessario',
     log_lap_done:(l)=>`Giro ${l} finito`,
+  },
+  es:{
+    lb_credit_game:'un juego de Mateo Gaccone',lb_credit_fan:'App web creada por un fan',
+    lb_bgg:'mi perfil de BGG',lb_non_aff:'no afiliado a Mateo Gaccone',
+    lb_sub:'Clasificación de los mejores pilotos',lb_start:'EMPEZAR ▶',
+    lb_loading:'Cargando…',lb_empty:'Sin puntuaciones registradas',
+    th_name:'Nombre',th_car:'Auto',th_pos:'Pos.',th_diff:'Dif.',th_score:'Puntos',th_date:'Fecha',
+    setup_universe:'Universo',setup_car:'Elige tu auto',
+    setup_pos:'Posición de salida',setup_hint:'1 = Pole (fácil) &nbsp;·&nbsp; 6 = Último (difícil)',
+    setup_go:'EMPEZAR LA CARRERA',
+    rules:'<b>Turno:</b> ① Boxes? ② Velocidad (±2) ③ ¿Cambiar carril? ④ Dados → Rivales → Avanzar<br><b>Neum.:</b> -1/carril &nbsp;|&nbsp; <b>Comb.:</b> -1 a vel. 4–5<br><b>Motor:</b> +1 a vel.1, -1 a vel.5 &nbsp;|&nbsp; <b>Derrota:</b> indicador a 0<br><b>Bandera amarilla:</b> 4+ dados iguales → reset',
+    hdr_lap:'Vuelta',hdr_score:'Puntos',hdr_arrows:'Flechas',
+    arr_wall:'↑ Muro',arr_apron:'↓ Arcén',journal_btn:'📡 Log',
+    wall_strip:'1× retrocede ➡️ &nbsp;·&nbsp; −1 neum. 🛞 &nbsp;·&nbsp; −1 motor ⚙️',
+    apron_strip:'1× retrocede ➡️ &nbsp;·&nbsp; −1 neum. 🛞',
+    spd_confirm:'Confirmar ✓',
+    p1_title:'① Boxes (opcional)',p1_desc:'Restaurar neum./comb. a 6. Coste: -1 pos + 1 vuelta por indicador.',p1_pit:'🔧 Boxes',p1_skip:'Saltar →',
+    p2_title:'② Ajustar velocidad',p2_desc:'Elige tu velocidad (máx. ±2). Efectos al lanzar.',
+    p3_title:'③ Cambiar carril (opcional)',p3_desc:'1 o 2 carriles. Cada carril cuesta 1 neum.',p3_skip:'Saltar →',
+    p4_title:'④ Lanzar dados',p4_desc:'4+ dados iguales = 🚨 ¡Bandera Amarilla!',p4_roll:'🎲 ¡Lanzar!',
+    p5_title:'⑤ Rivales en movimiento…',p5_desc:'Resolución uno a uno.',
+    p6_title:'⑥ Avanzar contador',p6_next:'Siguiente vuelta →',
+    white_flag:'🏁 BANDERA A CUADROS — ¡Última vuelta!',
+    rival_no_effect:'Sin efecto',rival_continue:'Continuar ▶',rival_die_lbl:'Dado',
+    rival_cmp:(d,ps)=>d===ps?`= ${ps} → no se mueve`:d<ps?`< ${ps} → retrocede`:d===6?`= 6 → avanza/intercambia`:`> ${ps} → avanza`,
+    choice_title:'Elegir carril',choice_desc:'está bloqueado hacia adelante. ¿Qué carril?',choice_wall:'↑ Muro',choice_apron:'↓ Arcén',
+    yellow_title:'🚨 ¡Bandera Amarilla!',yellow_body:'4+ dados iguales!<br>• Posiciones reiniciadas por clasificación<br>• Todos los indicadores → 6<br>• Velocidad → 3',yellow_continue:'Continuar',
+    pit_title:'🔧 Parada en Boxes',pit_body:'Restaurar a 6. Cada restauración = -1 posición + 1 vuelta.',
+    pit_tires:'🛞 Solo neum. (-1 pos)',pit_fuel:'⛽ Solo comb. (-1 pos)',pit_both:'🛞⛽ Ambos (-2 pos)',pit_cancel:'Cancelar',
+    journal_title:'📡 Log de carrera',journal_close:'Cerrar ✕',
+    end_win:'🏆 ¡Victoria!',end_lose:'💥 Fin de carrera',
+    end_pos_lbl:'Posición',end_score_lbl:'Puntos',end_name_lbl:'Tu nombre (6 letras)',end_name_ph:'AAAAAA',
+    end_submit:'Guardar y enviar ✓',end_replay:'Jugar de nuevo sin guardar',
+    saving:'Guardando…',retry:'↺ Reintentar',save_error:'⚠️ Error al guardar — comprueba tu conexión',
+    g_tires:'Neum.',g_fuel:'Comb.',g_engine:'Motor',g_lap:'Vuelta',g_speed:'Velocidad',g_rank:'Pos.',
+    gn_tires:'Neumáticos',gn_fuel:'Combustible',gn_engine:'Motor',
+    log_start:'¡Carrera iniciada! ¡Buena suerte!',
+    log_pit_tires:'Boxes: Neum. → 6',log_pit_fuel:'Boxes: Comb. → 6',
+    log_pit_done:(l)=>`Boxes listo. Velocidad→3, vuelta→${l}`,
+    log_spd1:'Velocidad 1: Motor +1',log_spd4:(v)=>`Velocidad ${v}: Comb. -1`,log_spd5:'Velocidad 5: Motor -1',
+    log_apron:'¡Tocas el arcén! Neum. -1',log_wall:'¡Tocas el muro! Neum. -1, Motor -1',
+    log_lose:(g)=>`💥 ${g} a 0 — ¡PERDIDO!`,log_end:(p)=>`¡Carrera terminada! P${p}.`,
+    log_yellow:'🚨 ¡BANDERA AMARILLA!',log_yellow_lap:(l)=>`Neutralización — vuelta → ${l}`,
+    log_lane:(s,d)=>`Cambio carril ${s} ${d} · Neum. -${s}`,
+    log_oob:'Imposible: fuera de pista',log_blocked:'Imposible: bloqueado',
+    log_full:'Indicadores llenos — boxes no necesario',
+    log_lap_done:(l)=>`Vuelta ${l} terminada`,
   }
 };
 function t(k,...a){const v=T[lang][k];return typeof v==='function'?v(...a):v??k;}
