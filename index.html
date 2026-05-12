@@ -378,7 +378,7 @@ async function renderLB(hi=-1){
       `<tr${i===hi?' class="hi"':''}>`+
       `<td class="rank">${i+1}</td><td>${e.name}</td>`+
       `<td>${e.car??'—'}</td>`+
-      `<td>P${e.finalPos??'?'}</td>`+
+      `<td>${e.finalPos==='DNF'?'DNF':'P'+(e.finalPos??'?')}</td>`+
       `<td>${e.diff??'?'}</td>`+
       `<td>${e.score.toLocaleString('fr-FR')}</td><td>${e.date}</td></tr>`
     ).join('')
@@ -399,7 +399,7 @@ async function submitScore(){
 
   // Cache only the new entry (not the full lb) so retries stay idempotent
   if(!_pendingSave){
-    _pendingSave={name,score,date:new Date().toLocaleDateString('fr-FR'),car:CAR_LBL['player'],finalPos:S.finalPos,diff:S.diff};
+    _pendingSave={name,score,date:new Date().toLocaleDateString('fr-FR'),car:CAR_LBL['player'],finalPos:S.dnf?'DNF':S.finalPos,diff:S.diff};
   }
 
   // Always fetch fresh data so we never overwrite concurrent submissions
@@ -454,7 +454,7 @@ function newState(diff){
     rivalQueue:[],rivalIdx:0,
     pendingChoice:null,stepLogs:[],movedCar:null,
     log:[{msg:t('log_start'),cls:'good'}],
-    gameOver:false,won:false,finalPos:null,
+    gameOver:false,won:false,dnf:false,finalPos:null,
     pitTurn:false,diff,
     turnScore:0,finalScore:0,
   };
@@ -903,7 +903,7 @@ function checkLose(){
   if(tires>0&&fuel>0&&engine>0)return;
   const which=tires<=0?t('gn_tires'):fuel<=0?t('gn_fuel'):t('gn_engine');
   glog(t('log_lose',which),'dan');
-  S.gameOver=true;S.won=false;
+  S.gameOver=true;S.won=false;S.dnf=true;
   S.finalPos  =standings().indexOf('player')+1;
   S.finalScore=S.turnScore;
   S.phase='gameover';render();showEndModal();
@@ -961,7 +961,7 @@ function showEndModal(){
   showActionPanel(`
     <div class="phase-title" style="color:${S.won?'#0d9488':'#ef4444'}">${S.won?t('end_win'):t('end_lose')}</div>
     <div style="color:#94a3b8;font-size:.85rem;font-weight:600">
-      ${t('end_pos_lbl')} : <b style="color:#e2e8f0">P${S.finalPos}</b> &nbsp;·&nbsp; ${t('end_score_lbl')} : <b style="color:#0d9488">${scoreStr}</b>
+      ${t('end_pos_lbl')} : <b style="color:#e2e8f0">${S.dnf?'DNF':'P'+S.finalPos}</b> &nbsp;·&nbsp; ${t('end_score_lbl')} : <b style="color:#0d9488">${scoreStr}</b>
     </div>
     <div class="end-name-row">
       <input id="name-input" type="text" class="name-input end-name-input" maxlength="6"
@@ -1282,7 +1282,7 @@ function renderPhase(){
       <div class="btn-row"><button class="btn btn-p" onclick="advanceLap()">${t('p6_next')}</button></div>`;break;
     case'gameover':
       html+=`<div class="phase-title">${S.won?t('end_win'):t('end_lose')}</div>
-      <div class="phase-desc">P${S.finalPos} — ${t('end_score_lbl')} : ${Math.round(S.finalScore).toLocaleString('fr-FR')}</div>`;break;
+      <div class="phase-desc">${S.dnf?'DNF':'P'+S.finalPos} — ${t('end_score_lbl')} : ${Math.round(S.finalScore).toLocaleString('fr-FR')}</div>`;break;
   }
   el.innerHTML=html;
 }
