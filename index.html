@@ -645,7 +645,7 @@ function processYellowFlag(){
   glog(t('log_yellow'),'imp');
   S.gauges={tires:6,fuel:6,engine:6};S.speed=3;S._baseSpeed=3;
   const order=standings();
-  const pos=[...ALL_STARTS].reverse();
+  const pos=[...ALL_STARTS];
   for(const id of allCars())if(S.cars[id])S.grid[S.cars[id].row][S.cars[id].col]=null;
   order.forEach((id,i)=>{if(i<pos.length)S.cars[id]={row:pos[i][0],col:pos[i][1]};});
   for(const id of allCars())if(S.cars[id])S.grid[S.cars[id].row][S.cars[id].col]=id;
